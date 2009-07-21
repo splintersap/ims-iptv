@@ -1,0 +1,9 @@
+#
+#Mon Jul 20 17:14:53 CEST 2009
+client.configuration=VideoClient.xml
+name=VideoClient
+uid=
+filelist=
+cmd=pl.edu.agh.ims.video.client.VideoClientGui
+path=C\:\\Documents and Settings\\ania\\Pulpit\\michal\\deploy
+archive.name=
