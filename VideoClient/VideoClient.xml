@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SERVICE_Configuration>
+	<ClientName>VideoClient</ClientName>
+	<ServicePath>java</ServicePath>
+	<ServiceParameter>-cp "C:\Documents and Settings\ania\Pulpit\michal\deploy\VideoClient\VideoClient.jar";"C:\Documents and Settings\ania\Pulpit\michal\deploy\VideoClient\IcpJni.jar"; pl.edu.agh.ims.video.client.VideoClientGui</ServiceParameter>
+	<ServiceId>+g.videoclient.ericsson.com</ServiceId>
+</SERVICE_Configuration>
