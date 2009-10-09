@@ -17,7 +17,7 @@ public class Launcher {
 					 * Setting the new look and feel.
 					 */
 					UIManager
-							.setLookAndFeel("org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel");
+							.setLookAndFeel("org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel");
 				} catch (Exception e) {
 					System.out
 							.println("Substance Raven Graphite failed to initialize");
