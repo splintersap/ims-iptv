@@ -1,20 +1,28 @@
 package pl.edu.agh.iptv.view;
 
+import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.TextField;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.ScrollPaneLayout;
+import javax.swing.JButton;
 
 public class MainView {
 
 	private JFrame MainFrame = null; // @jve:decl-index=0:visual-constraint="12,8"
 	private JPanel jContentPane = null;
 	private JTabbedPane mainTabs = null;
-	private JScrollPane moviesTab = null;
+	private JPanel moviesTab = null;
 	private JScrollPane statisticsTab = null;
+	private JScrollPane paymentsTab = null;
+	private JScrollPane moviesListPane = null;
+	private JScrollPane moviesDescPane = null;
+	private JButton jButton = null;
 
 	public MainView() {
 		getMainFrame().setVisible(true);
@@ -61,6 +69,7 @@ public class MainView {
 			mainTabs = new JTabbedPane();
 			mainTabs.addTab("Movies", getJScrollPane());
 			mainTabs.addTab("Statistics", getStatisticsTabBeans());
+			mainTabs.addTab("Payments", getPaymentsTab());
 		}
 		return mainTabs;
 	}
@@ -70,10 +79,14 @@ public class MainView {
 	 * 
 	 * @return javax.swing.JScrollPane
 	 */
-	private JScrollPane getJScrollPane() {
+	private JPanel getJScrollPane() {
 		if (moviesTab == null) {
-			moviesTab = new JScrollPane();
+			moviesTab = new JPanel();
+			GridLayout moviesGridLayout = new GridLayout(1, 2);
+			moviesTab.setLayout(moviesGridLayout);
 			moviesTab.setToolTipText("All about movies");
+			moviesTab.add(getMoviesListPane(), getMoviesListPane().getName());
+			moviesTab.add(getMoviesDescPane(), getMoviesDescPane().getName());
 		}
 		return moviesTab;
 	}
@@ -89,6 +102,45 @@ public class MainView {
 			statisticsTab.setToolTipText("Movies popularity");
 		}
 		return statisticsTab;
+	}
+
+	/**
+	 * This method initializes paymentsTab
+	 * 
+	 * @return javax.swing.JScrollPane
+	 */
+	private JScrollPane getPaymentsTab() {
+		if (paymentsTab == null) {
+			paymentsTab = new JScrollPane();
+			paymentsTab.setToolTipText("Your bills");
+		}
+		return paymentsTab;
+	}
+
+	/**
+	 * This method initializes moviesListPane
+	 * 
+	 * @return javax.swing.JScrollPane
+	 */
+	private JScrollPane getMoviesListPane() {
+		if (moviesListPane == null) {
+			moviesListPane = new JScrollPane();
+			moviesListPane.setSize(100, 100);
+		}
+		return moviesListPane;
+	}
+
+	/**
+	 * This method initializes moviesDescPane
+	 * 
+	 * @return javax.swing.JScrollPane
+	 */
+	private JScrollPane getMoviesDescPane() {
+		if (moviesDescPane == null) {
+			moviesDescPane = new JScrollPane();
+			moviesDescPane.setSize(100, 100);
+		}
+		return moviesDescPane;
 	}
 
 }
