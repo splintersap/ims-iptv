@@ -1,0 +1,9 @@
+#
+#Thu Oct 08 11:52:02 CEST 2009
+client.configuration=HelloWorldClient.xml
+name=HelloWorldClient
+uid=E1230004
+filelist=
+cmd=com.ericsson.sds.samples.helloworld.HelloWorldClient
+path=C\:\\ICPApps
+archive.name=
