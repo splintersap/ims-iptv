@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SERVICE_Configuration>
+	<ClientName>IPTVClient</ClientName>
+	<ServicePath>z:\sys\bin\PProLauncher00000000.exe</ServicePath>
+	<ServiceParameter></ServiceParameter>
+	<ServiceId>+g.videoclient.ericsson.com</ServiceId>
+</SERVICE_Configuration>

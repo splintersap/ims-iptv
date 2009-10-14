@@ -1,30 +1,43 @@
 package pl.edu.agh.iptv.view;
 
-import java.awt.Button;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.ScrollPaneLayout;
-import javax.swing.JButton;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+
+import pl.edu.agh.iptv.IPTVClient;
+import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.controllers.MoviesListController;
+import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class MainView {
 
-	private JFrame MainFrame = null; // @jve:decl-index=0:visual-constraint="12,8"
+	private final int menuBarHeight = 100;
+
+	private JFrame mainFrame = null; // @jve:decl-index=0:visual-constraint="12,8"
 	private JPanel jContentPane = null;
 	private JTabbedPane mainTabs = null;
-	private JPanel moviesTab = null;
 	private JScrollPane statisticsTab = null;
 	private JScrollPane paymentsTab = null;
-	private JScrollPane moviesListPane = null;
-	private JScrollPane moviesDescPane = null;
-	private JButton jButton = null;
+	private MoviesTab moviesTab = null;
+	private IPTVClient client = null;
 
 	public MainView() {
+		
+//		getMainFrame().pack();		
 		getMainFrame().setVisible(true);
 	}
 
@@ -34,13 +47,18 @@ public class MainView {
 	 * @return javax.swing.JFrame
 	 */
 	private JFrame getMainFrame() {
-		if (MainFrame == null) {
-			MainFrame = new JFrame();
-			MainFrame.setSize(new Dimension(704, 445));
-			MainFrame.setContentPane(getJContentPane());
-			MainFrame.setTitle("Watcher");
+		if (mainFrame == null) {
+			mainFrame = new JFrame();
+			mainFrame.setSize(new Dimension(704, 445));
+			mainFrame.setContentPane(getJContentPane());
+			mainFrame.setTitle("Watcher");
+
+			mainFrame.setJMenuBar(getJMenuBar());
+
+			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			mainFrame.pack();
 		}
-		return MainFrame;
+		return mainFrame;
 	}
 
 	/**
@@ -50,11 +68,13 @@ public class MainView {
 	 */
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
-			GridLayout gridLayout = new GridLayout();
-			gridLayout.setRows(1);
+			ResizableGridLayout gridLayout = new ResizableGridLayout(2, 1, 0, 5);
 			jContentPane = new JPanel();
 			jContentPane.setLayout(gridLayout);
+
+			jContentPane.add(getJToolBar(), BorderLayout.NORTH);
 			jContentPane.add(getMainTabs(), null);
+
 		}
 		return jContentPane;
 	}
@@ -67,28 +87,11 @@ public class MainView {
 	private JTabbedPane getMainTabs() {
 		if (mainTabs == null) {
 			mainTabs = new JTabbedPane();
-			mainTabs.addTab("Movies", getJScrollPane());
+			mainTabs.addTab("Movies", getMoviesTab());
 			mainTabs.addTab("Statistics", getStatisticsTabBeans());
 			mainTabs.addTab("Payments", getPaymentsTab());
 		}
 		return mainTabs;
-	}
-
-	/**
-	 * This method initializes jScrollPane
-	 * 
-	 * @return javax.swing.JScrollPane
-	 */
-	private JPanel getJScrollPane() {
-		if (moviesTab == null) {
-			moviesTab = new JPanel();
-			GridLayout moviesGridLayout = new GridLayout(1, 2);
-			moviesTab.setLayout(moviesGridLayout);
-			moviesTab.setToolTipText("All about movies");
-			moviesTab.add(getMoviesListPane(), getMoviesListPane().getName());
-			moviesTab.add(getMoviesDescPane(), getMoviesDescPane().getName());
-		}
-		return moviesTab;
 	}
 
 	/**
@@ -118,29 +121,81 @@ public class MainView {
 	}
 
 	/**
-	 * This method initializes moviesListPane
+	 * This method initializes moviesTab1
 	 * 
-	 * @return javax.swing.JScrollPane
+	 * @return pl.edu.agh.iptv.view.movies.MoviesTab
 	 */
-	private JScrollPane getMoviesListPane() {
-		if (moviesListPane == null) {
-			moviesListPane = new JScrollPane();
-			moviesListPane.setSize(100, 100);
+	public MoviesTab getMoviesTab() {
+		if (this.moviesTab == null) {
+			this.moviesTab = new MoviesTab(this);
 		}
-		return moviesListPane;
+		return this.moviesTab;
 	}
 
-	/**
-	 * This method initializes moviesDescPane
-	 * 
-	 * @return javax.swing.JScrollPane
-	 */
-	private JScrollPane getMoviesDescPane() {
-		if (moviesDescPane == null) {
-			moviesDescPane = new JScrollPane();
-			moviesDescPane.setSize(100, 100);
-		}
-		return moviesDescPane;
+	private JMenuBar getJMenuBar() {
+
+		// Where the GUI is created:
+		JMenuBar menuBar;
+		JMenu menu;
+		JMenuItem menuItem;
+
+		// Create the menu bar.
+		menuBar = new JMenuBar();
+
+		// Build the first menu.
+		menu = new JMenu("Program");
+		menu.setMnemonic(KeyEvent.VK_P);
+		menu.getAccessibleContext().setAccessibleDescription(
+				"Direct program actions");
+		menuBar.add(menu);
+
+		// a group of JMenuItems
+		menuItem = new JMenuItem("Exit", KeyEvent.VK_E);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_4,
+				ActionEvent.ALT_MASK));
+
+		menuItem.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				System.exit(0);
+			}
+
+		});
+
+		menuItem.getAccessibleContext().setAccessibleDescription(
+				"Exiting the program");
+		menu.add(menuItem);
+
+		// Build second menu in the menu bar.
+		menu = new JMenu("Help");
+		menu.setMnemonic(KeyEvent.VK_H);
+		menu.getAccessibleContext().setAccessibleDescription("Open help");
+		menuBar.add(menu);
+
+		return menuBar;
+	}
+
+	public JToolBar getJToolBar() {
+		JToolBar toolBar = new JToolBar("Formatting");
+
+		JButton refresh = new JButton(new ImageIcon("images/refresh.gif"));
+
+		client = new IPTVClient(getMoviesTab());
+		
+		refresh.addActionListener(client);		
+		
+		toolBar.add(refresh);
+
+		return toolBar;
+	}
+
+	public Dimension getSize() {
+		return this.mainFrame.getSize();
+	}
+
+	public int getMenuBarHeight() {
+		return this.menuBarHeight;
 	}
 
 }
