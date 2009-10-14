@@ -1,20 +1,28 @@
 package pl.edu.agh.ims;
 
-import javax.servlet.sip.SipServlet;
-import javax.servlet.sip.SipServletResponse;
-import javax.servlet.sip.SipSession;
 
 import java.io.File;
 import java.io.IOException;
+
+import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
+import javax.servlet.sip.SipServlet;
 import javax.servlet.sip.SipServletRequest;
+import javax.servlet.sip.SipServletResponse;
+import javax.servlet.sip.SipSession;
+import javax.transaction.UserTransaction;
 
 @javax.servlet.sip.annotation.SipServlet
 public class VideoServlet extends SipServlet {
+
+
 	/**
-	 * Serial version UID.
+	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -1055741883702121144L;
+	
 	private final String ACK_RECEIVED = "ackReceived";
 	/**
 	 * Session attribute in which we store the number to guess
@@ -26,22 +34,34 @@ public class VideoServlet extends SipServlet {
 	 * Session is accepted - select the number to guess
 	 */
 
-	static String moviesDirectoryLocation = "C:\\Documents and Settings\\ania\\Pulpit\\michal\\filmy";
+	static String moviesDirectoryLocation = "C:\\Movies";
 
 	static final String vlcLocation = "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe";
+	
+	String sip;
+	
+	//@PersistenceContext(unitName = "PU")
+	//protected EntityManager em;
 
+	//@Resource
+	//private UserTransaction utx;
+	
+	int a = 0;
+	
 	/**
 	 * @inheritDoc
 	 */
 	protected void doMessage(SipServletRequest sipServletRequest)
 			throws ServletException, IOException {
-		// TODO: Implement this method
-		log("inside doMessage method");
+		a++;
+		log("inside doMessage method, a = " + a);
+		
 		// start streaming
 		
-		sipServletRequest.createResponse(200);
+		sipServletRequest.createResponse(200).send();
 		
-		String content = new String(sipServletRequest.getRawContent());
+		String content = new String(sipServletRequest.getRawContent()); 
+		//String sip = sipServletRequest.getRequestURI().toString();
 		runStreamer(sipServletRequest.getInitialRemoteAddr(), content);
 	}
 
@@ -51,7 +71,8 @@ public class VideoServlet extends SipServlet {
 	protected void doAck(SipServletRequest sipServletRequest)
 			throws ServletException, IOException {
 
-		log("inside doAck method");
+		a++;
+		log("inside doAck method, a = " + a);
 		SipSession session = sipServletRequest.getSession(true);
 		// Ensure we do not process the ACK twice for the dialog
 		Object ackAlreadyProcessed = session.getAttribute(ACK_RECEIVED);
@@ -89,7 +110,8 @@ public class VideoServlet extends SipServlet {
 	 */
 	protected void doInvite(SipServletRequest sipServletRequest)
 			throws ServletException, IOException {
-		log("inside doInvite method");
+		a++;
+		log("inside doInvite method, a = " + a);
 
 		SipServletResponse response = sipServletRequest.createResponse(200);
 		response.send();
@@ -121,7 +143,6 @@ public class VideoServlet extends SipServlet {
 		Runtime runtime = Runtime.getRuntime();
 
 		runtime.exec(vlcCommandString);
-
 	}
 
 }
