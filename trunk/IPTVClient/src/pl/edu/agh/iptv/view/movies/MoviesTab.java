@@ -71,7 +71,7 @@ public class MoviesTab extends JPanel {
 	 * 
 	 * @return javax.swing.JScrollPane
 	 */
-	private JScrollPane getMoviesDescPane() {
+	public JScrollPane getMoviesDescPane() {
 		if (moviesDescPane == null) {
 			moviesDescPane = new JScrollPane(
 					ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
