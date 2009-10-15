@@ -1,19 +1,28 @@
 package pl.edu.agh.iptv.controllers;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.JList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.iptv.IPTVClient;
-import pl.edu.agh.iptv.view.movies.MoviesTab;
 
-public class MoviesListController{
+public class MoviesListController implements ListSelectionListener {
 
-	private MoviesTab moviesTab = null;
-	private IPTVClient client = null;
+	private IPTVClient iptvClient = null;
+	private boolean wasSelected = false;
 
-	public MoviesListController(MoviesTab moviesTab, IPTVClient client) {
-		this.moviesTab = moviesTab;
-		this.client = client;
+	public MoviesListController(IPTVClient iptvClient) {
+		this.iptvClient = iptvClient;
+	}
+
+	public void valueChanged(ListSelectionEvent selection) {
+		// TODO Auto-generated method stub
+		if (!wasSelected) {
+			JList list = (JList) selection.getSource();
+			String item = (String) list.getSelectedValue();
+			this.iptvClient.showChosenMovie(item);
+		}
+		wasSelected = !wasSelected;
 	}
 
 }

@@ -2,19 +2,15 @@ package pl.edu.agh.iptv.view.movies;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
-import java.io.ObjectInputStream;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JWindow;
 import javax.swing.ScrollPaneConstants;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.controllers.MoviesListController;
 import pl.edu.agh.iptv.view.MainView;
 
 public class MoviesTab extends JPanel {
@@ -28,6 +24,11 @@ public class MoviesTab extends JPanel {
 
 	private JScrollPane moviesListPane = null;
 	private JScrollPane moviesDescPane = null;
+
+	private JList moviesList = null;
+	private JPanel panelForMoviesList = null;
+
+	private MainView parent = null;
 
 	/**
 	 * This method initializes moviesListPane
@@ -53,11 +54,6 @@ public class MoviesTab extends JPanel {
 		}
 		return moviesListPane;
 	}
-
-	private JList moviesList = null;
-	private JPanel panelForMoviesList = null;
-
-	private MainView parent = null;
 
 	public MoviesTab(MainView parent) {
 		this.parent = parent;
@@ -127,6 +123,10 @@ public class MoviesTab extends JPanel {
 		moviesList.setListData(moviesArray);
 		this.getPanelForMoviesList().repaint();
 
+	}
+
+	public JList getMoviesList() {
+		return this.moviesList;
 	}
 
 }
