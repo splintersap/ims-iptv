@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 import com.ericsson.icp.ICPFactory;
@@ -109,16 +110,17 @@ public class IPTVClient implements ActionListener {
 		}
 	}
 
-	private static void openStream() throws IOException {
+	private void openStream() throws IOException {
 
-		String vlcCommandString = "\"" + vlcLocation
-				+ "\" -I dummy udp://@:1234";
-		System.out.println(vlcCommandString);
-
-		Runtime runtime = Runtime.getRuntime();
-
-		runtime.exec(vlcCommandString);
-
+		/*
+		 * String vlcCommandString = "\"" + vlcLocation +
+		 * "\" -I dummy udp://@:1234"; System.out.println(vlcCommandString);
+		 * 
+		 * Runtime runtime = Runtime.getRuntime();
+		 * 
+		 * runtime.exec(vlcCommandString);
+		 */
+		new VLCHelper(this.moviesTab);
 	}
 
 	/**

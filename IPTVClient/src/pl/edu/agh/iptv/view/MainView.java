@@ -32,11 +32,11 @@ public class MainView {
 	private JScrollPane statisticsTab = null;
 	private JScrollPane paymentsTab = null;
 	private MoviesTab moviesTab = null;
-	private IPTVClient client = null;  //  @jve:decl-index=0:
+	private IPTVClient client = null; // @jve:decl-index=0:
 
 	public MainView() {
-		
-//		getMainFrame().pack();		
+
+		// getMainFrame().pack();
 		getMainFrame().setVisible(true);
 	}
 
@@ -178,11 +178,15 @@ public class MainView {
 	public JToolBar getJToolBar() {
 		JToolBar toolBar = new JToolBar("Formatting");
 
-		JButton refresh = new JButton(new ImageIcon("images/refresh.gif"));		
-		
-		refresh.addActionListener(client);		
-		
+		JButton refresh = new JButton(new ImageIcon("images/refresh.gif"));
+
+		JButton play = new JButton(new ImageIcon("images/play.gif"));
+
+		refresh.addActionListener(client);
+
 		toolBar.add(refresh);
+		toolBar.addSeparator();
+		toolBar.add(play);
 
 		return toolBar;
 	}
