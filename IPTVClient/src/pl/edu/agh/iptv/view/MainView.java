@@ -20,7 +20,6 @@ import javax.swing.KeyStroke;
 
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
-import pl.edu.agh.iptv.controllers.MoviesListController;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class MainView {
@@ -33,7 +32,7 @@ public class MainView {
 	private JScrollPane statisticsTab = null;
 	private JScrollPane paymentsTab = null;
 	private MoviesTab moviesTab = null;
-	private IPTVClient client = null;
+	private IPTVClient client = null;  //  @jve:decl-index=0:
 
 	public MainView() {
 		
@@ -179,9 +178,7 @@ public class MainView {
 	public JToolBar getJToolBar() {
 		JToolBar toolBar = new JToolBar("Formatting");
 
-		JButton refresh = new JButton(new ImageIcon("images/refresh.gif"));
-
-		client = new IPTVClient(getMoviesTab());
+		JButton refresh = new JButton(new ImageIcon("images/refresh.gif"));		
 		
 		refresh.addActionListener(client);		
 		

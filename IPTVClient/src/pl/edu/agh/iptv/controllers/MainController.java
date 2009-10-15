@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
@@ -27,9 +28,25 @@ public class MainController {
 					System.out
 							.println("Substance Raven Graphite failed to initialize");
 				}
+				/*
+				 * Creating the main view.
+				 */
 				mainView = new MainView();
+
+				/*
+				 * Creating instance of a class responsible for communication
+				 * with servlet.
+				 */
+				IPTVClient iptvClient = new IPTVClient(mainView.getMoviesTab());
+
+				/*
+				 * Adding listener to the list with movies.
+				 */
+				mainView.getMoviesTab().getMoviesList()
+						.addListSelectionListener(
+								new MoviesListController(iptvClient));
 			}
-		});		
+		});
 
 	}
 
