@@ -112,14 +112,14 @@ public class IPTVClient implements ActionListener {
 
 	private void openStream() throws IOException {
 
-		/*
-		 * String vlcCommandString = "\"" + vlcLocation +
-		 * "\" -I dummy udp://@:1234"; System.out.println(vlcCommandString);
-		 * 
-		 * Runtime runtime = Runtime.getRuntime();
-		 * 
-		 * runtime.exec(vlcCommandString);
-		 */
+		
+//		 String vlcCommandString = "\"" + vlcLocation +
+//		 "\" -I dummy udp://@:1234"; System.out.println(vlcCommandString);
+//		  
+//		 Runtime runtime = Runtime.getRuntime();
+//		  
+//		 runtime.exec(vlcCommandString);
+		 
 		new VLCHelper(this.moviesTab);
 	}
 

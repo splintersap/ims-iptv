@@ -44,7 +44,7 @@ public class VLCHelper {
 	private void playMovie() {
 
 		jvlc = new JVLC();
-		ds = new MediaDescriptor(jvlc, "C:\\Movies\\wesele.avi");
+		ds = new MediaDescriptor(jvlc, "udp://@:1234");
 		mp = ds.getMediaPlayer();
 		mp.setJVLC(jvlc);
 		video = new Video(jvlc);
