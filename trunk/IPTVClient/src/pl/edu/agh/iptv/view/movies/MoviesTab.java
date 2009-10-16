@@ -3,6 +3,7 @@ package pl.edu.agh.iptv.view.movies;
 import java.awt.Dimension;
 import java.awt.Font;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -10,7 +11,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
-import pl.edu.agh.iptv.controllers.MoviesListController;
 import pl.edu.agh.iptv.view.MainView;
 
 public class MoviesTab extends JPanel {
@@ -38,9 +38,7 @@ public class MoviesTab extends JPanel {
 	private JScrollPane getMoviesListPane() {
 		if (moviesListPane == null) {
 
-			moviesListPane = new JScrollPane(
-					ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+			moviesListPane = new JScrollPane();
 
 			moviesListPane.setPreferredSize(new Dimension(
 					this.moviesListPaneWidth, this.parent.getSize().height
@@ -73,13 +71,8 @@ public class MoviesTab extends JPanel {
 	 */
 	public JScrollPane getMoviesDescPane() {
 		if (moviesDescPane == null) {
-			moviesDescPane = new JScrollPane(
-					ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+			moviesDescPane = new JScrollPane();
 			moviesDescPane.setPreferredSize(new Dimension(
-					this.parent.getSize().width - this.moviesListPaneWidth,
-					this.parent.getSize().height));
-			moviesDescPane.setMinimumSize(new Dimension(
 					this.parent.getSize().width - this.moviesListPaneWidth,
 					this.parent.getSize().height));
 
@@ -90,27 +83,39 @@ public class MoviesTab extends JPanel {
 	private JPanel getPanelForMoviesList() {
 
 		if (panelForMoviesList == null) {
-			panelForMoviesList = new JPanel();
-			panelForMoviesList.setLayout(new ResizableGridLayout(4, 1));
 
-			panelForMoviesList.setPreferredSize(new Dimension(
-					this.moviesListPaneWidth, this.parent.getSize().height));
+			int listSize = 50;
+			int listWidth = this.moviesListPaneWidth - 50;
+
+			panelForMoviesList = new JPanel();
+			ResizableGridLayout resizableLayout = new ResizableGridLayout(3, 1,
+					1, 0);
+
+			panelForMoviesList.setLayout(resizableLayout);
 
 			JLabel orderedMoviesLabel = new JLabel("ORDERED MOVIES");
+
 			orderedMoviesLabel.setFont(new Font("Times New Roman", Font.BOLD
 					| Font.ITALIC, 14));
 
 			moviesList = new JList();
 			moviesList.setAutoscrolls(true);
 			moviesList.setName("Ordered movies");
+
 			moviesList.setToolTipText("Ordered movies");
+
+			JScrollPane scroller = new JScrollPane(moviesList);
+			scroller.setPreferredSize(new Dimension(listWidth - 30, listSize));
+			scroller.setMinimumSize(new Dimension(listWidth - 30, listSize));
 
 			JLabel recommendedMoviesLabel = new JLabel("RECOMMENDED MOVIES");
 			recommendedMoviesLabel.setFont(new Font("Times New Roman",
 					Font.BOLD | Font.ITALIC, 14));
+			recommendedMoviesLabel.setPreferredSize(new Dimension(
+					listWidth - 10, 30));
 
 			panelForMoviesList.add(orderedMoviesLabel);
-			panelForMoviesList.add(moviesList);
+			panelForMoviesList.add(scroller);
 			panelForMoviesList.add(recommendedMoviesLabel);
 		}
 
@@ -119,7 +124,7 @@ public class MoviesTab extends JPanel {
 	}
 
 	public void setListOfMovies(String[] moviesArray) {
-
+		
 		moviesList.setListData(moviesArray);
 		this.getPanelForMoviesList().repaint();
 
