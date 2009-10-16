@@ -3,6 +3,7 @@
 	<name>IPTVClient</name>
 	<comment></comment>
 	<projects>
+		<project>ComunicationFacade</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

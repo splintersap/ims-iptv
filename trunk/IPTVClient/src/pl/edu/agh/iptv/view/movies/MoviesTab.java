@@ -22,13 +22,39 @@ public class MoviesTab extends JPanel {
 
 	private final int moviesListPaneWidth = 250;
 
+	/*
+	 * This is the pane on the left side with the movies list.
+	 */
 	private JScrollPane moviesListPane = null;
+
+	/*
+	 * This is the pane on the right side with a movie description, ranking and
+	 * vlc view (only when the movie is started).
+	 */
 	private JScrollPane moviesDescPane = null;
 
-	private JList moviesList = null;
+	/*
+	 * List containing ordered movies.
+	 */
+	private JList orderedMoviesList = null;
+
+	/*
+	 * This is panel which holds the list with movies.
+	 */
 	private JPanel panelForMoviesList = null;
 
 	private MainView parent = null;
+
+	public MoviesTab(MainView parent) {
+		this.parent = parent;
+		ResizableGridLayout moviesGridLayout = new ResizableGridLayout(1, 2, 2,
+				0);
+		this.setLayout(moviesGridLayout);
+		this.setToolTipText("All about movies");
+		this.add(getMoviesListPane(), getMoviesListPane().getName());
+		this.add(getMoviesDescPane(), getMoviesDescPane().getName());
+
+	}
 
 	/**
 	 * This method initializes moviesListPane
@@ -53,17 +79,6 @@ public class MoviesTab extends JPanel {
 		return moviesListPane;
 	}
 
-	public MoviesTab(MainView parent) {
-		this.parent = parent;
-		ResizableGridLayout moviesGridLayout = new ResizableGridLayout(1, 2, 2,
-				0);
-		this.setLayout(moviesGridLayout);
-		this.setToolTipText("All about movies");
-		this.add(getMoviesListPane(), getMoviesListPane().getName());
-		this.add(getMoviesDescPane(), getMoviesDescPane().getName());
-
-	}
-
 	/**
 	 * This method initializes moviesDescPane
 	 * 
@@ -80,6 +95,12 @@ public class MoviesTab extends JPanel {
 		return moviesDescPane;
 	}
 
+	/**
+	 * Creating the panel which keeps list of movies (ordered, the most popular,
+	 * all movies).
+	 * 
+	 * @return
+	 */
 	private JPanel getPanelForMoviesList() {
 
 		if (panelForMoviesList == null) {
@@ -98,13 +119,13 @@ public class MoviesTab extends JPanel {
 			orderedMoviesLabel.setFont(new Font("Times New Roman", Font.BOLD
 					| Font.ITALIC, 14));
 
-			moviesList = new JList();
-			moviesList.setAutoscrolls(true);
-			moviesList.setName("Ordered movies");
+			orderedMoviesList = new JList();
+			orderedMoviesList.setAutoscrolls(true);
+			orderedMoviesList.setName("Ordered movies");
 
-			moviesList.setToolTipText("Ordered movies");
+			orderedMoviesList.setToolTipText("Ordered movies");
 
-			JScrollPane scroller = new JScrollPane(moviesList);
+			JScrollPane scroller = new JScrollPane(orderedMoviesList);
 			scroller.setPreferredSize(new Dimension(listWidth - 30, listSize));
 			scroller.setMinimumSize(new Dimension(listWidth - 30, listSize));
 
@@ -123,15 +144,21 @@ public class MoviesTab extends JPanel {
 
 	}
 
+	/**
+	 * Method setting the list of movies. It is called when server sends a
+	 * response with a list of all movies.
+	 * 
+	 * @param moviesArray
+	 */
 	public void setListOfMovies(String[] moviesArray) {
-		
-		moviesList.setListData(moviesArray);
+
+		orderedMoviesList.setListData(moviesArray);
 		this.getPanelForMoviesList().repaint();
 
 	}
 
 	public JList getMoviesList() {
-		return this.moviesList;
+		return this.orderedMoviesList;
 	}
 
 }

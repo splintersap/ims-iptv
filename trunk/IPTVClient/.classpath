@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="C:/Studia/Praca Magisterska/additional libraries/substance.jar"/>
 	<classpathentry kind="lib" path="C:/Studia/Praca Magisterska/additional libraries/jna.jar"/>
 	<classpathentry kind="lib" path="C:/Studia/Praca Magisterska/additional libraries/jvlc.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ComunicationFacade"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
