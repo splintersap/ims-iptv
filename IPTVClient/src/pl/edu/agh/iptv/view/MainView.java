@@ -180,13 +180,22 @@ public class MainView {
 
 		JButton refresh = new JButton(new ImageIcon("images/refresh.gif"));
 
+		JButton stop = new JButton(new ImageIcon("images/stop.gif"));
+
+		JButton rew = new JButton(new ImageIcon("images/rew.gif"));
+
 		JButton play = new JButton(new ImageIcon("images/play.gif"));
+		
+		JButton forward = new JButton(new ImageIcon("images/forward.gif"));
 
 		refresh.addActionListener(client);
 
 		toolBar.add(refresh);
 		toolBar.addSeparator();
+		toolBar.add(stop);
+		toolBar.add(rew);
 		toolBar.add(play);
+		toolBar.add(forward);
 
 		return toolBar;
 	}
