@@ -1,4 +1,4 @@
-package pl.edu.agh.ims.persistence;
+package pl.edu.agh.iptv.servlet.persistence;
 
 
 public enum Category {

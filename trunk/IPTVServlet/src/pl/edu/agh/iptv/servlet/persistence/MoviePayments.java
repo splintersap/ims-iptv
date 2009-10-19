@@ -1,4 +1,4 @@
-package pl.edu.agh.ims.persistence;
+package pl.edu.agh.iptv.servlet.persistence;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -7,7 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class MoviePayments extends pl.edu.agh.ims.persistence.Entity {
+public class MoviePayments extends pl.edu.agh.iptv.servlet.persistence.Entity {
 
 	private Movie movie;
 	private long pirce;

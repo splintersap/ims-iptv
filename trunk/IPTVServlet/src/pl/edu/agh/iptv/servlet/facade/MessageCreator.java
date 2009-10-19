@@ -1,4 +1,4 @@
-package pl.edu.agh.ims.facade;
+package pl.edu.agh.iptv.servlet.facade;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -8,9 +8,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
-import pl.edu.agh.ims.commons.FacadeMovie;
-import pl.edu.agh.ims.persistence.Movie;
-import pl.edu.agh.ims.persistence.MovieRating;
+import pl.edu.agh.ims.commons.CommonMovie;
+import pl.edu.agh.iptv.servlet.persistence.Movie;
+import pl.edu.agh.iptv.servlet.persistence.MovieRating;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -23,31 +23,15 @@ public class MessageCreator {
 		try {
 			utx.begin();
 
-			List<FacadeMovie> messageCreatorList = new ArrayList<FacadeMovie>();
+			List<CommonMovie> messageCreatorList = new ArrayList<CommonMovie>();
 			Query query = em.createQuery("FROM Movie");
 			List<Movie> movieList = query.getResultList();
 			Iterator<Movie> iterator = movieList.iterator();
 			while (iterator.hasNext()) {
 				Movie movie = iterator.next();
-				List<MovieRating> list = movie.getRating();
-				Iterator<MovieRating> it = list.iterator();
-				Double allRating = 0.0;
-				Integer userRating = null;
-				while (it.hasNext()) {
-					MovieRating rating = it.next();
-					allRating += rating.getRating();
-					if (sip.equals("sip:" + rating.getUser().getSip())) {
-						userRating = rating.getRating();
-					}
-				}
-
-				if (list.size() == 0) {
-					allRating = null;
-				} else {
-					allRating = allRating / list.size();
-				}
-
-				FacadeMovie mc = createFacadeMovie(movie, userRating, allRating);
+				CommonMovie mc = GetMovieRating(sip, movie);
+				
+				
 				messageCreatorList.add(mc);
 			}
 			utx.commit();
@@ -62,14 +46,37 @@ public class MessageCreator {
 		return xml;
 	}
 
-	private static FacadeMovie createFacadeMovie(Movie movie,
+	private static CommonMovie GetMovieRating(String sip, Movie movie) {
+		List<MovieRating> list = movie.getRating();
+		Iterator<MovieRating> it = list.iterator();
+		Double allRating = 0.0;
+		Integer userRating = null;
+		while (it.hasNext()) {
+			MovieRating rating = it.next();
+			allRating += rating.getRating();
+			if (sip.equals("sip:" + rating.getUser().getSip())) {
+				userRating = rating.getRating();
+			}
+		}
+
+		if (list.size() == 0) {
+			allRating = null;
+		} else {
+			allRating = allRating / list.size();
+		}
+
+		CommonMovie mc = createCommonMovie(movie, userRating, allRating);
+		return mc;
+	}
+
+	private static CommonMovie createCommonMovie(Movie movie,
 			Integer userRating, Double allUsersRating) {
 		String title = movie.getTitle();
 		String category = movie.getCategory().name();
 		String description = movie.getDescription();
 		String director = movie.getDirector();
 		
-		return new FacadeMovie(title, category, description, director,
+		return new CommonMovie(title, category, description, director,
 				userRating, allUsersRating);
 	}
 }

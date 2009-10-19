@@ -1,4 +1,4 @@
-package pl.edu.agh.ims.persistence;
+package pl.edu.agh.iptv.servlet.persistence;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
