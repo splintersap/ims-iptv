@@ -8,10 +8,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class OrderedMovies extends pl.edu.agh.iptv.servlet.persistence.Entity {
+public class OrderedMovie extends pl.edu.agh.iptv.servlet.persistence.Entity {
 
 	private User user;
-	private OrderedMovies orderedMovies;
+	private MoviePayment moviePayment;
+	private Date date;
 
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
 	@JoinColumn(nullable = false)
@@ -23,14 +24,20 @@ public class OrderedMovies extends pl.edu.agh.iptv.servlet.persistence.Entity {
 		this.user = user;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, targetEntity = OrderedMovies.class)
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = MoviePayment.class)
 	@JoinColumn(nullable = false)
-	public OrderedMovies getOrderedMovies() {
-		return orderedMovies;
+	public MoviePayment getMoviePayments() {
+		return moviePayment;
 	}
 
-	public void setOrderedMovies(OrderedMovies orderedMovies) {
-		this.orderedMovies = orderedMovies;
+	public OrderedMovie(User user, MoviePayment moviePayment) {
+		this.user = user;
+		this.moviePayment = moviePayment;
+		this.date = new Date();
+	}
+
+	public void setOrderedMovies(MoviePayment moviePayment) {
+		this.moviePayment = moviePayment;
 	}
 
 	public Date getDate() {
@@ -40,7 +47,5 @@ public class OrderedMovies extends pl.edu.agh.iptv.servlet.persistence.Entity {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-
-	private Date date;
 
 }
