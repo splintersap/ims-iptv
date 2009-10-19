@@ -66,6 +66,11 @@ public class CommonMovie {
 		commentList.add(comment);
 	}
 
+	@Override
+	public String toString() {
+		return title + ", " + director + ", " +category.toString();
+	};
+	
 	public CommonMovie(String title, String category, String description,
 			String director, Integer userRating, Double allUsersRating) {
 		this.title = title;
