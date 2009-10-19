@@ -1,4 +1,4 @@
-package pl.edu.agh.ims.persistence;
+package pl.edu.agh.iptv.servlet.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Users")
-public class User extends pl.edu.agh.ims.persistence.Entity {
+public class User extends pl.edu.agh.iptv.servlet.persistence.Entity {
 	@Column(nullable = false, unique = true)
 	private String sip;
 	private long credit;

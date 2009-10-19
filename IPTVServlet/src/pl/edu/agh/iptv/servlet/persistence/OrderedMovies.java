@@ -1,4 +1,4 @@
-package pl.edu.agh.ims.persistence;
+package pl.edu.agh.iptv.servlet.persistence;
 
 import java.util.Date;
 
@@ -8,7 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class OrderedMovies extends pl.edu.agh.ims.persistence.Entity {
+public class OrderedMovies extends pl.edu.agh.iptv.servlet.persistence.Entity {
 
 	private User user;
 	private OrderedMovies orderedMovies;

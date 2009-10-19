@@ -1,4 +1,6 @@
-package pl.edu.agh.ims.persistence;
+package pl.edu.agh.iptv.servlet.persistence;
+
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -6,22 +8,31 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class MovieRating extends pl.edu.agh.ims.persistence.Entity {
+public class MovieComment extends pl.edu.agh.iptv.servlet.persistence.Entity {
+	private String comment;
 	private User user;
 	private Movie movie;
-	private int rating;
-
-	public MovieRating() {
-		
-	}
 	
-	public MovieRating(User user, Movie movie, int rating) {
+	
+	public MovieComment(String comment, User user, Movie movie) {
+		this.comment = comment;
 		this.user = user;
 		this.movie = movie;
-		this.rating = rating;
+		this.date = new Date();
 	}
 
+	public MovieComment() {
+	}
 
+	private Date date;
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
 	@JoinColumn(nullable = false)
@@ -43,13 +54,12 @@ public class MovieRating extends pl.edu.agh.ims.persistence.Entity {
 		this.movie = movie;
 	}
 
-	public int getRating() {
-		return rating;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setRating(int rating) {
-		this.rating = rating;
+	public void setDate(Date date) {
+		this.date = date;
 	}
-	
-	
+
 }

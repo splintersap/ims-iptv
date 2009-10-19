@@ -1,4 +1,4 @@
-package pl.edu.agh.ims.servlet;
+package pl.edu.agh.iptv.servlet;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -17,12 +17,12 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import pl.edu.agh.ims.facade.MessageCreator;
-import pl.edu.agh.ims.persistence.Category;
-import pl.edu.agh.ims.persistence.Movie;
-import pl.edu.agh.ims.persistence.MovieComment;
-import pl.edu.agh.ims.persistence.MovieRating;
-import pl.edu.agh.ims.persistence.User;
+import pl.edu.agh.iptv.servlet.facade.MessageCreator;
+import pl.edu.agh.iptv.servlet.persistence.Category;
+import pl.edu.agh.iptv.servlet.persistence.Movie;
+import pl.edu.agh.iptv.servlet.persistence.MovieComment;
+import pl.edu.agh.iptv.servlet.persistence.MovieRating;
+import pl.edu.agh.iptv.servlet.persistence.User;
 
 @javax.servlet.sip.annotation.SipServlet
 public class VideoServlet extends SipServlet {
