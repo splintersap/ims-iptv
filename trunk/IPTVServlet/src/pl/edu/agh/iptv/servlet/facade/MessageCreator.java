@@ -10,9 +10,11 @@ import javax.transaction.UserTransaction;
 
 import pl.edu.agh.ims.commons.CommonComment;
 import pl.edu.agh.ims.commons.CommonMovie;
+import pl.edu.agh.ims.commons.CommonMovieDescription;
 import pl.edu.agh.ims.commons.Serializator;
 import pl.edu.agh.iptv.servlet.persistence.Movie;
 import pl.edu.agh.iptv.servlet.persistence.MovieComment;
+import pl.edu.agh.iptv.servlet.persistence.MoviePayment;
 import pl.edu.agh.iptv.servlet.persistence.MovieRating;
 
 
@@ -84,16 +86,29 @@ public class MessageCreator {
 		CommonMovie commonMovie = new CommonMovie(title, category, description, director,
 				userRating, allUsersRating);
 		
-		List<MovieComment> list = movie.getCommentsList();
-		Iterator<MovieComment> iterator = list.iterator();
-		while(iterator.hasNext()) {
-			MovieComment movieComment = iterator.next();
+		Iterator<MovieComment> movieCommentIterator = movie.getCommentsList().iterator();
+		while(movieCommentIterator.hasNext()) {
+			MovieComment movieComment = movieCommentIterator.next();
 			CommonComment commonComment = createCommonComment(movieComment);
 			commonMovie.addCommonComment(commonComment);
 		}
+	
+		Iterator<MoviePayment> moviePaymentsIterator = movie.getMoviePayments().iterator();
+		while(moviePaymentsIterator.hasNext()) {
+			MoviePayment moviePayments = moviePaymentsIterator.next();
+			CommonMovieDescription commonMovieDescription = createCommonMovieDescription(moviePayments);
+			commonMovie.addCommonMovieDescription(commonMovieDescription);
+		}
+
 		
 		return commonMovie;
 	}
+
+	private static CommonMovieDescription createCommonMovieDescription(
+			MoviePayment moviePayments) {
+		return new CommonMovieDescription(moviePayments.getQuality().name(), moviePayments.getPirce(), null, false );
+	}
+
 
 	private static CommonComment createCommonComment(MovieComment movieComment) {
 		

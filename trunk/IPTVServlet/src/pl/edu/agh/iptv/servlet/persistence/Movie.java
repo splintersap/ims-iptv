@@ -1,6 +1,7 @@
 package pl.edu.agh.iptv.servlet.persistence;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -31,7 +32,7 @@ public class Movie extends pl.edu.agh.iptv.servlet.persistence.Entity {
 	private String moviePath;
 
 	private List<MovieRating> ratingList = new ArrayList<MovieRating>();
-	private List<MoviePayments> paymentsList = new ArrayList<MoviePayments>();
+	private List<MoviePayment> paymentsList = new ArrayList<MoviePayment>();
 	private List<MovieComment> commentsList = new ArrayList<MovieComment>();
 
 	public Movie() {
@@ -92,12 +93,12 @@ public class Movie extends pl.edu.agh.iptv.servlet.persistence.Entity {
 		this.ratingList = ratingList;
 	}
 
-	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = MoviePayments.class)
-	public List<MoviePayments> getMoviePayments() {
+	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = MoviePayment.class)
+	public List<MoviePayment> getMoviePayments() {
 		return paymentsList;
 	}
 
-	public void setMoviePayments(List<MoviePayments> paymentsList) {
+	public void setMoviePayments(List<MoviePayment> paymentsList) {
 		this.paymentsList = paymentsList;
 	}
 
@@ -109,5 +110,33 @@ public class Movie extends pl.edu.agh.iptv.servlet.persistence.Entity {
 	
 	public void setCommentsList(List<MovieComment> commentsList) {
 		this.commentsList = commentsList;
+	}
+	
+	public void addMoviePayment(long price, Quality quality) {
+		MoviePayment mp = new MoviePayment(this, price, quality);
+		paymentsList.add(mp);
+	}
+	
+	public void addMovieComment(String comment, User user) {
+		MovieComment mc = new MovieComment(comment, user, this);
+		commentsList.add(mc);
+	}
+	
+	public void addMovieRating(User user, int rating) {
+		MovieRating mr = new MovieRating(user, this, rating);
+		ratingList.add(mr);
+	}
+	
+	public MoviePayment getMoviePayments(Quality quality) {
+		
+		Iterator<MoviePayment> iterator = paymentsList.iterator();
+		while(iterator.hasNext()) {
+			MoviePayment payment = iterator.next();
+			if(payment.getQuality().equals(quality)) {
+				return payment;
+			}
+		}
+		
+		return null;
 	}
 }

@@ -1,6 +1,7 @@
 package pl.edu.agh.iptv.servlet.persistence;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -17,7 +18,7 @@ public class User extends pl.edu.agh.iptv.servlet.persistence.Entity {
 	private String sip;
 	private long credit;
 	private List<MovieRating> ratingList = new ArrayList<MovieRating>();
-	private List<OrderedMovies> orderedMoviesList = new ArrayList<OrderedMovies>();
+	private List<OrderedMovie> orderedMoviesList = new ArrayList<OrderedMovie>();
 
 	public User() {
 		
@@ -52,12 +53,31 @@ public class User extends pl.edu.agh.iptv.servlet.persistence.Entity {
 		this.ratingList = ratingList;
 	}
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = OrderedMovies.class)
-	public List<OrderedMovies> getOrderedMoviesList() {
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = OrderedMovie.class)
+	public List<OrderedMovie> getOrderedMoviesList() {
 		return orderedMoviesList;
 	}
 
-	public void setOrderedMoviesList(List<OrderedMovies> orderedMoviesList) {
+	public void setOrderedMoviesList(List<OrderedMovie> orderedMoviesList) {
 		this.orderedMoviesList = orderedMoviesList;
+	}
+	
+	public void addOrderedMovie(Movie movie, Quality quality) {
+		OrderedMovie orderedMovie = new OrderedMovie(this, movie.getMoviePayments(quality));
+		orderedMoviesList.add(orderedMovie);
+	}
+	
+	public OrderedMovie getOrderedMovie(MoviePayment moviePayment) {
+		
+		Iterator<OrderedMovie> iterator = orderedMoviesList.iterator();
+		while(iterator.hasNext()) {
+			OrderedMovie orderedMovie = iterator.next();
+			if(orderedMovie.getMoviePayments().equals(moviePayment))
+			{
+				return orderedMovie;
+			}
+		}
+		
+		return null;
 	}
 }
