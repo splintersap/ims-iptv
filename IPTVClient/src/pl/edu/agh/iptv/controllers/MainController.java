@@ -5,6 +5,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import pl.edu.agh.iptv.IPTVClient;
+import pl.edu.agh.iptv.listeners.DescriptionListener;
+import pl.edu.agh.iptv.listeners.PlayListener;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
@@ -32,6 +34,7 @@ public class MainController {
 				 * Creating the main view.
 				 */
 				mainView = new MainView();
+				moviesTab = mainView.getMoviesTab();
 
 				/*
 				 * Creating instance of a class responsible for communication
@@ -42,9 +45,13 @@ public class MainController {
 				/*
 				 * Adding listener to the list with movies.
 				 */
-				mainView.getMoviesTab().getMoviesList()
-						.addListSelectionListener(
-								new MoviesListController(iptvClient));
+				moviesTab.getMoviesList().addListSelectionListener(
+						new DescriptionListener(iptvClient, moviesTab));
+
+				mainView.getPlayButton().addActionListener(
+						new PlayListener(iptvClient, moviesTab));
+
+				mainView.getRefreshButton().addActionListener(iptvClient);
 			}
 		});
 

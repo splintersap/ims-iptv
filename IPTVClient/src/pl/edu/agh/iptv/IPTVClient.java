@@ -2,9 +2,10 @@ package pl.edu.agh.iptv;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
+import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
+import pl.edu.agh.iptv.simulators.Simulator;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 import com.ericsson.icp.ICPFactory;
@@ -28,11 +29,11 @@ public class IPTVClient implements ActionListener {
 	 */
 	private ISession session;
 
+	private MoviesController moviesController;
+
 	IProfile profile;
 
-	String[] movies = new String[1];
-
-	static final String vlcLocation = "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe";
+	String[] movies;
 
 	private MoviesTab moviesTab = null;
 
@@ -51,14 +52,24 @@ public class IPTVClient implements ActionListener {
 			this.moviesTab = moviesTab;
 
 			addingListener();
-
 			triggerMoviesRequest();
+
+			Simulator simulator = new Simulator();
+			moviesController = new MoviesController(simulator.getMovies());
+			moviesTab.setListOfMovies(moviesController
+					.getTitlesOfBoughtMovies().toArray(
+							new String[moviesController
+									.getTitlesOfBoughtMovies().size()]));
 
 		} catch (Exception e) {
 			showError("Could not initialize ICP", e);
 		}
 	}
 
+	/**
+	 * This function adds a listener which listens to the actions regarding
+	 * response of the servlet.
+	 */
 	private void addingListener() {
 
 		try {
@@ -83,9 +94,22 @@ public class IPTVClient implements ActionListener {
 					super
 							.processSessionMessage(aContentType, aMessage,
 									aLength);
-					String message = new String(aMessage);
-					movies = message.split("\n");
-					moviesTab.setListOfMovies(movies);
+
+					/*
+					 * XStream xstream = new XStream(); moviesController = new
+					 * MoviesController((List<CommonMovie>)xstream.fromXML(new
+					 * String(aMessage)));
+					 */
+
+					/*
+					 * String message = new String(aMessage); movies =
+					 * message.split("\n"); moviesTab.setListOfMovies(movies);
+					 */
+					Simulator simulator = new Simulator();
+					MoviesController moviesController = new MoviesController(
+							simulator.getMovies());
+					moviesTab.setListOfMovies((String[]) moviesController
+							.getTitlesOfBoughtMovies().toArray());
 
 				}
 
@@ -97,30 +121,27 @@ public class IPTVClient implements ActionListener {
 
 	}
 
-	public void showChosenMovie(String movieTitle) {
-		System.out
-				.println("Inside showChosenMovie, movieTitle = " + movieTitle);
+	/**
+	 * This function triggers request to the server in order to start streaming
+	 * the media - which in this case is the chosen movie whose title is passed
+	 * as a function parameter.
+	 * 
+	 * @param movieTitle
+	 *            title of the movie user wants to watch
+	 */
+	public void showChosenMovie(String movieTitle) {		
 		try {
 			session.sendMessage("movies/choice", movieTitle.getBytes(),
 					movieTitle.length());
 
-			openStream();
+			/*
+			 * This is in order to open the stream.
+			 */
+			new VLCHelper(this.moviesTab);
+
 		} catch (Exception e) {
 			showError("Sending message", e);
 		}
-	}
-
-	private void openStream() throws IOException {
-
-		
-//		 String vlcCommandString = "\"" + vlcLocation +
-//		 "\" -I dummy udp://@:1234"; System.out.println(vlcCommandString);
-//		  
-//		 Runtime runtime = Runtime.getRuntime();
-//		  
-//		 runtime.exec(vlcCommandString);
-		 
-		new VLCHelper(this.moviesTab);
 	}
 
 	/**
@@ -134,7 +155,10 @@ public class IPTVClient implements ActionListener {
 		e.printStackTrace();
 	}
 
-	public void triggerMoviesRequest() {
+	/**
+	 * This function triggers request for starting the session.
+	 */
+	private void triggerMoviesRequest() {
 		try {
 			session.start("sip:video@ericsson.com", null,
 					profile.getIdentity(), SdpFactory.createMIMEContainer());
@@ -148,6 +172,10 @@ public class IPTVClient implements ActionListener {
 		// TODO Auto-generated method stub
 		addingListener();
 		triggerMoviesRequest();
+	}
+
+	public MoviesController getMoviesController() {
+		return this.moviesController;
 	}
 
 }

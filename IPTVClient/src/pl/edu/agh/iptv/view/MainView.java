@@ -20,6 +20,7 @@ import javax.swing.KeyStroke;
 
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.listeners.PlayListener;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class MainView {
@@ -33,6 +34,12 @@ public class MainView {
 	private JScrollPane paymentsTab = null;
 	private MoviesTab moviesTab = null;
 	private IPTVClient client = null; // @jve:decl-index=0:
+
+	/*
+	 * Menu buttons.
+	 */
+	private JButton play;
+	private JButton refresh;
 
 	public MainView() {
 
@@ -178,17 +185,15 @@ public class MainView {
 	public JToolBar getJToolBar() {
 		JToolBar toolBar = new JToolBar("Formatting");
 
-		JButton refresh = new JButton(new ImageIcon("images/refresh.gif"));
+		refresh = new JButton(new ImageIcon("images/refresh.gif"));
 
 		JButton stop = new JButton(new ImageIcon("images/stop.gif"));
 
 		JButton rew = new JButton(new ImageIcon("images/rew.gif"));
 
-		JButton play = new JButton(new ImageIcon("images/play.gif"));
-		
-		JButton forward = new JButton(new ImageIcon("images/forward.gif"));
+		play = new JButton(new ImageIcon("images/play.gif"));
 
-		refresh.addActionListener(client);
+		JButton forward = new JButton(new ImageIcon("images/forward.gif"));
 
 		toolBar.add(refresh);
 		toolBar.addSeparator();
@@ -198,6 +203,14 @@ public class MainView {
 		toolBar.add(forward);
 
 		return toolBar;
+	}
+
+	public JButton getPlayButton() {
+		return this.play;
+	}
+
+	public JButton getRefreshButton() {
+		return this.refresh;
 	}
 
 	public Dimension getSize() {
