@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="IPTVServlet">
+        <wb-resource deploy-path="/" source-path="/ApplicationContent"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <dependent-module archiveName="ComunicationFacade.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ComunicationFacade/ComunicationFacade">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="java-output-path"/>
+        <property name="context-root" value="IPTVServlet"/>
+    </wb-module>
+</project-modules>
