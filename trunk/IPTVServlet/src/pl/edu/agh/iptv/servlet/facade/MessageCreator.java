@@ -8,14 +8,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
+import pl.edu.agh.ims.commons.CommonComment;
 import pl.edu.agh.ims.commons.CommonMovie;
+import pl.edu.agh.ims.commons.Serializator;
 import pl.edu.agh.iptv.servlet.persistence.Movie;
+import pl.edu.agh.iptv.servlet.persistence.MovieComment;
 import pl.edu.agh.iptv.servlet.persistence.MovieRating;
 
-import com.thoughtworks.xstream.XStream;
 
 public class MessageCreator {
 
+	@SuppressWarnings("unchecked")
 	public static String getMessage(EntityManager em, UserTransaction utx,
 			String sip) {
 
@@ -26,18 +29,18 @@ public class MessageCreator {
 			List<CommonMovie> messageCreatorList = new ArrayList<CommonMovie>();
 			Query query = em.createQuery("FROM Movie");
 			List<Movie> movieList = query.getResultList();
-			Iterator<Movie> iterator = movieList.iterator();
-			while (iterator.hasNext()) {
-				Movie movie = iterator.next();
-				CommonMovie mc = GetMovieRating(sip, movie);
+			Iterator<Movie> moviesIterator = movieList.iterator();
+			while (moviesIterator.hasNext()) {
 				
-				
-				messageCreatorList.add(mc);
+				Movie movie = moviesIterator.next();
+				CommonMovie commonMovie = createCommonMovieWithRatings(sip, movie);
+				messageCreatorList.add(commonMovie); 
 			}
 			utx.commit();
 
-			XStream xstream = new XStream();
-			xml = xstream.toXML(messageCreatorList);
+			xml = Serializator.createXmlFromList(messageCreatorList);
+			
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -46,7 +49,8 @@ public class MessageCreator {
 		return xml;
 	}
 
-	private static CommonMovie GetMovieRating(String sip, Movie movie) {
+
+	private static CommonMovie createCommonMovieWithRatings(String sip, Movie movie) {
 		List<MovieRating> list = movie.getRating();
 		Iterator<MovieRating> it = list.iterator();
 		Double allRating = 0.0;
@@ -71,12 +75,28 @@ public class MessageCreator {
 
 	private static CommonMovie createCommonMovie(Movie movie,
 			Integer userRating, Double allUsersRating) {
+		
 		String title = movie.getTitle();
 		String category = movie.getCategory().name();
 		String description = movie.getDescription();
 		String director = movie.getDirector();
 		
-		return new CommonMovie(title, category, description, director,
+		CommonMovie commonMovie = new CommonMovie(title, category, description, director,
 				userRating, allUsersRating);
+		
+		List<MovieComment> list = movie.getCommentsList();
+		Iterator<MovieComment> iterator = list.iterator();
+		while(iterator.hasNext()) {
+			MovieComment movieComment = iterator.next();
+			CommonComment commonComment = createCommonComment(movieComment);
+			commonMovie.addCommonComment(commonComment);
+		}
+		
+		return commonMovie;
+	}
+
+	private static CommonComment createCommonComment(MovieComment movieComment) {
+		
+		return new CommonComment(movieComment.getDate(), movieComment.getComment(), movieComment.getUser().getSip());
 	}
 }

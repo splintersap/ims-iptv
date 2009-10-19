@@ -9,14 +9,4 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-  <servlet>
-    <description></description>
-    <display-name>FillDatabaseServlet</display-name>
-    <servlet-name>FillDatabaseServlet</servlet-name>
-    <servlet-class>pl.edu.agh.ims.servlet.FillDatabaseServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>FillDatabaseServlet</servlet-name>
-    <url-pattern>/FillDatabaseServlet</url-pattern>
-  </servlet-mapping>
 </web-app>

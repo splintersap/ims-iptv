@@ -1,34 +1,40 @@
 <?xml version='1.0' encoding='UTF-8'?>
-	<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	version="1.0">
 	<persistence-unit name="PU" transaction-type="JTA">
-	<provider>org.hibernate.ejb.HibernatePersistence</provider>
-	<!-- <jta-data-source>jdbc/__default</jta-data-source>
-	 <exclude-unlisted-classes>true</exclude-unlisted-classes> -->
-	 <jta-data-source>jdbc/__default</jta-data-source>
-	 
-	<properties>
-	<property name="hibernate.show_sql" value="true" />
-	<property name="hibernate.archive.autodetection" value="class, hbm"/>
-	         <property name="hibernate.connection.driver_class" 
-                      value="org.apache.derby.jdbc.ClientDriver" />
-                      
-	<property name="hibernate.connection.url" 
-                      value="jdbc:derby://localhost:1527/ht;create=true" />
-	
-	<property name="hibernate.hbm2ddl.auto" value="create"/>
-	 <property name="hibernate.connection.username" value="video" />
-            
-    <property name="hibernate.connection.password" value="video"/>
-            
 
-	 <property name="hibernate.dialect" 
-                      value="org.hibernate.dialect.DerbyDialect" />
-                      
-	<property name="org.hibernate.transaction.factory_class" value="org.hibernate.transaction.JTATransactionFactory" />
-	<property name="org.hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JOTMTransactionManagerLookup" />
-		
-	</properties>	
+		<provider>org.hibernate.ejb.HibernatePersistence
+		</provider>
+
+		<jta-data-source>jdbc/__default</jta-data-source>
+
+		<properties>
+
+			<property name="hibernate.show_sql" value="true" />
+
+			<property name="hibernate.archive.autodetection" value="class, hbm" />
+
+			<property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.ClientDriver" />
+
+			<property name="hibernate.connection.url" value="jdbc:derby://localhost:1527/ht;create=true" />
+
+			<property name="hibernate.hbm2ddl.auto" value="create" />
+
+			<property name="hibernate.connection.username" value="video" />
+
+			<property name="hibernate.connection.password" value="video" />
+
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect" />
+
+			<property name="org.hibernate.transaction.factory_class"
+
+				value="org.hibernate.transaction.JTATransactionFactory" />
+
+			<property name="org.hibernate.transaction.manager_lookup_class"
+				value="org.hibernate.transaction.JOTMTransactionManagerLookup" />
+
+		</properties>
 
 	</persistence-unit>
-	
+
 </persistence>
