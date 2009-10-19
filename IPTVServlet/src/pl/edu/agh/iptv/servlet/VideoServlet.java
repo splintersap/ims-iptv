@@ -13,10 +13,10 @@ import javax.servlet.sip.SipServlet;
 import javax.servlet.sip.SipServletRequest;
 import javax.servlet.sip.SipServletResponse;
 import javax.servlet.sip.SipSession;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import pl.edu.agh.ims.commons.CommonMovie;
+import pl.edu.agh.ims.commons.Serializator;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
 import pl.edu.agh.iptv.servlet.persistence.Category;
 import pl.edu.agh.iptv.servlet.persistence.Movie;
@@ -252,7 +252,15 @@ public class VideoServlet extends SipServlet {
 		try {
 
 			log("SIP = " + sipServletRequest.getFrom().getURI());
-			log("XML: " + MessageCreator.getMessage(em, utx, sipServletRequest.getFrom().getURI().toString()));
+			String xml = MessageCreator.getMessage(em, utx, sipServletRequest.getFrom().getURI().toString());
+			log("XML: " + xml);
+			List<CommonMovie> newList = Serializator.createListFromXml(xml);
+			log("Lista" + newList.toString());
+			Iterator<CommonMovie> it = newList.iterator();
+			while(it.hasNext()) {
+				CommonMovie commonMovie = it.next();
+				log(commonMovie.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
