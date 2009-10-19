@@ -12,7 +12,7 @@ public class CommonMovie {
 	private Integer userRating;
 	private Double allUsersRating;
 	private List<CommonComment> commentList = new ArrayList<CommonComment>();
-	Map<Integer, String> map;
+	private List<CommonMovieDescription> movieDescriptionList = new ArrayList<CommonMovieDescription>();
 
 	public String getTitle() {
 		return title;
@@ -66,9 +66,13 @@ public class CommonMovie {
 		commentList.add(comment);
 	}
 
+	public void addCommonMovieDescription(CommonMovieDescription movieDescription) {
+		movieDescriptionList.add(movieDescription);
+	}
+	
 	@Override
 	public String toString() {
-		return title + ", " + director + ", " +category.toString();
+		return title + ", " + director + ", " + category.toString();
 	};
 	
 	public CommonMovie(String title, String category, String description,
