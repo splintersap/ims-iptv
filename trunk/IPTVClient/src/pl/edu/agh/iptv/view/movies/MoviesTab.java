@@ -3,12 +3,11 @@ package pl.edu.agh.iptv.view.movies;
 import java.awt.Dimension;
 import java.awt.Font;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.JTextArea;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.view.MainView;
@@ -42,6 +41,11 @@ public class MoviesTab extends JPanel {
 	 * This is panel which holds the list with movies.
 	 */
 	private JPanel panelForMoviesList = null;
+
+	/*
+	 * This is panel with a movie description.
+	 */
+	private JPanel panelWithDescription = null;
 
 	private MainView parent = null;
 
@@ -141,6 +145,52 @@ public class MoviesTab extends JPanel {
 		}
 
 		return panelForMoviesList;
+
+	}
+
+	public void setPanelWithMoviesDescription(String title, String director,
+			String category, String description) {
+
+		JPanel descPanel = new JPanel();
+		Font headerFont = new Font("Arial", Font.BOLD | Font.ITALIC, 14);
+		descPanel.setLayout(new ResizableGridLayout(8, 1));
+
+		JTextArea titleArea = new JTextArea(title);
+		JTextArea directorArea = new JTextArea(director);
+		JTextArea categoryArea = new JTextArea(category);
+		JTextArea descArea = new JTextArea(description);
+		// descLabel.setPreferredSize(new
+		// Dimension(this.moviesDescPane.getWidth() - 60,50));
+		// descLabel.setMinimumSize(new Dimension(this.moviesDescPane.getWidth()
+		// - 80,50));
+
+		JScrollPane descScrollPane = new JScrollPane(descArea);
+		descScrollPane.setPreferredSize(new Dimension(this.moviesDescPane
+				.getWidth() - 60, 50));
+		descScrollPane.setMinimumSize(new Dimension(this.moviesDescPane
+				.getWidth() - 80, 50));
+
+		JLabel titleHeaderLabel = new JLabel("Title");
+		JLabel directorHeaderLabel = new JLabel("Director");
+		JLabel categoryHeaderLabel = new JLabel("Category");
+		JLabel descHeaderLabel = new JLabel("Description");
+
+		titleHeaderLabel.setFont(headerFont);
+		directorHeaderLabel.setFont(headerFont);
+		categoryHeaderLabel.setFont(headerFont);
+		descHeaderLabel.setFont(headerFont);
+
+		descPanel.add(titleHeaderLabel);
+		descPanel.add(titleArea);
+		descPanel.add(directorHeaderLabel);
+		descPanel.add(directorArea);
+		descPanel.add(categoryHeaderLabel);
+		descPanel.add(categoryArea);
+		descPanel.add(descHeaderLabel);
+		descPanel.add(descScrollPane);
+
+		this.moviesDescPane.getViewport().removeAll();
+		this.moviesDescPane.getViewport().add(descPanel);
 
 	}
 

@@ -103,7 +103,7 @@ public class VLCHelper {
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 
-		this.moviesTab.getMoviesDescPane().add(jvcc, gridBagConstraints);
+		this.moviesTab.getMoviesDescPane().getViewport().add(jvcc, gridBagConstraints);
 
 		jvcanvas.addNotify();
 		jvcanvas.requestFocus();
