@@ -6,6 +6,7 @@ import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.ims.commons.CommonMovie;
 import pl.edu.agh.iptv.IPTVClient;
+import pl.edu.agh.iptv.view.movies.DescriptionPanel;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 /**
@@ -33,9 +34,9 @@ public class DescriptionListener implements ListSelectionListener {
 			String item = (String) list.getSelectedValue();
 			CommonMovie movie = this.iptvClient.getMoviesController()
 					.getMovieByName(item);
-			this.moviesTab.setPanelWithMoviesDescription(movie.getTitle(),
+			this.moviesTab.setDescriptionPanel((new DescriptionPanel(movie.getTitle(),
 					movie.getDirector(), movie.getCategory(), movie
-							.getDescription());
+							.getDescription())));
 		}
 		wasSelected = !wasSelected;
 	}
