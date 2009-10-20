@@ -14,10 +14,10 @@ import pl.edu.agh.iptv.components.ResizableGridLayout;
 public class DescriptionPanel extends JPanel{
 
 	public DescriptionPanel(String title, String director,
-			String category, String description) {
+			String category, String description, double rating) {
 		
 		Font headerFont = new Font("Arial", Font.BOLD | Font.ITALIC, 14);
-		this.setLayout(new ResizableGridLayout(8, 1));
+		this.setLayout(new ResizableGridLayout(9, 1));
 
 		JTextArea titleArea = new JTextArea(title);
 		JTextArea directorArea = new JTextArea(director);
@@ -29,7 +29,7 @@ public class DescriptionPanel extends JPanel{
 		descScrollPane.setPreferredSize(new Dimension(100, 50));
 		descScrollPane.setMinimumSize(new Dimension(100, 50));
 
-		JLabel titleHeaderLabel = new JLabel(new ImageIcon("images/rating/full_star_big.gif"));
+		JLabel titleHeaderLabel = new JLabel("Title");
 		JLabel directorHeaderLabel = new JLabel("Director");
 		JLabel categoryHeaderLabel = new JLabel("Category");
 		JLabel descHeaderLabel = new JLabel("Description");
@@ -40,6 +40,7 @@ public class DescriptionPanel extends JPanel{
 		categoryHeaderLabel.setFont(headerFont);
 		descHeaderLabel.setFont(headerFont);
 
+		this.add(new Rating(rating));
 		this.add(titleHeaderLabel);
 		this.add(titleArea);
 		this.add(directorHeaderLabel);
