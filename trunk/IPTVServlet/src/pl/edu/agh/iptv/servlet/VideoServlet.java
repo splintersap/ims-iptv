@@ -136,6 +136,7 @@ public class VideoServlet extends SipServlet {
 		}
 
 		SipServletResponse response = sipServletRequest.createResponse(200);
+		//response.
 		response.send();
 	}
 

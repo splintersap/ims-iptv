@@ -26,10 +26,17 @@ public class OrderedMovie extends pl.edu.agh.iptv.servlet.persistence.Entity {
 
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = MoviePayment.class)
 	@JoinColumn(nullable = false)
-	public MoviePayment getMoviePayments() {
+	public MoviePayment getMoviePayment() {
 		return moviePayment;
 	}
+	
+	public void setMoviePayment(MoviePayment moviePayment) {
+		this.moviePayment = moviePayment;
+	}
 
+	public OrderedMovie() {
+	}
+	
 	public OrderedMovie(User user, MoviePayment moviePayment) {
 		this.user = user;
 		this.moviePayment = moviePayment;

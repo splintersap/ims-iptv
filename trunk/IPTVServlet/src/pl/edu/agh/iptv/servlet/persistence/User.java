@@ -72,7 +72,7 @@ public class User extends pl.edu.agh.iptv.servlet.persistence.Entity {
 		Iterator<OrderedMovie> iterator = orderedMoviesList.iterator();
 		while(iterator.hasNext()) {
 			OrderedMovie orderedMovie = iterator.next();
-			if(orderedMovie.getMoviePayments().equals(moviePayment))
+			if(orderedMovie.getMoviePayment().equals(moviePayment))
 			{
 				return orderedMovie;
 			}

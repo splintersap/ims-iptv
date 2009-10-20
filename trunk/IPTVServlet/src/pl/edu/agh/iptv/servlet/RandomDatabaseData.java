@@ -10,9 +10,9 @@ import pl.edu.agh.iptv.servlet.persistence.User;
 
 public class RandomDatabaseData {
 	public static void fillDatabase(EntityManager em, UserTransaction utx) {
-		User coco = new User("coco@ericsson.com");
-		User maciek = new User("maciek@ericsson.com");
-		User alice = new User("alice@ericsson.com");
+		User coco = new User("sip:coco@ericsson.com");
+		User maciek = new User("sip:maciek@ericsson.com");
+		User alice = new User("sip:alice@ericsson.com");
 
 		Movie forrest = new Movie("Forrest Gump", "C:/Movies/forrest.avi");
 		forrest
@@ -102,12 +102,13 @@ public class RandomDatabaseData {
 		sstory.addMovieRating(coco, 4);
 		sstory.addMovieRating(maciek, 5);
 		
-		coco.addOrderedMovie(sstory, Quality.LOW);
-		coco.addOrderedMovie(forrest, Quality.MEDIUM);
-		alice.addOrderedMovie(forrest, Quality.HIGH);
+		//coco.addOrderedMovie(sstory, Quality.LOW);
+		//coco.addOrderedMovie(forrest, Quality.MEDIUM);
+		//alice.addOrderedMovie(forrest, Quality.HIGH);
 			
 		try {
 			utx.begin();
+			
 			em.persist(coco);
 			em.persist(alice);
 			em.persist(maciek);
@@ -115,7 +116,11 @@ public class RandomDatabaseData {
 			em.persist(forrest);
 			em.persist(sstory);
 			em.persist(shawshank);
-
+			
+			coco.addOrderedMovie(sstory, Quality.LOW);
+			coco.addOrderedMovie(forrest, Quality.MEDIUM);
+			alice.addOrderedMovie(forrest, Quality.HIGH);
+			
 			utx.commit();
 		} catch (Exception e) {
 
