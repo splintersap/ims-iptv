@@ -2,7 +2,9 @@ package pl.edu.agh.iptv;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
+import pl.edu.agh.ims.commons.CommonMovie;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.simulators.Simulator;
@@ -15,6 +17,7 @@ import com.ericsson.icp.IService;
 import com.ericsson.icp.ISession;
 import com.ericsson.icp.util.ErrorReason;
 import com.ericsson.icp.util.SdpFactory;
+import com.thoughtworks.xstream.XStream;
 
 public class IPTVClient implements ActionListener {
 
@@ -54,12 +57,12 @@ public class IPTVClient implements ActionListener {
 			addingListener();
 			triggerMoviesRequest();
 
-			Simulator simulator = new Simulator();
+			/*Simulator simulator = new Simulator();
 			moviesController = new MoviesController(simulator.getMovies());
 			moviesTab.setListOfMovies(moviesController
 					.getTitlesOfBoughtMovies().toArray(
 							new String[moviesController
-									.getTitlesOfBoughtMovies().size()]));
+									.getTitlesOfBoughtMovies().size()]));*/
 
 		} catch (Exception e) {
 			showError("Could not initialize ICP", e);
@@ -95,19 +98,19 @@ public class IPTVClient implements ActionListener {
 							.processSessionMessage(aContentType, aMessage,
 									aLength);
 
-					/*
-					 * XStream xstream = new XStream(); moviesController = new
-					 * MoviesController((List<CommonMovie>)xstream.fromXML(new
-					 * String(aMessage)));
-					 */
+					
+					XStream xstream = new XStream(); moviesController = new
+					MoviesController((List<CommonMovie>)xstream.fromXML(new
+					String(aMessage)));
+					 
 
 					/*
 					 * String message = new String(aMessage); movies =
 					 * message.split("\n"); moviesTab.setListOfMovies(movies);
 					 */
-					Simulator simulator = new Simulator();
+					/*Simulator simulator = new Simulator();
 					MoviesController moviesController = new MoviesController(
-							simulator.getMovies());
+							simulator.getMovies());*/
 					moviesTab.setListOfMovies((String[]) moviesController
 							.getTitlesOfBoughtMovies().toArray());
 
