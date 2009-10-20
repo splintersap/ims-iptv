@@ -11,36 +11,38 @@ import javax.swing.JTextArea;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 
-public class DescriptionPanel extends JPanel{
+public class DescriptionPanel extends JPanel {
 
-	public DescriptionPanel(String title, String director,
-			String category, String description, double rating) {
-		
+	public DescriptionPanel(String title, String director, String category,
+			String description, double rating) {
+
 		Font headerFont = new Font("Arial", Font.BOLD | Font.ITALIC, 14);
-		this.setLayout(new ResizableGridLayout(9, 1));
+		this.setLayout(new ResizableGridLayout(11, 1));
 
 		JTextArea titleArea = new JTextArea(title);
 		JTextArea directorArea = new JTextArea(director);
 		JTextArea categoryArea = new JTextArea(category);
 		JTextArea descArea = new JTextArea(description);
-		
 
 		JScrollPane descScrollPane = new JScrollPane(descArea);
-		descScrollPane.setPreferredSize(new Dimension(100, 50));
-		descScrollPane.setMinimumSize(new Dimension(100, 50));
+		descScrollPane.setPreferredSize(new Dimension(200, 50));
+		descScrollPane.setMinimumSize(new Dimension(200, 50));
 
 		JLabel titleHeaderLabel = new JLabel("Title");
 		JLabel directorHeaderLabel = new JLabel("Director");
 		JLabel categoryHeaderLabel = new JLabel("Category");
 		JLabel descHeaderLabel = new JLabel("Description");
-		JLabel commentHEaderLabel = new JLabel("Rating");
+		JLabel commentHeaderLabel = new JLabel("Comments");
 
 		titleHeaderLabel.setFont(headerFont);
 		directorHeaderLabel.setFont(headerFont);
 		categoryHeaderLabel.setFont(headerFont);
 		descHeaderLabel.setFont(headerFont);
+		commentHeaderLabel.setFont(headerFont);
 
-		this.add(new Rating(rating));
+		Rating ratingPanel = new Rating(rating);
+		this.add(ratingPanel.displayAverageRating());
+		this.add(ratingPanel.fieldForRating());
 		this.add(titleHeaderLabel);
 		this.add(titleArea);
 		this.add(directorHeaderLabel);
@@ -48,8 +50,15 @@ public class DescriptionPanel extends JPanel{
 		this.add(categoryHeaderLabel);
 		this.add(categoryArea);
 		this.add(descHeaderLabel);
-		this.add(descScrollPane);		
+		this.add(descScrollPane);
+		this.add(commentHeaderLabel);
 
 	}
-	
+
+	private JPanel panelWithComments() {
+		JPanel commentsPanel = new JPanel();
+
+		return commentsPanel;
+	}
+
 }
