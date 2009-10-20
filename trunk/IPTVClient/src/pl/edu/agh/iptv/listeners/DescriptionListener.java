@@ -36,7 +36,7 @@ public class DescriptionListener implements ListSelectionListener {
 					.getMovieByName(item);
 			this.moviesTab.setDescriptionPanel((new DescriptionPanel(movie.getTitle(),
 					movie.getDirector(), movie.getCategory(), movie
-							.getDescription())));
+							.getDescription(), movie.getAllUsersRating())));
 		}
 		wasSelected = !wasSelected;
 	}
