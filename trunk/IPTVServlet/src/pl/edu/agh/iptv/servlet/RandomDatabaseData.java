@@ -14,7 +14,7 @@ public class RandomDatabaseData {
 		User maciek = new User("sip:maciek@ericsson.com");
 		User alice = new User("sip:alice@ericsson.com");
 
-		Movie forrest = new Movie("Forrest Gump", "C:/Movies/forrest.avi");
+		Movie forrest = new Movie("Forrest Gump", "C:/Movies/Shining.avi");
 		forrest
 				.setDescription("Forrest Gump is a 1994 American comedy-drama film"
 						+ " based on the 1986 novel of the same name by Winston Groo"
@@ -56,7 +56,7 @@ public class RandomDatabaseData {
 		forrest.addMovieComment("I like it very much", alice);
 		
 		Movie shawshank = new Movie("The shawshank redemption",
-				"C:/Movies/shawshank.avi");
+				"C:/Movies/MVI_1165.avi");
 		shawshank
 				.setDescription("The Shawshank Redemption is a 1994 American dram"
 						+ "a film written and directed by Frank Darabont, loosely based on t"
@@ -82,7 +82,7 @@ public class RandomDatabaseData {
 		shawshank.addMovieComment("Another comment", alice);
 		shawshank.addMovieComment("Tratatatatatata", coco);
 		
-		Movie sstory = new Movie("The Straight Story", "C:/Movies/sstory.avi");
+		Movie sstory = new Movie("The Straight Story", "C:/Movies/WyznaniaGejszy.2.LekPL.avi");
 		sstory
 				.setDescription("The Straight Story is a 1999 film directed by David"
 						+ " Lynch. It is based on the true story of Alvin Straight's journey"
