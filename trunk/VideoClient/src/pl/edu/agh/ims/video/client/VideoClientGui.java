@@ -49,6 +49,18 @@ public class VideoClientGui extends JPanel {
 
 		add(startButton, BorderLayout.PAGE_START);
 
+		JButton endSessionButton = new JButton("END SESION");
+		endSessionButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				try {
+					client.session.end();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+			}});
+		add(endSessionButton, BorderLayout.LINE_END);
 		moviesComboBox = new JComboBox();
 
 		moviesComboBox.setPreferredSize(new Dimension(200, 40));
