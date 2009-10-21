@@ -2,9 +2,9 @@ package pl.edu.agh.iptv.view.movies;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -83,13 +83,18 @@ public class Rating {
 		ratingHeader.setFont(headerFont);
 		ratingPanel.add(ratingHeader);
 
-		for (int i = 1; i <= 5; i++) {
-			JLabel label = new JLabel(smallEmpty);
+		RatingPanel labelsPanel = new RatingPanel(5);
+		labelsPanel.setLayout(new GridLayout(1, 5));
 
-			label.addMouseListener(new RatingListener(i));
-			ratingPanel.add(label);
+		for (int i = 0; i < 5; i++) {
+			JLabel label = new JLabel(smallEmpty);
+			labelsPanel.addLabel(label, i);
+			label.addMouseListener(new RatingListener(labelsPanel, i));
+			labelsPanel.add(label);
 
 		}
+
+		ratingPanel.add(labelsPanel);
 
 		JLabel emptyHeader = new JLabel();
 
@@ -101,13 +106,49 @@ public class Rating {
 
 	}
 
+	private class RatingPanel extends JPanel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		private JLabel[] labels;
+
+		private int numberOfLabels;
+
+		public RatingPanel(int numberOfLabels) {
+			super();
+			this.numberOfLabels = numberOfLabels;
+			labels = new JLabel[this.numberOfLabels];
+		}
+
+		public void addLabel(JLabel label, int position) {
+			if (position < labels.length && position >= 0)
+				labels[position] = label;
+		}
+
+		public void updateRating(int currentLabel) {
+			for (int i = 0; i <= currentLabel; i++) {
+				labels[i].setIcon(smallFull);
+			}
+
+			for (int i = currentLabel + 1; i < numberOfLabels; i++) {
+				labels[i].setIcon(smallEmpty);
+			}
+		}
+
+	}
+
 	private class RatingListener implements MouseListener {
 
-		boolean emptyIcon = true;
-		int number;
+		private RatingPanel ratingPanel;
 
-		public RatingListener(int number) {
+		private int number;
+
+		public RatingListener(RatingPanel ratingPanel, int number) {
 			this.number = number;
+			this.ratingPanel = ratingPanel;
 		}
 
 		@Override
@@ -119,28 +160,13 @@ public class Rating {
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			// TODO Auto-generated method stub
-			if (emptyIcon && currentlyHighlighted == number - 1){
-				
-				((JLabel) e.getComponent()).setIcon(smallFull);
-				currentlyHighlighted = number;
-				currentlyUnhighlighted = number + 1;
-				emptyIcon = !emptyIcon;
-				
-				
-			}else if (!emptyIcon && currentlyUnhighlighted == number + 1){
-				
-				((JLabel) e.getComponent()).setIcon(smallEmpty);
-				currentlyUnhighlighted = number;
-				currentlyHighlighted = number - 1;
-				emptyIcon = !emptyIcon;
-				
-			}			
+			ratingPanel.updateRating(number);
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
 			// TODO Auto-generated method stub
-
+			ratingPanel.updateRating(-1);
 		}
 
 		@Override
