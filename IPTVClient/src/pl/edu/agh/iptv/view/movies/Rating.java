@@ -16,7 +16,8 @@ public class Rating {
 
 	double avg;
 
-	boolean emptyIcon = true;
+	int currentlyHighlighted = 0;
+	int currentlyUnhighlighted = 0;
 
 	ImageIcon smallEmpty = new ImageIcon("images/rating/empty_star_small.gif");
 	ImageIcon smallFull = new ImageIcon("images/rating/full_star_small.gif");
@@ -82,46 +83,10 @@ public class Rating {
 		ratingHeader.setFont(headerFont);
 		ratingPanel.add(ratingHeader);
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 1; i <= 5; i++) {
 			JLabel label = new JLabel(smallEmpty);
-			label.addMouseListener(new MouseListener() {
 
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					// TODO Auto-generated method stub
-
-				}
-
-				@Override
-				public void mouseEntered(MouseEvent e) {
-					// TODO Auto-generated method stub
-					if (emptyIcon)
-						((JLabel) e.getComponent()).setIcon(smallFull);
-					else
-						((JLabel) e.getComponent()).setIcon(smallEmpty);
-
-					emptyIcon = !emptyIcon;
-				}
-
-				@Override
-				public void mouseExited(MouseEvent e) {
-					// TODO Auto-generated method stub
-
-				}
-
-				@Override
-				public void mousePressed(MouseEvent e) {
-					// TODO Auto-generated method stub
-
-				}
-
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					// TODO Auto-generated method stub
-
-				}
-
-			});
+			label.addMouseListener(new RatingListener(i));
 			ratingPanel.add(label);
 
 		}
@@ -133,6 +98,62 @@ public class Rating {
 		ratingPanel.add(emptyHeader);
 
 		return ratingPanel;
+
+	}
+
+	private class RatingListener implements MouseListener {
+
+		boolean emptyIcon = true;
+		int number;
+
+		public RatingListener(int number) {
+			this.number = number;
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			if (emptyIcon && currentlyHighlighted == number - 1){
+				
+				((JLabel) e.getComponent()).setIcon(smallFull);
+				currentlyHighlighted = number;
+				currentlyUnhighlighted = number + 1;
+				emptyIcon = !emptyIcon;
+				
+				
+			}else if (!emptyIcon && currentlyUnhighlighted == number + 1){
+				
+				((JLabel) e.getComponent()).setIcon(smallEmpty);
+				currentlyUnhighlighted = number;
+				currentlyHighlighted = number - 1;
+				emptyIcon = !emptyIcon;
+				
+			}			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
 
 	}
 }
