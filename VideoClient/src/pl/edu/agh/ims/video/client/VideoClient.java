@@ -23,7 +23,7 @@ public class VideoClient {
     /**
      * The current game IMS session.
      */
-    private ISession session;
+    public ISession session;
 
     IProfile profile;
     
