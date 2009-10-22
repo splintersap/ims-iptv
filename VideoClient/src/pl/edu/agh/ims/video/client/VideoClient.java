@@ -8,6 +8,8 @@ import com.ericsson.icp.IProfile;
 import com.ericsson.icp.IService;
 import com.ericsson.icp.ISession;
 import com.ericsson.icp.util.ErrorReason;
+import com.ericsson.icp.util.ISessionDescription;
+import com.ericsson.icp.util.ITimeDescription;
 import com.ericsson.icp.util.SdpFactory;
 
 
@@ -32,7 +34,7 @@ public class VideoClient {
 	public VideoClient() {
 		try {
 			IPlatform platform = ICPFactory.createPlatform();
-			platform.registerClient("GuessClient");
+			platform.registerClient("VideoClient");
 			platform.addListener(new PlatformAdapter());
 			profile = platform.createProfile("IMSSetting");
 			profile.addListener(new ProfileAdapter());
@@ -66,6 +68,7 @@ public class VideoClient {
 
 			        public void processSessionMessage(String aContentType, byte[] aMessage, int aLength)
 			        {
+			        	System.out.println("We got message");
 			            // A MESSAGE was received, process it
 			            super.processSessionMessage(aContentType, aMessage, aLength);
 			            String message = new String(aMessage);
@@ -77,12 +80,34 @@ public class VideoClient {
 			    }
 
 			);
+			// final ISessionDescription localSdp = createLocalSdp();
 			session.start("sip:video@ericsson.com", null, profile.getIdentity(), SdpFactory.createMIMEContainer());
+			System.out.println(profile.getIdentity());
 		} catch (Exception e) {
 			showError("Session Creation", e);
 		}
 		
 	}
+	
+	private ISessionDescription createLocalSdp()
+    {
+        ISessionDescription localSdp = null;
+        try
+        {
+            localSdp = SdpFactory.createSessionDescription("");
+            //localSdp.setField(ISessionDescription.FieldType.ProtocolVersion, "0");
+            //localSdp.setField(ISessionDescription.FieldType.Owner, "- 1111551202156 1111551202156 IN IP4");
+            localSdp.setField(ISessionDescription.FieldType.SessionName, "My Chat Application Session");
+            ITimeDescription timeDescription = SdpFactory.createTimeDescription();
+            timeDescription.setSessionActiveTime("0 0");
+            localSdp.addTimeDescription(timeDescription);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return localSdp;
+    }
 	
 	public void showChosenMovie(String movieTitle) {
 		System.out.println("Inside showChosenMovie, movieTitle = " + movieTitle);

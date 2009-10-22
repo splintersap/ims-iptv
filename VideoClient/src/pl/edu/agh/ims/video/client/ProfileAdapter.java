@@ -7,18 +7,16 @@ import com.ericsson.icp.util.ErrorReason;
 public class ProfileAdapter implements IProfileListener {
 
 	public void processEvent(String arg0, String arg1, ErrorReason arg2) {
-		// TODO Auto-generated method stub
+		System.out.println("processEvent");
 
 	}
 
 	public void processStateChanged(State arg0) {
-		// TODO Auto-generated method stub
-
+		System.out.println("processStateChanged");
 	}
 
 	public void processError(ErrorReason arg0) {
-		// TODO Auto-generated method stub
-
+		System.out.println("processError");
 	}
 
 }
