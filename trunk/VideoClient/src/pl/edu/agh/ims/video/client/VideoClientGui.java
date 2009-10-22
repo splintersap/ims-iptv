@@ -2,6 +2,7 @@ package pl.edu.agh.ims.video.client;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -15,7 +16,7 @@ public class VideoClientGui extends JPanel {
 
 	VideoClient client = new VideoClient();
 
-	public static void setMoviesList(String[] moviesStrings) {
+	public static void setMoviesList(List<String> moviesStrings) {
 		choseMovieButton.setEnabled(true);
 		for (String movie : moviesStrings) {
 			moviesComboBox.addItem(movie);

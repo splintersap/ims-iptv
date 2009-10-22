@@ -1,6 +1,11 @@
 package pl.edu.agh.ims.video.client;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import pl.edu.agh.ims.commons.CommonMovie;
+import pl.edu.agh.ims.commons.Serializator;
 
 import com.ericsson.icp.ICPFactory;
 import com.ericsson.icp.IPlatform;
@@ -71,10 +76,19 @@ public class VideoClient {
 			        	System.out.println("We got message");
 			            // A MESSAGE was received, process it
 			            super.processSessionMessage(aContentType, aMessage, aLength);
-			            String message = new String(aMessage);
-			            String[] movies = message.split("\n");
+			            //String message = new String(aMessage);
+			            //String[] movies = message.split("\n");
 			            
-			            VideoClientGui.setMoviesList(movies);
+			            //VideoClientGui.setMoviesList(movies);
+			            String message = new String(aMessage);
+			            System.out.println("Dostalem wiadomosc : " + message);
+
+						List<CommonMovie> commonMoviesList = Serializator.createListFromXml(message);
+						List<String> titles = new ArrayList<String>();
+						for(CommonMovie commonMovie : commonMoviesList) {
+							titles.add(commonMovie.getTitle());
+						}
+						VideoClientGui.setMoviesList(titles);
 
 			        }
 			    }
