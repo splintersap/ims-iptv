@@ -88,8 +88,10 @@ public class VideoServlet extends SipServlet {
 			SipServletRequest message = session.createRequest("MESSAGE");
 
 			try {
+				String xml = MessageCreator.getMessage(em, utx, sipServletRequest
+						.getFrom().getURI().toString());
 				// message.setContent(getMovies().getBytes(), "movies/list");
-				message.setContent(getMovies(), "text/movie-list");
+				message.setContent(xml, "text/movie-list");
 
 			} catch (Exception e) {
 				log(e.getMessage());
