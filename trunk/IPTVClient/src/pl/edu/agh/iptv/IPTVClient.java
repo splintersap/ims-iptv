@@ -90,26 +90,15 @@ public class IPTVClient implements ActionListener {
 
 				public void processSessionMessage(String aContentType,
 						byte[] aMessage, int aLength) {
-					// A MESSAGE was received, process it
-					System.out.println("BEFORE PROCESSING");
+					// A MESSAGE was received, process it.					
 					super
 							.processSessionMessage(aContentType, aMessage,
 									aLength);
 
-					System.out.println("MSG RECEIVED");
-
-					// XStream xstream = new XStream();
 					Serializator serializator = new Serializator();
 					moviesController = new MoviesController(serializator
 							.createListFromXml(new String(aMessage)));
-
-					/*
-					 * String message = new String(aMessage); movies =
-					 * message.split("\n"); moviesTab.setListOfMovies(movies);
-					 */
-					// Simulator simulator = new Simulator();
-					// MoviesController moviesController = new MoviesController(
-					// simulator.getMovies());
+										
 					moviesTab.setListOfMovies(moviesController
 							.getTitlesOfBoughtMovies());										
 
