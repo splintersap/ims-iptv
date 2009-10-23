@@ -1,6 +1,9 @@
 package pl.edu.agh.iptv.servlet;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
 import pl.edu.agh.iptv.servlet.persistence.Category;
@@ -9,7 +12,25 @@ import pl.edu.agh.iptv.servlet.persistence.Quality;
 import pl.edu.agh.iptv.servlet.persistence.User;
 
 public class RandomDatabaseData {
+	@SuppressWarnings("unchecked")
 	public static void fillDatabase(EntityManager em, UserTransaction utx) {
+		
+		// return when there are alredy movies in database
+		try {
+			utx.begin();
+			
+			Query query = em.createQuery("FROM Movie");
+			List<Movie> movieList = query.getResultList();			
+			utx.commit();
+			if(movieList.size() > 1) {
+				return;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
 		User coco = new User("sip:coco@ericsson.com");
 		User maciek = new User("sip:maciek@ericsson.com");
 		User alice = new User("sip:alice@ericsson.com");
@@ -102,10 +123,6 @@ public class RandomDatabaseData {
 		sstory.addMovieRating(coco, 4);
 		sstory.addMovieRating(maciek, 5);
 		
-		//coco.addOrderedMovie(sstory, Quality.LOW);
-		//coco.addOrderedMovie(forrest, Quality.MEDIUM);
-		//alice.addOrderedMovie(forrest, Quality.HIGH);
-			
 		try {
 			utx.begin();
 			
