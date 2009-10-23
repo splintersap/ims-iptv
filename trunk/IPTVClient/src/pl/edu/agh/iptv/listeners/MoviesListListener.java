@@ -1,4 +1,4 @@
-package pl.edu.agh.iptv.controllers;
+package pl.edu.agh.iptv.listeners;
 
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
@@ -6,12 +6,12 @@ import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.iptv.IPTVClient;
 
-public class MoviesListController implements ListSelectionListener {
+public class MoviesListListener implements ListSelectionListener {
 
 	private IPTVClient iptvClient = null;
 	private boolean wasSelected = false;
 
-	public MoviesListController(IPTVClient iptvClient) {
+	public MoviesListListener(IPTVClient iptvClient) {
 		this.iptvClient = iptvClient;
 	}
 

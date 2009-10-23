@@ -2,7 +2,10 @@ package pl.edu.agh.iptv;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
+import pl.edu.agh.ims.commons.CommonMovie;
+import pl.edu.agh.ims.commons.Serializator;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.simulators.Simulator;
@@ -15,6 +18,7 @@ import com.ericsson.icp.IService;
 import com.ericsson.icp.ISession;
 import com.ericsson.icp.util.ErrorReason;
 import com.ericsson.icp.util.SdpFactory;
+import com.thoughtworks.xstream.XStream;
 
 public class IPTVClient implements ActionListener {
 
@@ -41,7 +45,7 @@ public class IPTVClient implements ActionListener {
 		try {
 
 			IPlatform platform = ICPFactory.createPlatform();
-			platform.registerClient("VideoClient");
+			platform.registerClient("IPTVClient");
 			platform.addListener(new PlatformAdapter());
 			profile = platform.createProfile("IMSSetting");
 			profile.addListener(new ProfileAdapter());
@@ -54,12 +58,12 @@ public class IPTVClient implements ActionListener {
 			addingListener();
 			triggerMoviesRequest();
 
-			Simulator simulator = new Simulator();
-			moviesController = new MoviesController(simulator.getMovies());
-			moviesTab.setListOfMovies(moviesController
-					.getTitlesOfBoughtMovies().toArray(
-							new String[moviesController
-									.getTitlesOfBoughtMovies().size()]));
+			// Simulator simulator = new Simulator();
+			// moviesController = new MoviesController(simulator.getMovies());
+			// moviesTab.setListOfMovies(moviesController
+			// .getTitlesOfBoughtMovies().toArray(
+			// new String[moviesController
+			// .getTitlesOfBoughtMovies().size()]));
 
 		} catch (Exception e) {
 			showError("Could not initialize ICP", e);
@@ -91,25 +95,34 @@ public class IPTVClient implements ActionListener {
 				public void processSessionMessage(String aContentType,
 						byte[] aMessage, int aLength) {
 					// A MESSAGE was received, process it
+					System.out.println("BEFORE PROCESSING");
 					super
 							.processSessionMessage(aContentType, aMessage,
 									aLength);
 
-					/*
-					 * XStream xstream = new XStream(); moviesController = new
-					 * MoviesController((List<CommonMovie>)xstream.fromXML(new
-					 * String(aMessage)));
-					 */
+					System.out.println("MSG RECEIVED");
+
+					// XStream xstream = new XStream();
+					Serializator serializator = new Serializator();
+					moviesController = new MoviesController(serializator
+							.createListFromXml(new String(aMessage)));
 
 					/*
 					 * String message = new String(aMessage); movies =
 					 * message.split("\n"); moviesTab.setListOfMovies(movies);
 					 */
-					Simulator simulator = new Simulator();
-					MoviesController moviesController = new MoviesController(
-							simulator.getMovies());
-					moviesTab.setListOfMovies((String[]) moviesController
-							.getTitlesOfBoughtMovies().toArray());
+					// Simulator simulator = new Simulator();
+					// MoviesController moviesController = new MoviesController(
+					// simulator.getMovies());
+					moviesTab.setListOfMovies(moviesController
+							.getTitlesOfBoughtMovies());
+					
+					try {
+						session.end();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
 				}
 
@@ -129,7 +142,7 @@ public class IPTVClient implements ActionListener {
 	 * @param movieTitle
 	 *            title of the movie user wants to watch
 	 */
-	public void showChosenMovie(String movieTitle) {		
+	public void showChosenMovie(String movieTitle) {
 		try {
 			session.sendMessage("movies/choice", movieTitle.getBytes(),
 					movieTitle.length());
@@ -176,6 +189,10 @@ public class IPTVClient implements ActionListener {
 
 	public MoviesController getMoviesController() {
 		return this.moviesController;
+	}
+
+	public void setUserRating(int rating) {
+
 	}
 
 }

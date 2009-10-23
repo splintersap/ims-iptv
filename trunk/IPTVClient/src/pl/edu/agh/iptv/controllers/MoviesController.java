@@ -14,14 +14,14 @@ public class MoviesController {
 	private Map<String, CommonMovie> moviesMap;
 
 	public MoviesController(List<CommonMovie> movies) {
-		
+
 		this.movies = movies;
-		
+
 		moviesMap = new HashMap<String, CommonMovie>();
-		for(CommonMovie movie : movies){
+		for (CommonMovie movie : movies) {
 			moviesMap.put(movie.getTitle(), movie);
 		}
-		
+
 	}
 
 	/**
@@ -35,11 +35,12 @@ public class MoviesController {
 		return this.moviesMap.get(movieTitle);
 	}
 
-	public List<String> getTitlesOfBoughtMovies() {
-		List<String> titles = new ArrayList<String>();
+	public String[] getTitlesOfBoughtMovies() {
+		String[] titles = new String[this.movies.size()];
 
+		int i = 0;
 		for (CommonMovie movie : this.movies) {
-			titles.add(movie.getTitle());
+			titles[i] = movie.getTitle();
 		}
 
 		return titles;

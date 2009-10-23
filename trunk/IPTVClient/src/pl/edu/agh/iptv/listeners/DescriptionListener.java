@@ -34,9 +34,15 @@ public class DescriptionListener implements ListSelectionListener {
 			String item = (String) list.getSelectedValue();
 			CommonMovie movie = this.iptvClient.getMoviesController()
 					.getMovieByName(item);
-			this.moviesTab.setDescriptionPanel((new DescriptionPanel(movie.getTitle(),
+			
+			DescriptionPanel descriptionPanel = new DescriptionPanel(movie.getTitle(),
 					movie.getDirector(), movie.getCategory(), movie
-							.getDescription(), movie.getAllUsersRating())));
+					.getDescription(), movie.getAllUsersRating());
+			
+			descriptionPanel.getRatingPanel().setIPTVClient(iptvClient);
+			
+			this.moviesTab.setDescriptionPanel(descriptionPanel);
+			
 		}
 		wasSelected = !wasSelected;
 	}

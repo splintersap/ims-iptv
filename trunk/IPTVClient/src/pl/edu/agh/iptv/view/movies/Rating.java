@@ -10,11 +10,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 
 public class Rating {
 
+	/*
+	 * Average rate for a chosen movie.
+	 */
 	double avg;
+
+	private IPTVClient iptvClient;
 
 	int currentlyHighlighted = 0;
 	int currentlyUnhighlighted = 0;
@@ -26,6 +32,13 @@ public class Rating {
 		this.avg = avg;
 	}
 
+	/**
+	 * This function creates the panel which displays information about total
+	 * rate which is an average of all rates given by people watching selected
+	 * movie.
+	 * 
+	 * @return panel with information about total rate
+	 */
 	public JPanel displayAverageRating() {
 
 		JPanel output = new JPanel();
@@ -74,6 +87,11 @@ public class Rating {
 		return output;
 	}
 
+	/**
+	 * This function creates the panel used for rating the movies.
+	 * 
+	 * @return panel for rating
+	 */
 	public JPanel fieldForRating() {
 
 		JPanel ratingPanel = new JPanel();
@@ -89,7 +107,9 @@ public class Rating {
 		for (int i = 0; i < 5; i++) {
 			JLabel label = new JLabel(smallEmpty);
 			labelsPanel.addLabel(label, i);
-			label.addMouseListener(new RatingListener(labelsPanel, i));
+			label
+					.addMouseListener(new SingleLabelRatingListener(
+							labelsPanel, i));
 			labelsPanel.add(label);
 
 		}
@@ -106,13 +126,25 @@ public class Rating {
 
 	}
 
+	public void setIPTVClient(IPTVClient iptvClient) {
+		this.iptvClient = iptvClient;
+	}
+
+	/**
+	 * Panel holding all labels with the stars for rating. It contains the
+	 * method which changes the images (full/empty star) to express the rating
+	 * scale.
+	 * 
+	 * @author Wozniak
+	 * 
+	 */
 	private class RatingPanel extends JPanel {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 
+		/*
+		 * Array of all the labels for rating.
+		 */
 		private JLabel[] labels;
 
 		private int numberOfLabels;
@@ -128,6 +160,14 @@ public class Rating {
 				labels[position] = label;
 		}
 
+		/**
+		 * This function updates images on the labels. Labels which has numbers
+		 * smaller or equal to the currently selected label are getting full
+		 * star. The rest of them get empty star.
+		 * 
+		 * @param currentLabel
+		 *            current label to which points user
+		 */
 		public void updateRating(int currentLabel) {
 			for (int i = 0; i <= currentLabel; i++) {
 				labels[i].setIcon(smallFull);
@@ -140,13 +180,26 @@ public class Rating {
 
 	}
 
-	private class RatingListener implements MouseListener {
+	/**
+	 * Class listening to the actions regarding single label with a star for
+	 * rating.
+	 * 
+	 * @author Wozniak
+	 * 
+	 */
+	private class SingleLabelRatingListener implements MouseListener {
 
+		/*
+		 * Rating panel which holds all labels with starts for rating.
+		 */
 		private RatingPanel ratingPanel;
 
+		/*
+		 * Number of a label to which this listener belongs to.
+		 */
 		private int number;
 
-		public RatingListener(RatingPanel ratingPanel, int number) {
+		public SingleLabelRatingListener(RatingPanel ratingPanel, int number) {
 			this.number = number;
 			this.ratingPanel = ratingPanel;
 		}
@@ -154,7 +207,7 @@ public class Rating {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
-
+			iptvClient.setUserRating(this.number);
 		}
 
 		@Override

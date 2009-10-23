@@ -13,6 +13,9 @@ import pl.edu.agh.iptv.components.ResizableGridLayout;
 
 public class DescriptionPanel extends JPanel {
 
+	
+	private Rating ratingPanel;
+	
 	public DescriptionPanel(String title, String director, String category,
 			String description, double rating) {
 
@@ -40,7 +43,7 @@ public class DescriptionPanel extends JPanel {
 		descHeaderLabel.setFont(headerFont);
 		commentHeaderLabel.setFont(headerFont);
 
-		Rating ratingPanel = new Rating(rating);
+		ratingPanel = new Rating(rating);
 		this.add(ratingPanel.displayAverageRating());
 		this.add(ratingPanel.fieldForRating());
 		this.add(titleHeaderLabel);
@@ -61,4 +64,8 @@ public class DescriptionPanel extends JPanel {
 		return commentsPanel;
 	}
 
+	public Rating getRatingPanel(){
+		return this.ratingPanel;
+	}
+	
 }
