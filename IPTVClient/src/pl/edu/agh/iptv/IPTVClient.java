@@ -2,13 +2,10 @@ package pl.edu.agh.iptv;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
-import pl.edu.agh.ims.commons.CommonMovie;
 import pl.edu.agh.ims.commons.Serializator;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
-import pl.edu.agh.iptv.simulators.Simulator;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 import com.ericsson.icp.ICPFactory;
@@ -18,7 +15,6 @@ import com.ericsson.icp.IService;
 import com.ericsson.icp.ISession;
 import com.ericsson.icp.util.ErrorReason;
 import com.ericsson.icp.util.SdpFactory;
-import com.thoughtworks.xstream.XStream;
 
 public class IPTVClient implements ActionListener {
 
