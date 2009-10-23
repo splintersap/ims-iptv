@@ -111,14 +111,7 @@ public class IPTVClient implements ActionListener {
 					// MoviesController moviesController = new MoviesController(
 					// simulator.getMovies());
 					moviesTab.setListOfMovies(moviesController
-							.getTitlesOfBoughtMovies());
-					
-					try {
-						session.end();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+							.getTitlesOfBoughtMovies());										
 
 				}
 
