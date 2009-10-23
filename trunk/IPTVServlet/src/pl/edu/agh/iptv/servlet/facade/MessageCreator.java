@@ -65,7 +65,7 @@ public class MessageCreator {
 		}
 
 		if (list.size() == 0) {
-			allRating = null;
+			allRating = 0.0;
 		} else {
 			allRating = allRating / list.size();
 		}

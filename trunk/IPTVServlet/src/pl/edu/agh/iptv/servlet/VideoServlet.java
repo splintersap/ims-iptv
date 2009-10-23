@@ -1,7 +1,6 @@
 package pl.edu.agh.iptv.servlet;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,8 +14,6 @@ import javax.servlet.sip.SipServletResponse;
 import javax.servlet.sip.SipSession;
 import javax.transaction.UserTransaction;
 
-import pl.edu.agh.ims.commons.CommonMovie;
-import pl.edu.agh.ims.commons.Serializator;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
 import pl.edu.agh.iptv.servlet.persistence.Movie;
 
@@ -33,11 +30,7 @@ public class VideoServlet extends SipServlet {
 
 	private final String ACK_RECEIVED = "ackReceived";
 
-	private final String NUMBER_TO_GUESS = "number";
-
 	static final String vlcLocation = "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe";
-
-	String sip;
 
 	/**
 	 * @inheritDoc
@@ -45,15 +38,11 @@ public class VideoServlet extends SipServlet {
 	protected void doMessage(SipServletRequest sipServletRequest)
 			throws ServletException, IOException {
 		log("inside doMessage method");
-
-		// start streaming
-
 		sipServletRequest.createResponse(200).send();
 
 		String content = new String(sipServletRequest.getRawContent());
 		String moviePath = getMoviePath(content);
-		log("Movie path = " + moviePath);
-		// String sip = sipServletRequest.getRequestURI().toString();
+		// start streaming
 		runStreamer(sipServletRequest.getInitialRemoteAddr(), moviePath);
 	}
 
@@ -79,25 +68,20 @@ public class VideoServlet extends SipServlet {
 		Object ackAlreadyProcessed = session.getAttribute(ACK_RECEIVED);
 		log(sipServletRequest.getInitialRemoteAddr());
 		if (ackAlreadyProcessed == null) {
-			log("wysylam wiadomosc");
+			log("sending movie list");
 			session.setAttribute(ACK_RECEIVED, true);
-			// yields a value between 0 (inclusive) and 11 (exclusive) so [0,
-			// 10]
-			session.setAttribute(NUMBER_TO_GUESS, 8);
 
 			SipServletRequest message = session.createRequest("MESSAGE");
 
 			try {
 				String xml = MessageCreator.getMessage(em, utx, sipServletRequest
 						.getFrom().getURI().toString());
-				// message.setContent(getMovies().getBytes(), "movies/list");
 				message.setContent(xml, "text/movie-list");
 
 			} catch (Exception e) {
 				log(e.getMessage());
 			}
 			message.send();
-			log("wiadomosc wyslana");
 		}
 	}
 
@@ -116,50 +100,10 @@ public class VideoServlet extends SipServlet {
 	protected void doInvite(SipServletRequest sipServletRequest)
 			throws ServletException, IOException {
 
-		log("inside doInvite method");
-
+		log("inside doInvite method - sending response 200 to start session");
 		RandomDatabaseData.fillDatabase(em, utx);
-
-		try {
-
-			log("SIP = " + sipServletRequest.getFrom().getURI());
-			String xml = MessageCreator.getMessage(em, utx, sipServletRequest
-					.getFrom().getURI().toString());
-			log("XML: " + xml);
-			List<CommonMovie> newList = Serializator.createListFromXml(xml);
-			log("Lista" + newList.toString());
-			Iterator<CommonMovie> it = newList.iterator();
-			while (it.hasNext()) {
-				CommonMovie commonMovie = it.next();
-				log(commonMovie.toString());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		SipServletResponse response = sipServletRequest.createResponse(200);
-		//log(response.getHeader("Route"));
-		log("Contact" + response.getHeader("Contact"));
-		
 		response.send();
-	}
-
-	@SuppressWarnings("unchecked")
-	private String getMovies() {
-
-		StringBuilder moviesStringBuilder = new StringBuilder();
-
-		Query query = em.createQuery("FROM Movie");
-		List<Movie> movieList = query.getResultList();
-		Iterator<Movie> movieIterator = movieList.iterator();
-		while (movieIterator.hasNext()) {
-			Movie movie = movieIterator.next();
-			moviesStringBuilder.append(movie.getTitle() + "\n");
-		}
-
-		log("Filmy: " + moviesStringBuilder.toString());
-
-		return moviesStringBuilder.toString();
 	}
 
 	private void runStreamer(String ip, String movieLocation)
@@ -168,7 +112,7 @@ public class VideoServlet extends SipServlet {
 		String vlcCommandString = "\"" + vlcLocation + "\" \"" + movieLocation
 				+ "\" --sout=udp/ts://" + ip + ":1234";
 
-		log(vlcCommandString);
+		log("Streamer runs with command : " + vlcCommandString);
 
 		Runtime runtime = Runtime.getRuntime();
 
