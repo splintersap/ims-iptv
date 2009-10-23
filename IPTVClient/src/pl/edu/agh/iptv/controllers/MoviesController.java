@@ -41,6 +41,7 @@ public class MoviesController {
 		int i = 0;
 		for (CommonMovie movie : this.movies) {
 			titles[i] = movie.getTitle();
+			i++;
 		}
 
 		return titles;
