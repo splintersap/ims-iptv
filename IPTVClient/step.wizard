@@ -1,2 +1,9 @@
+#
+#Thu Oct 22 10:29:33 CEST 2009
 client.configuration=IPTVClient.xml
 name=IPTVClient
+uid=
+filelist=
+cmd=pl.edu.agh.iptv.controllers.Launcher
+path=C\:\\ICPApps
+archive.name=

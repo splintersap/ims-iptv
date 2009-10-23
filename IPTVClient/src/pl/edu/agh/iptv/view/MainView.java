@@ -18,9 +18,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
-import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
-import pl.edu.agh.iptv.listeners.PlayListener;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class MainView {
@@ -32,8 +30,7 @@ public class MainView {
 	private JTabbedPane mainTabs = null;
 	private JScrollPane statisticsTab = null;
 	private JScrollPane paymentsTab = null;
-	private MoviesTab moviesTab = null;
-	private IPTVClient client = null; // @jve:decl-index=0:
+	private MoviesTab moviesTab = null;	
 
 	/*
 	 * Menu buttons.

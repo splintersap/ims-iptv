@@ -148,15 +148,18 @@ public class MoviesTab extends JPanel {
 
 	}
 
-	public void setDescriptionPanel(JPanel descPanel){
+	/**
+	 * Setting the panel which contains information describing single movie.
+	 * 
+	 * @param descPanel
+	 *            panel which will appear on the right side of 'Watcher'
+	 */
+	public void setDescriptionPanel(JPanel descPanel) {
 
 		this.moviesDescPane.getViewport().removeAll();
 		this.moviesDescPane.getViewport().add(descPanel);
 
 	}
-	
-	
-	
 
 	/**
 	 * Method setting the list of movies. It is called when server sends a
