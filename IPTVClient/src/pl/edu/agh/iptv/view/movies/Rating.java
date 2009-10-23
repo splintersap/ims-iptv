@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import pl.edu.agh.iptv.IPTVClient;
@@ -98,6 +99,7 @@ public class Rating {
 		ratingPanel.setLayout(new ResizableGridLayout(1, 10));
 		Font headerFont = new Font("Arial", Font.BOLD | Font.ITALIC, 14);
 		JLabel ratingHeader = new JLabel("Your rate");
+		JLabel rateNameLabel = new JLabel("Your choice");
 		ratingHeader.setFont(headerFont);
 		ratingPanel.add(ratingHeader);
 
@@ -107,20 +109,17 @@ public class Rating {
 		for (int i = 0; i < 5; i++) {
 			JLabel label = new JLabel(smallEmpty);
 			labelsPanel.addLabel(label, i);
-			label
-					.addMouseListener(new SingleLabelRatingListener(
-							labelsPanel, i));
+			label.addMouseListener(new SingleLabelRatingListener(labelsPanel,
+					i, rateNameLabel));
 			labelsPanel.add(label);
 
 		}
 
 		ratingPanel.add(labelsPanel);
 
-		JLabel emptyHeader = new JLabel();
+		rateNameLabel.setPreferredSize(new Dimension(150, 40));
 
-		emptyHeader.setPreferredSize(new Dimension(150, 40));
-
-		ratingPanel.add(emptyHeader);
+		ratingPanel.add(rateNameLabel);
 
 		return ratingPanel;
 
@@ -199,14 +198,27 @@ public class Rating {
 		 */
 		private int number;
 
-		public SingleLabelRatingListener(RatingPanel ratingPanel, int number) {
+		/*
+		 * This label displays the description of the rating - depending on how
+		 * many starts user choose.
+		 */
+		private JLabel rateNameLabel;
+
+		String text = new String();
+
+		public SingleLabelRatingListener(RatingPanel ratingPanel, int number,
+				JLabel rateNameLabel) {
 			this.number = number;
 			this.ratingPanel = ratingPanel;
+			this.rateNameLabel = rateNameLabel;
 		}
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
+			if (JOptionPane.showConfirmDialog(rateNameLabel,
+					"Are you sure you want to rate this movie with a rate "
+							+ text) == 1)
 			iptvClient.setUserRating(this.number);
 		}
 
@@ -214,12 +226,32 @@ public class Rating {
 		public void mouseEntered(MouseEvent e) {
 			// TODO Auto-generated method stub
 			ratingPanel.updateRating(number);
+			switch (number) {
+			case 0:
+				text = "Poor";
+				break;
+			case 1:
+				text = "Nothing special";
+				break;
+			case 2:
+				text = "Worth watching";
+				break;
+			case 3:
+				text = "Pretty cool";
+				break;
+			case 4:
+				text = "Excellent";
+				break;
+			}
+			rateNameLabel.setText(text);
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
 			// TODO Auto-generated method stub
 			ratingPanel.updateRating(-1);
+			text = "Your rate";
+			rateNameLabel.setText(text);
 		}
 
 		@Override
