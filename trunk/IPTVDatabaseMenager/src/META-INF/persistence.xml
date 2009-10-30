@@ -1,0 +1,33 @@
+<persistence>
+    <persistence-unit name="examplePersistenceUnit" 
+                      transaction-type="RESOURCE_LOCAL">
+		<class>pl.edu.agh.iptv.dbmenager.persistence.Category</class>
+		<class>pl.edu.agh.iptv.dbmenager.persistence.Movie</class>
+		<class>pl.edu.agh.iptv.dbmenager.persistence.MovieComment</class>
+		<class>pl.edu.agh.iptv.dbmenager.persistence.MoviePayment</class>
+		<class>pl.edu.agh.iptv.dbmenager.persistence.MovieRating</class>
+		<class>pl.edu.agh.iptv.dbmenager.persistence.OrderedMovie</class>
+		<class>pl.edu.agh.iptv.dbmenager.persistence.User</class>
+		
+        <properties>
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.format_sql" value="true" />
+ 
+            <property name="hibernate.connection.driver_class" 
+                      value="org.apache.derby.jdbc.ClientDriver" />
+
+			<property name="hibernate.connection.url" 
+                      value="jdbc:derby://localhost:1527/sun-appserv-samples" />
+			
+            <property name="hibernate.connection.username" value="video" />
+            
+            <property name="hibernate.connection.password" value="video"/>
+            
+            
+ 
+            <property name="hibernate.dialect" 
+                      value="org.hibernate.dialect.DerbyDialect" />
+            <property name="hibernate.hbm2ddl.auto" value="update" /> 
+        </properties>
+    </persistence-unit>
+</persistence>
