@@ -79,6 +79,8 @@ public class Starter extends JPanel {
 		setUpSportColumn(table, table.getColumnModel().getColumn(2));
 		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		table.setFillsViewportHeight(true);
+		table.setAutoCreateRowSorter(true);
+
 
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
@@ -102,8 +104,9 @@ public class Starter extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Remove button started");
 				System.out.println("Selected row = " + table.getSelectedRow());
-				model.removeMovie(table.getSelectedRow());
-				//table.remove(table.getSelectedRow());
+				int selectedRow = table.getSelectedRow();
+
+				model.removeMovie(table.convertRowIndexToModel(selectedRow));
 			}
 		});
 		newMovieButton.addActionListener(new ActionListener() {
@@ -181,6 +184,8 @@ public class Starter extends JPanel {
 		// createNodes();
 		orderTree = new JTree(top);
 		orderTree.setRootVisible(false);
+		orderTree.setShowsRootHandles(true);
+
 
 		JPanel buttonPanel = new JPanel();
 		addLeafButton = new JButton("Add");
@@ -230,6 +235,10 @@ public class Starter extends JPanel {
 
 		DBTableModel model = (DBTableModel) table.getModel();
 		System.out.println("Zaznaczono = " + table.getSelectedRow());
+		if(table.getSelectedRow() == -1)
+		{
+			return;
+		}
 		Movie movie = model.getMovieList().get(table.getSelectedRow());
 		String description = movie.getDescription();
 		descriptionTextArea.setText(description);
