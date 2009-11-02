@@ -35,6 +35,18 @@ public class DBTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 	
+	public void removeMovie(int index) {
+		System.out.println("Removieng movie");
+		Movie movie = movieList.get(index);
+		movieList.remove(index);
+		em.getTransaction().begin();
+		em.persist(movie);
+		em.remove(movie);
+		
+		em.getTransaction().commit();
+		fireTableDataChanged();
+	}
+	
 	@Override
 	public String getColumnName(int number) {
 		return columnNames[number];

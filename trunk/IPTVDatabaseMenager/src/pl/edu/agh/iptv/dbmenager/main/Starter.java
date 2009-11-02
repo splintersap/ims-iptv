@@ -55,23 +55,23 @@ public class Starter extends JPanel {
 	JTextArea descriptionTextArea = new JTextArea(10, 20);
 
 	JComponent pricesPane;
-	
+
 	static DBTableModel model;
 
 	Movie movie;
-	
+
 	final JTable table;
-	
+
 	JButton addLeafButton;
-	
+
 	JButton removeLeafButton;
-	
+
 	JButton removeButton;
 
 	public Starter() {
 		super(new GridLayout(2, 0));
 		Query query = em.createQuery("FROM Movie");
-		List<Movie> movieList = query.getResultList();
+		final List<Movie> movieList = query.getResultList();
 
 		model = new DBTableModel(movieList, em);
 
@@ -86,7 +86,6 @@ public class Starter extends JPanel {
 			}
 		});
 
-		
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(table);
 
@@ -101,14 +100,20 @@ public class Starter extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			}});
-		newMovieButton.addActionListener(new ActionListener(){
+				System.out.println("Remove button started");
+				System.out.println("Selected row = " + table.getSelectedRow());
+				model.removeMovie(table.getSelectedRow());
+				//table.remove(table.getSelectedRow());
+			}
+		});
+		newMovieButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				new AddMovieDialog();
-				
-			}});
+
+			}
+		});
 		newMoviePanel.add(newMovieButton);
 		newMoviePanel.add(removeButton);
 		tablePanel.add(newMoviePanel, BorderLayout.SOUTH);
@@ -145,7 +150,7 @@ public class Starter extends JPanel {
 				em.getTransaction().commit();
 			}
 		});
-		
+
 		JButton revertButton = new JButton("Revert");
 		revertButton.addActionListener(new ActionListener() {
 
@@ -166,7 +171,7 @@ public class Starter extends JPanel {
 		em.getTransaction().commit();
 		model.addMovie(movie);
 	}
-	
+
 	protected JComponent makePricesPanel(String text) {
 		JPanel panel = new JPanel(false);
 		panel.setLayout(new BorderLayout());
@@ -235,7 +240,7 @@ public class Starter extends JPanel {
 		List<MoviePayment> moviePayments = movie.getMoviePayments();
 		createNodes(moviePayments);
 		em.getTransaction().commit();
-		
+
 		removeButton.setEnabled(true);
 
 	}
