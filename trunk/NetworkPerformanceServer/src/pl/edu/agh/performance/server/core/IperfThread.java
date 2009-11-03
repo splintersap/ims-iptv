@@ -214,7 +214,8 @@ public class IperfThread extends Thread
 
 				Double jitter = new Double(results[9].trim());
 				Measurement J = new Measurement(start.doubleValue(), end.doubleValue(), jitter.doubleValue(), results[10]);
-				streamResult.addJitter(J);			
+				streamResult.addJitter(J);
+				System.out.println("This is the final bandwidth - server side: " + B.getValue());
 			}
 		}
 	}

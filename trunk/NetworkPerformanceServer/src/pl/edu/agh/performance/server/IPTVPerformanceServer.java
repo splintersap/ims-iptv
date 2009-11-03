@@ -96,7 +96,7 @@ public class IPTVPerformanceServer {
 					+ version + "' as default.");
 		}
 		
-		new PerformanceMeasurment(iperfCommand);
+		new PerformanceMeasurment(5001, 1470);
 		
 	}
 }
