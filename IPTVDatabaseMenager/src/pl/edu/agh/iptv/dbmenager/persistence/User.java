@@ -80,4 +80,10 @@ public class User extends pl.edu.agh.iptv.dbmenager.persistence.Entity {
 		
 		return null;
 	}
+
+	
+	@Override
+	public String toString() {
+		return sip;
+	}
 }

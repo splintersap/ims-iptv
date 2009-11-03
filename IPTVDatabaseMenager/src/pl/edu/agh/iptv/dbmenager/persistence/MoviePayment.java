@@ -79,5 +79,10 @@ public class MoviePayment extends pl.edu.agh.iptv.dbmenager.persistence.Entity {
 		this.pirce = pirce;
 		this.quality = quality;
 	}
+	
+	@Override
+	public String toString() {
+		return getQuality().name() + " : " +getPirce();
+	}
 
 }

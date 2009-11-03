@@ -24,12 +24,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -38,23 +35,17 @@ import org.jvnet.substance.api.renderers.SubstanceDefaultTableCellRenderer;
 import pl.edu.agh.iptv.dbmenager.persistence.Category;
 import pl.edu.agh.iptv.dbmenager.persistence.Movie;
 import pl.edu.agh.iptv.dbmenager.persistence.MoviePayment;
-import pl.edu.agh.iptv.dbmenager.persistence.OrderedMovie;
 
 public class Starter extends JPanel {
 
 	private static final long serialVersionUID = -7450798905446077365L;
 
-	DefaultMutableTreeNode top = new DefaultMutableTreeNode("Prices");
 
 	private static EntityManagerFactory emf;
 
 	private static EntityManager em;
 
-	JTree orderTree;
-
 	JTextArea descriptionTextArea = new JTextArea(10, 20);
-
-	JComponent pricesPane;
 
 	static DBTableModel model;
 
@@ -67,6 +58,8 @@ public class Starter extends JPanel {
 	JButton removeLeafButton;
 
 	JButton removeButton;
+	
+	PricesPanel pricesPanel;
 
 	public Starter() {
 		super(new GridLayout(2, 0));
@@ -128,8 +121,8 @@ public class Starter extends JPanel {
 		JComponent panel1 = makeDescriptionPanel();
 		tabbedPane.addTab("Description", panel1);
 
-		pricesPane = makePricesPanel("Prices");
-		tabbedPane.addTab("Prices", pricesPane);
+		pricesPanel = new PricesPanel();
+		tabbedPane.addTab("Prices", pricesPanel);
 
 		add(tabbedPane);
 	}
@@ -174,51 +167,10 @@ public class Starter extends JPanel {
 		em.getTransaction().commit();
 		model.addMovie(movie);
 	}
-
-	protected JComponent makePricesPanel(String text) {
-		JPanel panel = new JPanel(false);
-		panel.setLayout(new BorderLayout());
-
-		top = new DefaultMutableTreeNode("Prices");
-		// createNodes(top);
-		// createNodes();
-		orderTree = new JTree(top);
-		orderTree.setRootVisible(false);
-		orderTree.setShowsRootHandles(true);
-
-
-		JPanel buttonPanel = new JPanel();
-		addLeafButton = new JButton("Add");
-		addLeafButton.setEnabled(false);
-		removeLeafButton = new JButton("Remove");
-		removeLeafButton.setEnabled(false);
-		buttonPanel.add(addLeafButton);
-		buttonPanel.add(removeLeafButton);
-		panel.add(orderTree, BorderLayout.CENTER);
-		panel.add(buttonPanel, BorderLayout.PAGE_END);
-
-		return panel;
-	}
-
-	private void createNodes(List<MoviePayment> moviePayments) {
-		DefaultMutableTreeNode category = null;
-		DefaultMutableTreeNode orderNode = null;
-		top.removeAllChildren();
-		for (MoviePayment moviePayment : moviePayments) {
-			category = new DefaultMutableTreeNode(moviePayment.getQuality()
-					.name()
-					+ " : " + moviePayment.getPirce());
-			top.add(category);
-			for (OrderedMovie orderedMovie : moviePayment.getOrderedMovieList()) {
-				orderNode = new DefaultMutableTreeNode(orderedMovie.getUser()
-						.getSip());
-				category.add(orderNode);
-			}
-		}
-		SwingUtilities.updateComponentTreeUI(orderTree);
-
-		this.repaint();
-
+	
+	public static EntityManager getEntityMenager()
+	{
+		return em;
 	}
 
 	public void setUpSportColumn(JTable table, TableColumn sportColumn) {
@@ -234,7 +186,6 @@ public class Starter extends JPanel {
 	private void selectMovieAction(JTable table) {
 
 		DBTableModel model = (DBTableModel) table.getModel();
-		System.out.println("Zaznaczono = " + table.getSelectedRow());
 		if(table.getSelectedRow() == -1)
 		{
 			return;
@@ -247,7 +198,7 @@ public class Starter extends JPanel {
 		em.persist(movie);
 		this.movie = movie;
 		List<MoviePayment> moviePayments = movie.getMoviePayments();
-		createNodes(moviePayments);
+		pricesPanel.createNodes(moviePayments);
 		em.getTransaction().commit();
 
 		removeButton.setEnabled(true);
