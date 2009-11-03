@@ -1,7 +1,6 @@
 package pl.edu.agh.iptv.dbmenager.main;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -12,14 +11,12 @@ import javax.persistence.EntityManager;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSlider;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -100,6 +97,7 @@ public class PricesPanel extends JPanel implements ActionListener {
 		rootNode.removeAllChildren();
 		for (MoviePayment moviePayment : moviePayments) {
 			category = new InformationTreeNode(moviePayment);
+			Starter.getEntityMenager().refresh(moviePayment);
 			category.setObject(moviePayment);
 			rootNode.add(category);
 			for (OrderedMovie orderedMovie : moviePayment.getOrderedMovieList()) {
@@ -149,7 +147,9 @@ public class PricesPanel extends JPanel implements ActionListener {
 		toolkit.beep();
 	}
 
-	public DefaultMutableTreeNode addObject(Object child) {
+
+	public InformationTreeNode addUser(OrderedMovie orederdMovie) {
+		
 		DefaultMutableTreeNode parentNode = null;
 		TreePath parentPath = tree.getSelectionPath();
 
@@ -159,26 +159,18 @@ public class PricesPanel extends JPanel implements ActionListener {
 			parentNode = (DefaultMutableTreeNode) (parentPath
 					.getLastPathComponent());
 		}
-
-		return addObject(parentNode, child, true);
-	}
-
-	public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent,
-			Object child, boolean shouldBeVisible) {
-		DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
-
-		if (parent == null) {
-			parent = rootNode;
-		}
+		
+		InformationTreeNode childNode = new InformationTreeNode(orederdMovie.getUser().getSip());
+		childNode.setObject(orederdMovie);
 
 		// It is key to invoke this on the TreeModel, and NOT
 		// DefaultMutableTreeNode
-		treeModel.insertNodeInto(childNode, parent, parent.getChildCount());
+		treeModel.insertNodeInto(childNode, parentNode, parentNode.getChildCount());
 
 		// Make sure the user can see the lovely new node.
-		if (shouldBeVisible) {
-			tree.scrollPathToVisible(new TreePath(childNode.getPath()));
-		}
+		
+		tree.scrollPathToVisible(new TreePath(childNode.getPath()));
+		
 		return childNode;
 	}
 
@@ -186,7 +178,15 @@ public class PricesPanel extends JPanel implements ActionListener {
 		String command = e.getActionCommand();
 
 		if (ADD_COMMAND.equals(command)) {
-			new UserListDialog(this);
+			TreePath currentSelection = tree.getSelectionPath();
+			MoviePayment moviePayment= null;
+			if (currentSelection != null) {
+				InformationTreeNode currentNode = (InformationTreeNode) (currentSelection
+						.getLastPathComponent());
+				moviePayment = (MoviePayment) currentNode.getObject();
+
+			}
+			new UserListDialog(this, moviePayment);
 
 		} else if (REMOVE_COMMAND.equals(command)) {
 			// Remove button clicked
@@ -213,9 +213,9 @@ public class PricesPanel extends JPanel implements ActionListener {
 		em.persist(moviePayment);
 		for (User user : userList) {
 			em.persist(user);
-			user.addOrderedMovie(moviePayment.getMovie(), moviePayment
+			OrderedMovie orderMovie = user.addOrderedMovie(moviePayment.getMovie(), moviePayment
 					.getQuality());
-			addObject(user);
+			addUser(orderMovie);
 		}
 		em.getTransaction().commit();
 
