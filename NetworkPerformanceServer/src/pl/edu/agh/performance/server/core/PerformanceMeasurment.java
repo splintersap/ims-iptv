@@ -1,16 +1,17 @@
 package pl.edu.agh.performance.server.core;
 
-
 public class PerformanceMeasurment {
 
 	/*
 	 * Represents options for iperf exe command.
 	 */
-	private String options = "bin/iperf.exe -s -u -P 0 -i 1 -p 5001 -f k";
+	private String options;// = "bin/iperf.exe -s -u -P 0 -i 1 -p 5001 -f k";
 
 	private IperfThread iperf;
 
-	public PerformanceMeasurment(String iperfCommand) {
+	public PerformanceMeasurment(int port, int frameSize) {
+		options = new String("bin/iperf.exe -s -u -P 0 -i 1 -p " + port
+				+ " -l " + frameSize);
 		startListening();
 	}
 
