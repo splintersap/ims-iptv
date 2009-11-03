@@ -13,10 +13,10 @@ import pl.edu.agh.performance.client.core.PerformanceMeasurment;
 public class IPTVPerformanceClient {
 
 	public static void main(String[] args) {
-		new IPTVPerformanceClient().startServer();
+		new IPTVPerformanceClient().queryServer();
 	}
 
-	public void startServer() {
+	public void queryServer() {
 		String iperfCommand = "iperf";
 		String version = "";
 		Process process;
@@ -95,8 +95,8 @@ public class IPTVPerformanceClient {
 			System.err.println("Impossible to get iperf version. Using '"
 					+ version + "' as default.");
 		}
-		
-		new PerformanceMeasurment(iperfCommand);
-		
+
+		new PerformanceMeasurment("192.168.131.65", 5001, 10, 1470);
+
 	}
 }
