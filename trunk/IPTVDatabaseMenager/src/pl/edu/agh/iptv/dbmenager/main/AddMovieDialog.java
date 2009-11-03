@@ -70,7 +70,6 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
 					moviePathTextField.setText(file.getAbsolutePath());
-					// This is where a real application would open the file.
 					System.out.println("Opening: " + file.getName());
 				} else {
 					System.out.println("Open command cancelled by user.");
