@@ -62,9 +62,10 @@ public class User extends pl.edu.agh.iptv.dbmenager.persistence.Entity {
 		this.orderedMoviesList = orderedMoviesList;
 	}
 	
-	public void addOrderedMovie(Movie movie, Quality quality) {
+	public OrderedMovie addOrderedMovie(Movie movie, Quality quality) {
 		OrderedMovie orderedMovie = new OrderedMovie(this, movie.getMoviePayments(quality));
 		orderedMoviesList.add(orderedMovie);
+		return orderedMovie;
 	}
 	
 	public OrderedMovie getOrderedMovie(MoviePayment moviePayment) {
