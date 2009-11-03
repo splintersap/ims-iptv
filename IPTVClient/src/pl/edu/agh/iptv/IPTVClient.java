@@ -54,13 +54,6 @@ public class IPTVClient implements ActionListener {
 			addingListener();
 			triggerMoviesRequest();
 
-			// Simulator simulator = new Simulator();
-			// moviesController = new MoviesController(simulator.getMovies());
-			// moviesTab.setListOfMovies(moviesController
-			// .getTitlesOfBoughtMovies().toArray(
-			// new String[moviesController
-			// .getTitlesOfBoughtMovies().size()]));
-
 		} catch (Exception e) {
 			showError("Could not initialize ICP", e);
 		}
@@ -170,7 +163,7 @@ public class IPTVClient implements ActionListener {
 	}
 
 	public void setUserRating(int rating) {
-
+		
 	}
 
 }
