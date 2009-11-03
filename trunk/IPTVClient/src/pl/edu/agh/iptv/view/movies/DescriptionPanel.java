@@ -3,7 +3,6 @@ package pl.edu.agh.iptv.view.movies;
 import java.awt.Dimension;
 import java.awt.Font;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,10 +25,10 @@ public class DescriptionPanel extends JPanel {
 		JTextArea directorArea = new JTextArea(director);
 		JTextArea categoryArea = new JTextArea(category);
 		JTextArea descArea = new JTextArea(description);
+		descArea.setLineWrap(true);
 
 		JScrollPane descScrollPane = new JScrollPane(descArea);
 		descScrollPane.setPreferredSize(new Dimension(200, 50));
-		descScrollPane.setMinimumSize(new Dimension(200, 50));
 
 		JLabel titleHeaderLabel = new JLabel("Title");
 		JLabel directorHeaderLabel = new JLabel("Director");
