@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.servlet.ServletException;
+import javax.servlet.sip.SipFactory;
 import javax.servlet.sip.SipServlet;
 import javax.servlet.sip.SipServletRequest;
 import javax.servlet.sip.SipServletResponse;
@@ -39,7 +40,6 @@ public class VideoServlet extends SipServlet {
 			throws ServletException, IOException {
 		log("inside doMessage method");
 		sipServletRequest.createResponse(200).send();
-
 		String content = new String(sipServletRequest.getRawContent());
 		String moviePath = getMoviePath(content);
 		// start streaming
@@ -54,6 +54,13 @@ public class VideoServlet extends SipServlet {
 		List<Movie> movieList = query.getResultList();
 		Movie movie = movieList.get(0);
 		return movie.getMoviePath();
+	}
+	
+	@Override
+	protected void doInfo(SipServletRequest req) throws ServletException,
+			IOException {
+		log("Wiadomosc doInfo " + req);
+		
 	}
 
 	/**
@@ -84,6 +91,8 @@ public class VideoServlet extends SipServlet {
 			message.send();
 		}
 	}
+	
+	
 
 	/**
 	 * @inheritDoc

@@ -3,7 +3,6 @@
 	<name>IPTVServlet</name>
 	<comment></comment>
 	<projects>
-		<project>ComunicationCommon</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
