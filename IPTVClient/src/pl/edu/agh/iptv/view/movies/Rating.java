@@ -1,5 +1,6 @@
 package pl.edu.agh.iptv.view.movies;
 
+import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -7,12 +8,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.listeners.DescriptionListener;
 
 public class Rating {
 
@@ -218,8 +221,8 @@ public class Rating {
 			// TODO Auto-generated method stub
 			if (JOptionPane.showConfirmDialog(rateNameLabel,
 					"Are you sure you want to rate this movie with a rate "
-							+ text) == 1)
-			iptvClient.setUserRating(this.number);
+							+ text) == JOptionPane.YES_OPTION)
+			iptvClient.setUserRating(this.number, DescriptionListener.getSelectedMovie());
 		}
 
 		@Override

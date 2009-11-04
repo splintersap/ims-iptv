@@ -20,7 +20,11 @@ public class DescriptionListener implements ListSelectionListener {
 
 	private IPTVClient iptvClient = null;
 	private MoviesTab moviesTab = null;
-	private boolean wasSelected = false;
+	private static String selectedMovie = null;
+
+	public static String getSelectedMovie() {
+		return selectedMovie;
+	}
 
 	public DescriptionListener(IPTVClient iptvClient, MoviesTab moviesTab) {
 		this.iptvClient = iptvClient;
@@ -28,22 +32,20 @@ public class DescriptionListener implements ListSelectionListener {
 	}
 
 	public void valueChanged(ListSelectionEvent selection) {
-		// TODO Auto-generated method stub
-		if (!wasSelected) {
-			JList list = (JList) selection.getSource();
-			String item = (String) list.getSelectedValue();
-			CommonMovie movie = this.iptvClient.getMoviesController()
-					.getMovieByName(item);
-			
-			DescriptionPanel descriptionPanel = new DescriptionPanel(movie.getTitle(),
-					movie.getDirector(), movie.getCategory(), movie
-					.getDescription(), movie.getAllUsersRating());
-			
-			descriptionPanel.getRatingPanel().setIPTVClient(iptvClient);
-			
-			this.moviesTab.setDescriptionPanel(descriptionPanel);
-			
-		}
-		wasSelected = !wasSelected;
+
+		JList list = (JList) selection.getSource();
+		String item = (String) list.getSelectedValue();
+		selectedMovie = item;
+		CommonMovie movie = this.iptvClient.getMoviesController()
+				.getMovieByName(item);
+
+		DescriptionPanel descriptionPanel = new DescriptionPanel(movie
+				.getTitle(), movie.getDirector(), movie.getCategory(), movie
+				.getDescription(), movie.getAllUsersRating());
+
+		descriptionPanel.getRatingPanel().setIPTVClient(iptvClient);
+
+		this.moviesTab.setDescriptionPanel(descriptionPanel);
+
 	}
 }
