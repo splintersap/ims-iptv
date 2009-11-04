@@ -33,16 +33,22 @@ public class DescriptionListener implements ListSelectionListener {
 
 	public void valueChanged(ListSelectionEvent selection) {
 
-		if(selection.getValueIsAdjusting() == true)
+		if(selection.getValueIsAdjusting() == true )
+		{
 			return;
-		
+		}
 		
 		JList list = (JList) selection.getSource();
 		String item = (String) list.getSelectedValue();
+		if(item == null)
+		{
+			return;
+		}
 		selectedMovie = item;
 		CommonMovie movie = this.iptvClient.getMoviesController()
 				.getMovieByName(item);
 
+		
 		DescriptionPanel descriptionPanel = new DescriptionPanel(movie
 				.getTitle(), movie.getDirector(), movie.getCategory(), movie
 				.getDescription(), movie.getAllUsersRating());

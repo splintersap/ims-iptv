@@ -222,7 +222,7 @@ public class Rating {
 			if (JOptionPane.showConfirmDialog(rateNameLabel,
 					"Are you sure you want to rate this movie with a rate "
 							+ text) == JOptionPane.YES_OPTION)
-			iptvClient.setUserRating(this.number, DescriptionListener.getSelectedMovie());
+			iptvClient.setUserRating(this.number + 1, DescriptionListener.getSelectedMovie());
 		}
 
 		@Override
