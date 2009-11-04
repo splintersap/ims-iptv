@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-public class IperfThread extends Thread {
+public class IperfThread {
 	private String command;
 	private Process process;
 	private Vector<JperfStreamResult> finalResults;
@@ -37,7 +37,7 @@ public class IperfThread extends Thread {
 		this.finalResults = new Vector<JperfStreamResult>();
 	}
 
-	public void run() {
+	public double run() {
 		try {
 
 			process = Runtime.getRuntime().exec(command);
@@ -66,6 +66,7 @@ public class IperfThread extends Thread {
 		} finally {
 			quit();
 		}
+		return finalBandwidth;
 	}
 
 	public synchronized void quit() {

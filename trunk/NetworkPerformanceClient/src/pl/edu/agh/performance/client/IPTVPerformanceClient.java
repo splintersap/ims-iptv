@@ -12,11 +12,19 @@ import pl.edu.agh.performance.client.core.PerformanceMeasurment;
 
 public class IPTVPerformanceClient {
 
-	public static void main(String[] args) {
-		new IPTVPerformanceClient().queryServer();
+	private final int bandwidth = 100;
+
+	private String ipAddress;
+
+	public IPTVPerformanceClient(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 
-	public void queryServer() {
+	public static void main(String[] args) {
+		new IPTVPerformanceClient("192.168.0.71").queryServer();
+	}
+
+	public double queryServer() {
 		String iperfCommand = "iperf";
 		String version = "";
 		Process process;
@@ -45,7 +53,7 @@ public class IPTVPerformanceClient {
 											+ "</html>", "Error",
 									JOptionPane.ERROR_MESSAGE);
 					System.exit(1);
-					return;
+					return 0;
 				}
 			} else {
 				JOptionPane
@@ -54,7 +62,7 @@ public class IPTVPerformanceClient {
 								"<html>Iperf is probably not in your path!<br>Please download it here '<b><font color='blue'><u>http://dast.nlanr.net/Projects/Iperf/</u></font></b>'<br>and put the executable into your <b>PATH</b> environment variable.</html>",
 								"Iperf not found", JOptionPane.ERROR_MESSAGE);
 				System.exit(1);
-				return;
+				return 0;
 			}
 		}
 
@@ -96,7 +104,10 @@ public class IPTVPerformanceClient {
 					+ version + "' as default.");
 		}
 
-		new PerformanceMeasurment("192.168.0.71", 5001, 10, 1470);
+		PerformanceMeasurment measure = new PerformanceMeasurment(
+				this.ipAddress, 5001, bandwidth, 1470);
+
+		return measure.getBandwidthResult();
 
 	}
 }
