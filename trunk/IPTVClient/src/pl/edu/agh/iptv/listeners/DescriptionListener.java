@@ -33,6 +33,10 @@ public class DescriptionListener implements ListSelectionListener {
 
 	public void valueChanged(ListSelectionEvent selection) {
 
+		if(selection.getValueIsAdjusting() == true)
+			return;
+		
+		
 		JList list = (JList) selection.getSource();
 		String item = (String) list.getSelectedValue();
 		selectedMovie = item;
