@@ -1,6 +1,7 @@
 package pl.edu.agh.iptv.controllers;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -9,6 +10,7 @@ import pl.edu.agh.iptv.listeners.DescriptionListener;
 import pl.edu.agh.iptv.listeners.PlayListener;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
+import pl.edu.agh.performance.client.IPTVPerformanceClient;
 
 public class MainController {
 
@@ -53,6 +55,9 @@ public class MainController {
 						new PlayListener(iptvClient, moviesTab));
 
 				mainView.getRefreshButton().addActionListener(iptvClient);
+
+				new IPTVPerformanceClient("192.168.0.71", mainView
+						.getBandwidthLabel()).queryServer();
 			}
 		});
 

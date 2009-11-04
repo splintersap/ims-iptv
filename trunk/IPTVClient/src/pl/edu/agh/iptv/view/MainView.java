@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -30,7 +31,9 @@ public class MainView {
 	private JTabbedPane mainTabs = null;
 	private JScrollPane statisticsTab = null;
 	private JScrollPane paymentsTab = null;
-	private MoviesTab moviesTab = null;	
+	private MoviesTab moviesTab = null;
+
+	private JLabel bandwidthLabel;
 
 	/*
 	 * Menu buttons.
@@ -75,7 +78,14 @@ public class MainView {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(gridLayout);
 
-			jContentPane.add(getJToolBar(), BorderLayout.NORTH);
+			ResizableGridLayout menuLabelGL = new ResizableGridLayout(1, 2, 2,
+					0);
+			JPanel menuLabelP = new JPanel();
+			menuLabelP.setLayout(menuLabelGL);
+			menuLabelP.add(getJToolBar());
+			menuLabelP.add(getBandwidthLabel());
+
+			jContentPane.add(menuLabelP, BorderLayout.NORTH);
 			jContentPane.add(getMainTabs(), null);
 
 		}
@@ -217,6 +227,13 @@ public class MainView {
 
 	public int getMenuBarHeight() {
 		return this.menuBarHeight;
+	}
+
+	public JLabel getBandwidthLabel() {
+		if (this.bandwidthLabel == null) {
+			bandwidthLabel = new JLabel("Requesting server for bandwidth...");
+		}
+		return this.bandwidthLabel;
 	}
 
 }
