@@ -7,7 +7,6 @@ import pl.edu.agh.ims.commons.Serializator;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
-import pl.edu.agh.performance.client.IPTVPerformanceClient;
 
 import com.ericsson.icp.ICPFactory;
 import com.ericsson.icp.IPlatform;
