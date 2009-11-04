@@ -19,7 +19,9 @@ import java.io.InputStreamReader;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-public class IperfThread {
+import javax.swing.JLabel;
+
+public class IperfThread extends Thread {
 	private String command;
 	private Process process;
 	private Vector<JperfStreamResult> finalResults;
@@ -31,13 +33,17 @@ public class IperfThread {
 
 	private boolean isServerMode;
 
-	public IperfThread(boolean isServerMode, String command) {
+	private JLabel bandwidthLabel;
+
+	public IperfThread(boolean isServerMode, String command,
+			JLabel bandwidthLabel) {
 		this.isServerMode = isServerMode;
 		this.command = command;
+		this.bandwidthLabel = bandwidthLabel;
 		this.finalResults = new Vector<JperfStreamResult>();
 	}
 
-	public double run() {
+	public void run() {
 		try {
 
 			process = Runtime.getRuntime().exec(command);
@@ -57,8 +63,8 @@ public class IperfThread {
 			while ((error_line = errors.readLine()) != null) {
 				System.out.println(error_line);
 			}
-			System.out
-					.println("This is the final bandwidth: " + finalBandwidth);			
+			this.bandwidthLabel.setText("Your bandwidth: " + finalBandwidth
+					+ "Mbits/sec");
 		} catch (Exception e) {
 			// don't do anything?
 			System.out.println("\nIperf thread stopped [CAUSE="
@@ -66,7 +72,7 @@ public class IperfThread {
 		} finally {
 			quit();
 		}
-		return finalBandwidth;
+
 	}
 
 	public synchronized void quit() {
