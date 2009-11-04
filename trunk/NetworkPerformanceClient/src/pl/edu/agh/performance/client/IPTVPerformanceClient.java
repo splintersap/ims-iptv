@@ -28,10 +28,10 @@ public class IPTVPerformanceClient {
 			Properties sysprops = System.getProperties();
 			String osName = ((String) sysprops.get("os.name")).toLowerCase();
 
-			if (new File("bin/iperf.exe").exists()
+			if (new File("iperf/iperf.exe").exists()
 					&& (osName.matches(".*win.*") || osName
 							.matches(".*microsoft.*"))) {
-				iperfCommand = "bin/iperf.exe";
+				iperfCommand = "iperf/iperf.exe";
 				try {
 					process = Runtime.getRuntime().exec(iperfCommand + " -v");
 				} catch (Exception ex) {
@@ -96,7 +96,7 @@ public class IPTVPerformanceClient {
 					+ version + "' as default.");
 		}
 
-		new PerformanceMeasurment("192.168.131.65", 5001, 10, 1470);
+		new PerformanceMeasurment("192.168.0.71", 5001, 10, 1470);
 
 	}
 }
