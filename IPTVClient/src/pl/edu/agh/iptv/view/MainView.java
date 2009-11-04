@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,7 +22,9 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.listeners.IperfManagerListener;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
+import pl.edu.agh.performance.client.core.IperfThread;
 
 public class MainView {
 
@@ -160,7 +164,7 @@ public class MainView {
 		menu.setMnemonic(KeyEvent.VK_P);
 		menu.getAccessibleContext().setAccessibleDescription(
 				"Direct program actions");
-		
+
 		menuBar.add(menu);
 
 		// a group of JMenuItems
@@ -234,6 +238,10 @@ public class MainView {
 			bandwidthLabel = new JLabel("Requesting server for bandwidth...");
 		}
 		return this.bandwidthLabel;
+	}
+
+	public void setWindowCloseOperation(IperfManagerListener iperfListener) {
+		getMainFrame().addWindowListener(iperfListener);
 	}
 
 }

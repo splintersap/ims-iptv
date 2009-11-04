@@ -7,6 +7,7 @@ import javax.swing.UIManager;
 
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.listeners.DescriptionListener;
+import pl.edu.agh.iptv.listeners.IperfManagerListener;
 import pl.edu.agh.iptv.listeners.PlayListener;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
@@ -48,16 +49,20 @@ public class MainController {
 				 * Adding listener to the list with movies.
 				 */
 				moviesTab.getMoviesList().addListSelectionListener(
-						new DescriptionListener(iptvClient, moviesTab)
-						);
+						new DescriptionListener(iptvClient, moviesTab));
 
 				mainView.getPlayButton().addActionListener(
 						new PlayListener(iptvClient, moviesTab));
 
 				mainView.getRefreshButton().addActionListener(iptvClient);
 
-				new IPTVPerformanceClient("192.168.0.71", mainView
-						.getBandwidthLabel()).queryServer();
+				IPTVPerformanceClient performance = new IPTVPerformanceClient(
+						"192.168.0.67", mainView.getBandwidthLabel());
+				performance.queryServer();
+
+				mainView.setWindowCloseOperation(new IperfManagerListener(
+						performance.getIperfThread()));
+
 			}
 		});
 
