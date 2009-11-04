@@ -49,6 +49,7 @@ public class IPTVClient implements ActionListener {
 			service = profile.createService("+g.videoclient.ericsson.com", "");
 			service.addListener(new ServiceAdapter());
 
+			
 			this.moviesTab = moviesTab;
 
 			addingListener();
@@ -162,8 +163,14 @@ public class IPTVClient implements ActionListener {
 		return this.moviesController;
 	}
 
-	public void setUserRating(int rating) {
-		
+	public void setUserRating(int rating, String title) {
+		System.out.println("I am setting user rating to " + String.valueOf(rating));
+		String ratingString = String.valueOf(rating);
+		try {
+			session.sendInformation("rating/" + title, ratingString.getBytes(), ratingString.length());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

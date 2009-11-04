@@ -150,6 +150,7 @@ public class MainView {
 		menu.setMnemonic(KeyEvent.VK_P);
 		menu.getAccessibleContext().setAccessibleDescription(
 				"Direct program actions");
+		
 		menuBar.add(menu);
 
 		// a group of JMenuItems
