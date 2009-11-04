@@ -3,9 +3,6 @@
     <wb-module deploy-name="IPTVServlet">
         <wb-resource deploy-path="/" source-path="/ApplicationContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <dependent-module archiveName="ComunicationCommon.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ComunicationCommon/ComunicationCommon">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="java-output-path"/>
         <property name="context-root" value="IPTVServlet"/>
     </wb-module>
