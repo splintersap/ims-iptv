@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import pl.edu.agh.performance.client.core.IperfThread;
 import pl.edu.agh.performance.client.core.PerformanceMeasurment;
 
 public class IPTVPerformanceClient {
@@ -16,15 +18,20 @@ public class IPTVPerformanceClient {
 
 	private String ipAddress;
 
-	public IPTVPerformanceClient(String ipAddress) {
+	private JLabel bandwidthLabel;
+
+	private PerformanceMeasurment measure;
+
+	public IPTVPerformanceClient(String ipAddress, JLabel bandwidthLabel) {
 		this.ipAddress = ipAddress;
+		this.bandwidthLabel = bandwidthLabel;
 	}
 
 	public static void main(String[] args) {
-		new IPTVPerformanceClient("192.168.0.71").queryServer();
+		new IPTVPerformanceClient("192.168.0.67", new JLabel()).queryServer();
 	}
 
-	public double queryServer() {
+	public void queryServer() {
 		String iperfCommand = "iperf";
 		String version = "";
 		Process process;
@@ -53,7 +60,7 @@ public class IPTVPerformanceClient {
 											+ "</html>", "Error",
 									JOptionPane.ERROR_MESSAGE);
 					System.exit(1);
-					return 0;
+					return;
 				}
 			} else {
 				JOptionPane
@@ -62,7 +69,7 @@ public class IPTVPerformanceClient {
 								"<html>Iperf is probably not in your path!<br>Please download it here '<b><font color='blue'><u>http://dast.nlanr.net/Projects/Iperf/</u></font></b>'<br>and put the executable into your <b>PATH</b> environment variable.</html>",
 								"Iperf not found", JOptionPane.ERROR_MESSAGE);
 				System.exit(1);
-				return 0;
+				return;
 			}
 		}
 
@@ -104,10 +111,12 @@ public class IPTVPerformanceClient {
 					+ version + "' as default.");
 		}
 
-		PerformanceMeasurment measure = new PerformanceMeasurment(
-				this.ipAddress, 5001, bandwidth, 1470);
+		measure = new PerformanceMeasurment(this.ipAddress, 5001, bandwidth,
+				1470, bandwidthLabel);
 
-		return measure.getBandwidthResult();
+	}
 
+	public IperfThread getIperfThread() {
+		return this.measure.getIperfThread();
 	}
 }
