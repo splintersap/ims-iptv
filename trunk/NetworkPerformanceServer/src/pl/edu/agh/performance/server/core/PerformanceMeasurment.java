@@ -10,7 +10,7 @@ public class PerformanceMeasurment {
 	private IperfThread iperf;
 
 	public PerformanceMeasurment(int port, int frameSize) {
-		options = new String("bin/iperf.exe -s -u -P 0 -i 1 -p " + port
+		options = new String("iperf/iperf.exe -s -u -P 0 -i 1 -p " + port
 				+ " -l " + frameSize);
 		startListening();
 	}
