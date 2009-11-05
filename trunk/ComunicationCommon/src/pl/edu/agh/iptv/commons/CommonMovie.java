@@ -2,7 +2,6 @@ package pl.edu.agh.iptv.commons;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CommonMovie {
 	private String title;
