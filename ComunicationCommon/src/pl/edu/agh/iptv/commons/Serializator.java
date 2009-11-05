@@ -1,4 +1,4 @@
-package pl.edu.agh.ims.commons;
+package pl.edu.agh.iptv.commons;
 
 import java.util.List;
 
