@@ -13,6 +13,10 @@ import pl.edu.agh.iptv.components.ResizableGridLayout;
 public class DescriptionPanel extends JPanel {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Rating ratingPanel;
 	
 	public DescriptionPanel(String title, String director, String category,

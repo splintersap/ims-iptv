@@ -7,7 +7,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.view.MainView;
@@ -41,11 +40,6 @@ public class MoviesTab extends JPanel {
 	 * This is panel which holds the list with movies.
 	 */
 	private JPanel panelForMoviesList = null;
-
-	/*
-	 * This is panel with a movie description.
-	 */
-	private JPanel panelWithDescription = null;
 
 	private MainView parent = null;
 
