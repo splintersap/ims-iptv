@@ -1,7 +1,6 @@
 package pl.edu.agh.iptv.controllers;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 

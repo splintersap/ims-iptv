@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,7 +22,6 @@ import javax.swing.KeyStroke;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.listeners.IperfManagerListener;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
-import pl.edu.agh.performance.client.core.IperfThread;
 
 public class MainView {
 
