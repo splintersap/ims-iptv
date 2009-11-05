@@ -1,4 +1,4 @@
-package pl.edu.agh.ims.commons.rating;
+package pl.edu.agh.iptv.commons.rating;
 
 public class RatingMessage {
 
