@@ -1,4 +1,4 @@
-package pl.edu.agh.ims.commons;
+package pl.edu.agh.iptv.commons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,20 +61,29 @@ public class CommonMovie {
 	public void setAllUsersRating(Double allUsersRating) {
 		this.allUsersRating = allUsersRating;
 	}
-	
+
 	public void addCommonComment(CommonComment comment) {
 		commentList.add(comment);
 	}
 
-	public void addCommonMovieDescription(CommonMovieDescription movieDescription) {
+	public List<CommonComment> getCommentList() {
+		return commentList;
+	}
+
+	public void setCommentList(List<CommonComment> commentList) {
+		this.commentList = commentList;
+	}
+
+	public void addCommonMovieDescription(
+			CommonMovieDescription movieDescription) {
 		movieDescriptionList.add(movieDescription);
 	}
-	
+
 	@Override
 	public String toString() {
 		return title + ", " + director + ", " + category.toString();
 	};
-	
+
 	public CommonMovie(String title, String category, String description,
 			String director, Integer userRating, Double allUsersRating) {
 		this.title = title;
