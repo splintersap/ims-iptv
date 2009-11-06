@@ -1,5 +1,6 @@
 package pl.edu.agh.iptv;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -12,7 +13,9 @@ import pl.edu.agh.iptv.commons.CommonComment;
 import pl.edu.agh.iptv.commons.CommonMovie;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
-import pl.edu.agh.iptv.listeners.DescriptionListener;
+import pl.edu.agh.iptv.listeners.CommentListener;
+import pl.edu.agh.iptv.view.movies.DescriptionPanel;
+import pl.edu.agh.iptv.view.movies.MovieComments;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 import com.ericsson.icp.ICPFactory;
@@ -44,9 +47,16 @@ public class IPTVClient implements ActionListener {
 
 	private MoviesTab moviesTab = null;
 
+	/*
+	 * This is in order to pass the reference of IPTVClient class to the
+	 * aggregated class SessionAdapter responsible for querying the server.
+	 */
+	private IPTVClient client;
+
 	public IPTVClient(MoviesTab moviesTab) {
 		try {
 
+			this.client = this;
 			IPlatform platform = ICPFactory.createPlatform();
 			platform.registerClient("IPTVClient");
 			platform.addListener(new PlatformAdapter());
@@ -155,15 +165,16 @@ public class IPTVClient implements ActionListener {
 							System.out.println(title + ", " + category + ", "
 									+ director + ", " + description);
 							System.out.println("Before DP");
+
 							/*
-							 * DescriptionPanel descriptionPanel = new
-							 * DescriptionPanel( "asdf", "asg", "asdgasdg",
-							 * "asdgsadg", 3.0);
+							 * Displaying received description about selected
+							 * movie.
 							 */
-							// System.out.println("After DP");
-							// descriptionPanel.getRatingPanel().setIPTVClient(this);
-							// moviesTab.setDescriptionPanel(null);
-							// System.out.println(description);
+							Runnable sh = new DescriptionThread(movie,
+									moviesTab, client);
+							EventQueue.invokeLater(sh);
+							/***************************************/
+
 						} catch (SDPParseException e) {
 							e.printStackTrace();
 						}
@@ -250,14 +261,37 @@ public class IPTVClient implements ActionListener {
 		}
 	}
 
-	public void getMovieInformations(String item,
-			DescriptionListener descListener) {
-
+	public void getMovieInformations(String item) {
 		try {
 			session.sendInformation("text/title-info", item.getBytes(), item
 					.length());
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private class DescriptionThread implements Runnable {
+
+		MoviesTab moviesTab;
+		CommonMovie movie;
+		IPTVClient client;
+
+		public DescriptionThread(CommonMovie movie, MoviesTab moviesTab,
+				IPTVClient client) {
+			this.movie = movie;
+			this.moviesTab = moviesTab;
+			this.client = client;
+		}
+
+		public void run() {
+			DescriptionPanel descriptionPanel = new DescriptionPanel(movie);
+			MovieComments movieComments = descriptionPanel.getMovieComments();
+			movieComments.getCommentButton().addActionListener(
+					new CommentListener(client, movieComments));
+
+			descriptionPanel.getRatingPanel().setIPTVClient(client);
+
+			this.moviesTab.setDescriptionPanel(descriptionPanel);
 		}
 	}
 

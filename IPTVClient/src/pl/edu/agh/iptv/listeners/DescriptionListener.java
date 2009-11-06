@@ -5,9 +5,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.iptv.IPTVClient;
-import pl.edu.agh.iptv.commons.CommonMovie;
-import pl.edu.agh.iptv.view.movies.DescriptionPanel;
-import pl.edu.agh.iptv.view.movies.MovieComments;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 /**
@@ -25,11 +22,6 @@ public class DescriptionListener implements ListSelectionListener {
 	private IPTVClient iptvClient = null;
 
 	/*
-	 * Necessary in order to update the view with new information.
-	 */
-	private MoviesTab moviesTab = null;
-
-	/*
 	 * Title of selected movie.
 	 */
 	private static String selectedMovie = null;
@@ -38,9 +30,8 @@ public class DescriptionListener implements ListSelectionListener {
 		return selectedMovie;
 	}
 
-	public DescriptionListener(IPTVClient iptvClient, MoviesTab moviesTab) {
+	public DescriptionListener(IPTVClient iptvClient) {
 		this.iptvClient = iptvClient;
-		this.moviesTab = moviesTab;
 	}
 
 	public void valueChanged(ListSelectionEvent selection) {
@@ -55,34 +46,9 @@ public class DescriptionListener implements ListSelectionListener {
 			return;
 		}
 		selectedMovie = item;
-		// CommonMovie movie =
-		this.iptvClient.getMovieInformations(item, this);
 
-		/*
-		 * getMoviesController() .getMovieByName(item);
-		 * 
-		 * DescriptionPanel descriptionPanel = new DescriptionPanel(movie);
-		 * MovieComments movieComments = descriptionPanel.getMovieComments();
-		 * movieComments.getCommentButton().addActionListener( new
-		 * CommentListener(iptvClient, movieComments));
-		 * 
-		 * descriptionPanel.getRatingPanel().setIPTVClient(iptvClient);
-		 * 
-		 * this.moviesTab.setDescriptionPanel(descriptionPanel);
-		 */
+		this.iptvClient.getMovieInformations(item);
 
 	}
 
-	public void displayDescription(CommonMovie movie) {
-
-		DescriptionPanel descriptionPanel = new DescriptionPanel(movie);
-		MovieComments movieComments = descriptionPanel.getMovieComments();
-		movieComments.getCommentButton().addActionListener(
-				new CommentListener(iptvClient, movieComments));
-
-		descriptionPanel.getRatingPanel().setIPTVClient(iptvClient);
-
-		this.moviesTab.setDescriptionPanel(descriptionPanel);
-
-	}
 }
