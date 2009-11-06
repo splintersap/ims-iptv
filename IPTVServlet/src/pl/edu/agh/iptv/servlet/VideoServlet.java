@@ -12,8 +12,11 @@ import javax.servlet.sip.SipServlet;
 import javax.servlet.sip.SipServletRequest;
 import javax.servlet.sip.SipServletResponse;
 import javax.servlet.sip.SipSession;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import net.sourceforge.jsdp.Attribute;
 import net.sourceforge.jsdp.Information;
 import net.sourceforge.jsdp.Origin;
 import net.sourceforge.jsdp.SDPException;
@@ -89,7 +92,7 @@ public class VideoServlet extends SipServlet {
 	@Override
 	protected void doInfo(SipServletRequest req) throws ServletException,
 			IOException {
-		
+
 		req.createResponse(200).send();
 
 		String contentType = req.getContentType();
@@ -102,8 +105,28 @@ public class VideoServlet extends SipServlet {
 					.toString());
 			log("Rating updated : title = " + title + ", rating = " + rating
 					+ ", sip=" + req.getFrom().getURI().toString());
+		} else if (tab.length == 2 && "text/title-info".equals(contentType)) {
+			log("Request for description " + tab[1]);
+			String title = new String(req.getRawContent());
+			try {
+				utx.begin();
+				SessionDescription sessionDescription = MessageCreator
+						.createSDPFromMovie(title, req.getFrom().getURI()
+								.toString(), em);
+
+				SipServletRequest info = req.getSession().createRequest("INFO");
+				System.out.println(sessionDescription);
+				info.setContent(sessionDescription.toString().getBytes(),
+						"application/sdp");
+				info.send();
+				utx.commit();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		} else {
-			log("Wrong info message " + req);
+			log("Unrecognized INFO message " + req);
 		}
 	}
 
@@ -123,18 +146,34 @@ public class VideoServlet extends SipServlet {
 			log("sending movie list");
 			session.setAttribute(ACK_RECEIVED, true);
 
-			SipServletRequest message = session.createRequest("MESSAGE");
+			SipServletRequest info = session.createRequest("INFO");
+
+			// SipServletRequest message = session.createRequest("MESSAGE");
 
 			try {
-				String xml = MessageCreator.getMessage(em, utx,
-						sipServletRequest.getFrom().getURI().toString());
-				message.setContent(xml, "text/movie-list");
+				String movieList = createMovieList();
+
+				info.setContent(movieList, "text/movie-list");
+				// String xml = MessageCreator.getMessage(em, utx,
+				// sipServletRequest.getFrom().getURI().toString());
+				// message.setContent(xml, "text/movie-list");
 
 			} catch (Exception e) {
 				log(e.getMessage());
 			}
-			message.send();
+			info.send();
 		}
+	}
+
+	private String createMovieList() {
+		StringBuilder stringBuilder = new StringBuilder("");
+		Query query = em.createQuery("FROM Movie");
+		List<Movie> movieList = query.getResultList();
+		for (Movie movie : movieList) {
+			stringBuilder.append(movie.getTitle());
+			stringBuilder.append("\n");
+		}
+		return stringBuilder.toString();
 	}
 
 	private SessionDescription createSDPFromMovie(Movie movie) {
@@ -157,12 +196,27 @@ public class VideoServlet extends SipServlet {
 
 		if (movie != null) {
 			try {
-				Information info = SDPFactory.createInformation(movie.getTitle() + ";"
-						+ movie.getDirector() + ";" + movie.getCategory());
+				Information info = SDPFactory.createInformation(movie
+						.getTitle());
 				sessionDescription.setInformation(info);
-				SDPFactory.createAttribute("description", movie.getDescription());
+				Attribute description = SDPFactory.createAttribute(
+						"description", movie.getDescription());
+				sessionDescription.addAttribute(description);
+				Attribute movieCategory = SDPFactory.createAttribute(
+						"category", movie.getCategory().name());
+				sessionDescription.addAttribute(movieCategory);
+				Attribute director = SDPFactory.createAttribute("director",
+						movie.getDirector());
+				sessionDescription.addAttribute(director);
+				Attribute userRating = SDPFactory.createAttribute("userRating",
+						String.valueOf(3));
+				sessionDescription.addAttribute(userRating);
+				Attribute overallRating = SDPFactory.createAttribute(
+						"overallRating", String.valueOf(2));
+				sessionDescription.addAttribute(overallRating);
+
 			} catch (SDPException e) {
-				
+
 				e.printStackTrace();
 			}
 
