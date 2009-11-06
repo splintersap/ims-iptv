@@ -11,6 +11,7 @@ import net.sourceforge.jsdp.SDPParseException;
 import net.sourceforge.jsdp.SessionDescription;
 import pl.edu.agh.iptv.commons.CommonComment;
 import pl.edu.agh.iptv.commons.CommonMovie;
+import pl.edu.agh.iptv.commons.CommonMovieDescription;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.listeners.CommentListener;
@@ -161,6 +162,31 @@ public class IPTVClient implements ActionListener {
 
 								}
 							}
+							
+							Attribute[] paymentAtr = sdp.getAttributes("payment");
+							for (Attribute atr : paymentAtr) {
+								String payment = atr.getValue();
+								System.out.println(payment);
+								String[] strings = payment.split("\\|");
+								if (strings.length == 3) {
+									
+									Date date = null;
+									boolean isOrdered = false;
+									String quality = strings[0];
+									//cmd.setQuality(quality);
+									Long price = new Long(strings[1]);
+									//cmd.setPrice(price);
+									if("null".equals(strings[2])) {
+										isOrdered = false;
+									} else {
+										date = new Date(new Long(strings[2]));
+										isOrdered = true;
+									}
+									
+									CommonMovieDescription movieDescription = new CommonMovieDescription(quality,price, date, isOrdered);
+									movie.addCommonMovieDescription(movieDescription);
+								}
+							}
 
 							System.out.println(title + ", " + category + ", "
 									+ director + ", " + description);
@@ -303,6 +329,5 @@ public class IPTVClient implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
 
 }
