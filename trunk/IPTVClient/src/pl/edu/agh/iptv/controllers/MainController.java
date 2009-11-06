@@ -48,7 +48,7 @@ public class MainController {
 				 * Adding listener to the list with movies.
 				 */
 				moviesTab.getMoviesList().addListSelectionListener(
-						new DescriptionListener(iptvClient, moviesTab));
+						new DescriptionListener(iptvClient));
 
 				mainView.getPlayButton().addActionListener(
 						new PlayListener(iptvClient, moviesTab));
