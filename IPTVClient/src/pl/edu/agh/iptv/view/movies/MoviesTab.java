@@ -142,6 +142,10 @@ public class MoviesTab extends JPanel {
 
 	}
 
+	public void changeDescriptionPanel(String Title) {
+		
+	}
+	
 	/**
 	 * Setting the panel which contains information describing single movie.
 	 * 

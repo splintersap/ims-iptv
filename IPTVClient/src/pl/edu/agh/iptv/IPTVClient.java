@@ -2,7 +2,16 @@ package pl.edu.agh.iptv;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import net.sourceforge.jsdp.Attribute;
+import net.sourceforge.jsdp.SDPFactory;
+import net.sourceforge.jsdp.SDPParseException;
+import net.sourceforge.jsdp.SessionDescription;
+import pl.edu.agh.iptv.commons.CommonComment;
+import pl.edu.agh.iptv.commons.CommonMovie;
 import pl.edu.agh.iptv.commons.Serializator;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
@@ -67,7 +76,7 @@ public class IPTVClient implements ActionListener {
 
 		try {
 			session = service.createSession();
-
+			System.out.println("Startujemy sesje");
 			session.addListener(new SessionAdapter() {
 
 				public void processSessionStartFailed(ErrorReason aError,
@@ -81,12 +90,104 @@ public class IPTVClient implements ActionListener {
 							.getReasonString()));
 				}
 
+				@Override
+				public void processSessionInformation(String aContentType,
+						byte[] aMessage, int aLength) {
+
+					System.out.println("Tutaj");
+
+					super.processSessionInformation(aContentType, aMessage,
+							aLength);
+
+					System.out.println("Mamy wiadomosc");
+					System.out.println("ContentType = " + aContentType);
+					System.out.println("Message = " + new String(aMessage));
+
+					if ("text/movie-list".equals(aContentType)) {
+
+						String movieString = new String(aMessage);
+						String[] movieList = movieString.split("\n");
+						moviesTab.setListOfMovies(movieList);
+					} else if ("application/sdp".equals(aContentType)) {
+						System.out.println("SDP information");
+						String message = new String(aMessage);
+						try {
+							SessionDescription sdp = SDPFactory
+									.parseSessionDescription(message);
+							String description = sdp
+									.getAttribute("description").getValue();
+							String title = sdp.getInformation().getValue();
+							String category = sdp.getAttribute("category")
+									.getValue();
+							String director = sdp.getAttribute("director")
+									.getValue();
+							String userRating = sdp.getAttribute("userRating")
+									.getValue();
+							String overallRating = sdp.getAttribute(
+									"overallRating").getValue();
+
+							CommonMovie movie = new CommonMovie(title,
+									category, description, director, Integer
+											.valueOf(userRating), Double
+											.valueOf(overallRating));
+							Attribute[] commentAtr = sdp
+									.getAttributes("comment");
+							System.out.println("length = " + commentAtr.length);
+							for (Attribute atr : commentAtr) {
+								String comment = atr.getValue();
+								System.out.println(comment);
+								String[] strings = comment.split("\\|");
+
+								if (strings.length == 3) {
+									String sip = strings[0];
+									SimpleDateFormat sdf = new SimpleDateFormat();
+
+									Date date = new Date(Long.valueOf(strings[1]));
+									
+									String com = strings[2];
+									CommonComment commonComment = new CommonComment(
+											date, com, sip);
+									System.out.println(date + ", " + com + ", "
+											+ sip);
+									movie.addCommonComment(commonComment);
+
+								}
+							}
+
+							System.out.println(title + ", " + category + ", "
+									+ director + ", " + description);
+							System.out.println("Before DP");
+							/*
+							 * DescriptionPanel descriptionPanel = new
+							 * DescriptionPanel( "asdf", "asg", "asdgasdg",
+							 * "asdgsadg", 3.0);
+							 */
+							// System.out.println("After DP");
+							// descriptionPanel.getRatingPanel().setIPTVClient(this);
+							// moviesTab.setDescriptionPanel(null);
+							// System.out.println(description);
+						} catch (SDPParseException e) {
+							e.printStackTrace();
+						}
+
+					} else {
+						System.out.println("Unrecognized message");
+					}
+				}
+
 				public void processSessionMessage(String aContentType,
 						byte[] aMessage, int aLength) {
+
+					System.out.println("Mamy wiadomosc");
+
 					// A MESSAGE was received, process it.
 					super
 							.processSessionMessage(aContentType, aMessage,
 									aLength);
+
+					System.out.println("Mamy wiadomosc");
+					System.out.println("ContentType = " + aContentType);
+					System.out.println("Message = " + aMessage);
 
 					Serializator serializator = new Serializator();
 					moviesController = new MoviesController(serializator
@@ -163,21 +264,30 @@ public class IPTVClient implements ActionListener {
 	}
 
 	public void setUserRating(int rating, String title) {
-		System.out.println("I am setting user rating to " + String.valueOf(rating));
+		System.out.println("I am setting user rating to "
+				+ String.valueOf(rating));
 		String ratingString = String.valueOf(rating);
 		try {
-			session.sendInformation("rating/" + title, ratingString.getBytes(), ratingString.length());
+			session.sendInformation("rating/" + title, ratingString.getBytes(),
+					ratingString.length());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void setUserComment(String comment){{
-		
-		
-		
+
+	public void getMovieInformations(String item) {
+
+		try {
+			session.sendInformation("text/title-info", item.getBytes(), item
+					.length());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-		
+
+	public void setUserComment(String text) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
