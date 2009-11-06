@@ -24,6 +24,7 @@ import net.sourceforge.jsdp.SDPFactory;
 import net.sourceforge.jsdp.SessionDescription;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
 import pl.edu.agh.iptv.servlet.persistence.Movie;
+import pl.edu.agh.iptv.servlet.persistence.Quality;
 import pl.edu.agh.iptv.servlet.persistence.User;
 
 @javax.servlet.sip.annotation.SipServlet
@@ -112,8 +113,8 @@ public class VideoServlet extends SipServlet {
 					+ req.getFrom().getURI().toString());
 			try {
 				utx.begin();
-				log("Creating SDP with title = " + title + ", sip = " + req.getFrom().getURI()
-								.toString());
+				log("Creating SDP with title = " + title + ", sip = "
+						+ req.getFrom().getURI().toString());
 				SessionDescription sessionDescription = MessageCreator
 						.createSDPFromMovie(title, req.getFrom().getURI()
 								.toString(), em);
@@ -136,12 +137,28 @@ public class VideoServlet extends SipServlet {
 				utx.begin();
 				MessageCreator.addComment(title, sip, comment, em);
 				utx.commit();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		} else if (mimeTab.length == 2 && "purchase".equals(mimeTab[0])) {
+			String title = mimeTab[1];
+			String quality = new String(req.getRawContent());
+			String sip = req.getFrom().getURI().toString();
+			log("Purchase another movie " + title +", quality = " + quality + ", sip = " + sip);
+
+			try {
+				utx.begin();
+				MessageCreator.purchaseMovie(title, sip, quality, em);
 				
+		
+				utx.commit();
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-
 		} else {
 			log("Unrecognized INFO message " + req);
 		}

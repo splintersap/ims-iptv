@@ -16,6 +16,7 @@ import pl.edu.agh.iptv.servlet.persistence.Movie;
 import pl.edu.agh.iptv.servlet.persistence.MovieComment;
 import pl.edu.agh.iptv.servlet.persistence.MoviePayment;
 import pl.edu.agh.iptv.servlet.persistence.MovieRating;
+import pl.edu.agh.iptv.servlet.persistence.Quality;
 import pl.edu.agh.iptv.servlet.persistence.User;
 
 public class MessageCreator {
@@ -138,6 +139,13 @@ public class MessageCreator {
 		List<User> userList = query.getResultList();
 		User user = userList.get(0);
 		return user;
+	}
+
+	public static void purchaseMovie(String title, String sip, String quality, EntityManager em)
+	{
+		User user = getUserFromSip(sip, em);
+		Movie movie = getMovieFromTitle(title, em);
+		user.addOrderedMovie(movie, Quality.valueOf(quality));
 	}
 
 	/*
