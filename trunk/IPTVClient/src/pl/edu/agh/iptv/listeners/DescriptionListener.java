@@ -55,7 +55,10 @@ public class DescriptionListener implements ListSelectionListener {
 			return;
 		}
 		selectedMovie = item;
-		CommonMovie movie = this.iptvClient.getMoviesController()
+		//CommonMovie movie = 
+			this.iptvClient.getMovieInformations(item);
+		
+		/*getMoviesController()
 				.getMovieByName(item);
 
 		DescriptionPanel descriptionPanel = new DescriptionPanel(movie);
@@ -65,7 +68,11 @@ public class DescriptionListener implements ListSelectionListener {
 
 		descriptionPanel.getRatingPanel().setIPTVClient(iptvClient);
 
-		this.moviesTab.setDescriptionPanel(descriptionPanel);
+		this.moviesTab.setDescriptionPanel(descriptionPanel);*/
 
+	}
+	
+	public void displayDescription(){
+		
 	}
 }
