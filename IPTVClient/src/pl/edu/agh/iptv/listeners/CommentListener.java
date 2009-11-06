@@ -18,8 +18,9 @@ public class CommentListener implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub		
-		iptvClient.setUserComment(movieComment.getCommentField().getText());
+		// TODO Auto-generated method stub
+		iptvClient.setUserComment(movieComment.getCommentField().getText(),
+				movieComment.getMovieTitle());
 		movieComment.getCommentField().setText("");
 	}
 

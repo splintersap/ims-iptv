@@ -78,4 +78,8 @@ public class MovieComments {
 	public JButton getCommentButton() {
 		return this.commentButton;
 	}
+
+	public String getMovieTitle() {
+		return this.movie.getTitle();
+	}
 }
