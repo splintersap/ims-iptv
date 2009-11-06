@@ -4,9 +4,10 @@ import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import pl.edu.agh.ims.commons.CommonMovie;
 import pl.edu.agh.iptv.IPTVClient;
+import pl.edu.agh.iptv.commons.CommonMovie;
 import pl.edu.agh.iptv.view.movies.DescriptionPanel;
+import pl.edu.agh.iptv.view.movies.MovieComments;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 /**
@@ -18,8 +19,19 @@ import pl.edu.agh.iptv.view.movies.MoviesTab;
  */
 public class DescriptionListener implements ListSelectionListener {
 
+	/*
+	 * Necessary in order to get information about movies.
+	 */
 	private IPTVClient iptvClient = null;
+
+	/*
+	 * Necessary in order to update the view with new information.
+	 */
 	private MoviesTab moviesTab = null;
+
+	/*
+	 * Title of selected movie.
+	 */
 	private static String selectedMovie = null;
 
 	public static String getSelectedMovie() {
@@ -33,25 +45,23 @@ public class DescriptionListener implements ListSelectionListener {
 
 	public void valueChanged(ListSelectionEvent selection) {
 
-		if(selection.getValueIsAdjusting() == true )
-		{
+		if (selection.getValueIsAdjusting() == true) {
 			return;
 		}
-		
+
 		JList list = (JList) selection.getSource();
 		String item = (String) list.getSelectedValue();
-		if(item == null)
-		{
+		if (item == null) {
 			return;
 		}
 		selectedMovie = item;
 		CommonMovie movie = this.iptvClient.getMoviesController()
 				.getMovieByName(item);
 
-		
-		DescriptionPanel descriptionPanel = new DescriptionPanel(movie
-				.getTitle(), movie.getDirector(), movie.getCategory(), movie
-				.getDescription(), movie.getAllUsersRating());
+		DescriptionPanel descriptionPanel = new DescriptionPanel(movie);
+		MovieComments movieComments = descriptionPanel.getMovieComments();
+		movieComments.getCommentButton().addActionListener(
+				new CommentListener(iptvClient, movieComments));
 
 		descriptionPanel.getRatingPanel().setIPTVClient(iptvClient);
 

@@ -3,7 +3,7 @@ package pl.edu.agh.iptv.simulators;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.edu.agh.ims.commons.CommonMovie;
+import pl.edu.agh.iptv.commons.CommonMovie;
 
 public class Simulator {
 
