@@ -15,10 +15,6 @@ import net.sourceforge.jsdp.Origin;
 import net.sourceforge.jsdp.SDPException;
 import net.sourceforge.jsdp.SDPFactory;
 import net.sourceforge.jsdp.SessionDescription;
-import pl.edu.agh.ims.commons.CommonComment;
-import pl.edu.agh.ims.commons.CommonMovie;
-import pl.edu.agh.ims.commons.CommonMovieDescription;
-import pl.edu.agh.ims.commons.Serializator;
 import pl.edu.agh.iptv.servlet.persistence.Movie;
 import pl.edu.agh.iptv.servlet.persistence.MovieComment;
 import pl.edu.agh.iptv.servlet.persistence.MoviePayment;
@@ -114,7 +110,7 @@ public class MessageCreator {
 		return userRating;
 	}
 
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	public static String getMessage(EntityManager em, UserTransaction utx,
 			String sip) {
 
@@ -215,5 +211,5 @@ public class MessageCreator {
 
 		return new CommonComment(movieComment.getDate(), movieComment
 				.getComment(), movieComment.getUser().getSip());
-	}
+	}*/
 }
