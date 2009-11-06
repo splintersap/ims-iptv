@@ -125,7 +125,6 @@ public class VideoServlet extends SipServlet {
 				info.send();
 				utx.commit();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else if (mimeTab.length == 2 && "comment".equals(mimeTab[0])) {
