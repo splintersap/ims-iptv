@@ -296,8 +296,13 @@ public class IPTVClient implements ActionListener {
 	}
 
 	public void setUserComment(String text, String movieTitle) {
-		// TODO Auto-generated method stub
-
+		try {
+			session.sendInformation("comment/" + movieTitle, text.getBytes(),
+					text.length());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+	
 
 }
