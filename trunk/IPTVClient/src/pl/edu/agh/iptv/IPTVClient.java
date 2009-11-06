@@ -3,7 +3,7 @@ package pl.edu.agh.iptv;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import pl.edu.agh.ims.commons.Serializator;
+import pl.edu.agh.iptv.commons.Serializator;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
@@ -170,6 +170,14 @@ public class IPTVClient implements ActionListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void setUserComment(String comment){{
+		
+		
+		
+	}
+		
 	}
 
 }

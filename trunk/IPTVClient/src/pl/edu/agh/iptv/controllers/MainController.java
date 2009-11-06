@@ -56,7 +56,7 @@ public class MainController {
 				mainView.getRefreshButton().addActionListener(iptvClient);
 
 				IPTVPerformanceClient performance = new IPTVPerformanceClient(
-						"192.168.0.67", mainView.getBandwidthLabel());
+						"10.0.0.3", mainView.getBandwidthLabel());
 				performance.queryServer();
 
 				mainView.setWindowCloseOperation(new IperfManagerListener(

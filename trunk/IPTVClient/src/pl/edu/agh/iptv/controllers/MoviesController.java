@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pl.edu.agh.ims.commons.CommonMovie;
+import pl.edu.agh.iptv.commons.CommonMovie;
 
 public class MoviesController {
 
