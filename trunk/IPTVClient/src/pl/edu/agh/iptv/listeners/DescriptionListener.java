@@ -55,11 +55,25 @@ public class DescriptionListener implements ListSelectionListener {
 			return;
 		}
 		selectedMovie = item;
-		//CommonMovie movie = 
-			this.iptvClient.getMovieInformations(item);
-		
-		/*getMoviesController()
-				.getMovieByName(item);
+		// CommonMovie movie =
+		this.iptvClient.getMovieInformations(item, this);
+
+		/*
+		 * getMoviesController() .getMovieByName(item);
+		 * 
+		 * DescriptionPanel descriptionPanel = new DescriptionPanel(movie);
+		 * MovieComments movieComments = descriptionPanel.getMovieComments();
+		 * movieComments.getCommentButton().addActionListener( new
+		 * CommentListener(iptvClient, movieComments));
+		 * 
+		 * descriptionPanel.getRatingPanel().setIPTVClient(iptvClient);
+		 * 
+		 * this.moviesTab.setDescriptionPanel(descriptionPanel);
+		 */
+
+	}
+
+	public void displayDescription(CommonMovie movie) {
 
 		DescriptionPanel descriptionPanel = new DescriptionPanel(movie);
 		MovieComments movieComments = descriptionPanel.getMovieComments();
@@ -68,11 +82,7 @@ public class DescriptionListener implements ListSelectionListener {
 
 		descriptionPanel.getRatingPanel().setIPTVClient(iptvClient);
 
-		this.moviesTab.setDescriptionPanel(descriptionPanel);*/
+		this.moviesTab.setDescriptionPanel(descriptionPanel);
 
-	}
-	
-	public void displayDescription(){
-		
 	}
 }

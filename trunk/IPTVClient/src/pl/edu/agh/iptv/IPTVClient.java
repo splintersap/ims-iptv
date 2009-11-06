@@ -2,8 +2,6 @@ package pl.edu.agh.iptv;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.sourceforge.jsdp.Attribute;
@@ -12,9 +10,9 @@ import net.sourceforge.jsdp.SDPParseException;
 import net.sourceforge.jsdp.SessionDescription;
 import pl.edu.agh.iptv.commons.CommonComment;
 import pl.edu.agh.iptv.commons.CommonMovie;
-import pl.edu.agh.iptv.commons.Serializator;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
+import pl.edu.agh.iptv.listeners.DescriptionListener;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 import com.ericsson.icp.ICPFactory;
@@ -140,10 +138,10 @@ public class IPTVClient implements ActionListener {
 
 								if (strings.length == 3) {
 									String sip = strings[0];
-									SimpleDateFormat sdf = new SimpleDateFormat();
 
-									Date date = new Date(Long.valueOf(strings[1]));
-									
+									Date date = new Date(Long
+											.valueOf(strings[1]));
+
 									String com = strings[2];
 									CommonComment commonComment = new CommonComment(
 											date, com, sip);
@@ -173,29 +171,6 @@ public class IPTVClient implements ActionListener {
 					} else {
 						System.out.println("Unrecognized message");
 					}
-				}
-
-				public void processSessionMessage(String aContentType,
-						byte[] aMessage, int aLength) {
-
-					System.out.println("Mamy wiadomosc");
-
-					// A MESSAGE was received, process it.
-					super
-							.processSessionMessage(aContentType, aMessage,
-									aLength);
-
-					System.out.println("Mamy wiadomosc");
-					System.out.println("ContentType = " + aContentType);
-					System.out.println("Message = " + aMessage);
-
-					Serializator serializator = new Serializator();
-					moviesController = new MoviesController(serializator
-							.createListFromXml(new String(aMessage)));
-
-					moviesTab.setListOfMovies(moviesController
-							.getTitlesOfBoughtMovies());
-
 				}
 
 			});
@@ -275,7 +250,8 @@ public class IPTVClient implements ActionListener {
 		}
 	}
 
-	public void getMovieInformations(String item) {
+	public void getMovieInformations(String item,
+			DescriptionListener descListener) {
 
 		try {
 			session.sendInformation("text/title-info", item.getBytes(), item
@@ -285,7 +261,7 @@ public class IPTVClient implements ActionListener {
 		}
 	}
 
-	public void setUserComment(String text) {
+	public void setUserComment(String text, String movieTitle) {
 		// TODO Auto-generated method stub
 
 	}
