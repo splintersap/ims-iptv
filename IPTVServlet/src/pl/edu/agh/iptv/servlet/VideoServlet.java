@@ -96,20 +96,24 @@ public class VideoServlet extends SipServlet {
 		req.createResponse(200).send();
 
 		String contentType = req.getContentType();
-		String[] tab = contentType.split("/");
+		String[] mimeTab = contentType.split("/");
 
-		if (tab.length == 2 && "rating".equals(tab[0])) {
-			String title = tab[1];
+		if (mimeTab.length == 2 && "rating".equals(mimeTab[0])) {
+			String title = mimeTab[1];
 			Integer rating = new Integer(new String(req.getRawContent()));
 			setRatingToDatabase(title, rating, req.getFrom().getURI()
 					.toString());
 			log("Rating updated : title = " + title + ", rating = " + rating
 					+ ", sip=" + req.getFrom().getURI().toString());
-		} else if (tab.length == 2 && "text/title-info".equals(contentType)) {
-			log("Request for description " + tab[1]);
+		} else if (mimeTab.length == 2 && "text/title-info".equals(contentType)) {
+			log("Request for description " + mimeTab[1]);
 			String title = new String(req.getRawContent());
+			log("Title = " + title + ", sip = "
+					+ req.getFrom().getURI().toString());
 			try {
 				utx.begin();
+				log("Creating SDP with title = " + title + ", sip = " + req.getFrom().getURI()
+								.toString());
 				SessionDescription sessionDescription = MessageCreator
 						.createSDPFromMovie(title, req.getFrom().getURI()
 								.toString(), em);
@@ -124,6 +128,20 @@ public class VideoServlet extends SipServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		} else if (mimeTab.length == 2 && "comment".equals(mimeTab[0])) {
+			String title = mimeTab[1];
+			String comment = new String(req.getRawContent());
+			String sip = req.getFrom().getURI().toString();
+			log("Adding new comment " + title + ", " + comment + ", " + sip);
+			try {
+				utx.begin();
+				MessageCreator.addComment(title, sip, comment, em);
+				utx.commit();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 
 		} else {
 			log("Unrecognized INFO message " + req);
@@ -180,9 +198,9 @@ public class VideoServlet extends SipServlet {
 		SessionDescription sessionDescription = null;
 		try {
 			sessionDescription = SDPFactory.createSessionDescription();
-		} catch (SDPException e1) {
+		} catch (SDPException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
 		}
 
 		try {
