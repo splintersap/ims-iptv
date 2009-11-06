@@ -24,6 +24,7 @@ import net.sourceforge.jsdp.SDPFactory;
 import net.sourceforge.jsdp.SessionDescription;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
 import pl.edu.agh.iptv.servlet.persistence.Movie;
+import pl.edu.agh.iptv.servlet.persistence.MovieRating;
 import pl.edu.agh.iptv.servlet.persistence.Quality;
 import pl.edu.agh.iptv.servlet.persistence.User;
 
@@ -80,8 +81,21 @@ public class VideoServlet extends SipServlet {
 			User user = userList.get(0);
 			log("User = " + user);
 
-			log("Updating rating");
-			movie.addMovieRating(user, rating);
+			log("Updating rating " + user.getSip() + ", rating " + rating);
+
+			boolean wasModified = false;
+			for (MovieRating mRating : movie.getRating()) {
+				if (sip.equals(mRating.getUser().getSip())) {
+					mRating.setRating(rating);
+					wasModified = true;
+					break;
+				}
+			}
+
+			if (!wasModified) {
+				log("Adding new movie");
+				movie.addMovieRating(user, rating);
+			}
 
 			utx.commit();
 		} catch (Exception e) {
@@ -146,19 +160,19 @@ public class VideoServlet extends SipServlet {
 			String title = mimeTab[1];
 			String quality = new String(req.getRawContent());
 			String sip = req.getFrom().getURI().toString();
-			log("Purchase another movie " + title +", quality = " + quality + ", sip = " + sip);
+			log("Purchase another movie " + title + ", quality = " + quality
+					+ ", sip = " + sip);
 
 			try {
 				utx.begin();
 				MessageCreator.purchaseMovie(title, sip, quality, em);
-				
-		
+
 				utx.commit();
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		} else {
 			log("Unrecognized INFO message " + req);
 		}
@@ -171,7 +185,6 @@ public class VideoServlet extends SipServlet {
 			throws ServletException, IOException {
 
 		log("inside doAck method");
-		createSDPFromMovie(null);
 		SipSession session = sipServletRequest.getSession(true);
 		// Ensure we do not process the ACK twice for the dialog
 		Object ackAlreadyProcessed = session.getAttribute(ACK_RECEIVED);
@@ -255,8 +268,6 @@ public class VideoServlet extends SipServlet {
 			}
 
 		}
-
-		log(sessionDescription.toString());
 
 		return sessionDescription;
 
