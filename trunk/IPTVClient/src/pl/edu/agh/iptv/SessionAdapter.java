@@ -36,6 +36,7 @@ public class SessionAdapter implements ISessionListener
 
     public void processSessionInformation(String arg0, byte[] arg1, int arg2)
     {   
+    	System.out.println("processSessionInformation");
     }
 
     public void processSessionInformationFailed(ErrorReason arg0, long arg1)
@@ -44,6 +45,7 @@ public class SessionAdapter implements ISessionListener
 
     public void processSessionInformationSuccessful(String arg0, byte[] arg1, int arg2)
     {   
+    	System.out.println("processSessionInformationSuccessful");
     }
 
     public void processSessionInvitation(String arg0, boolean arg1, ISessionDescription arg2, MIMEContainer arg3)
@@ -56,10 +58,12 @@ public class SessionAdapter implements ISessionListener
 
     public void processSessionMessage(String arg0, byte[] arg1, int arg2)
     {   
+    	System.out.println("processSessionMessage");
     }
 
     public void processSessionMessage(String arg0, byte[] arg1, int arg2, String arg3)
     {   
+    	System.out.println("processSessionMessage");
     }
 
     public void processSessionMessageFailed(ErrorReason arg0, long arg1)

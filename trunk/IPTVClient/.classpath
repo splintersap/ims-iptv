@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="lib/qosHelper.jar"/>
 	<classpathentry kind="lib" path="lib/communication_common.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ComunicationCommon"/>
+	<classpathentry kind="lib" path="lib/jsdp-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
