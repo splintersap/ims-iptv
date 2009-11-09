@@ -13,6 +13,14 @@ public class CommonMovie {
 	private List<CommonComment> commentList = new ArrayList<CommonComment>();
 	private List<CommonMovieDescription> movieDescriptionList = new ArrayList<CommonMovieDescription>();
 
+	public List<CommonMovieDescription> getMovieDescriptionList() {
+		return movieDescriptionList;
+	}
+
+	public void setUserRating(Integer userRating) {
+		this.userRating = userRating;
+	}
+
 	public String getTitle() {
 		return title;
 	}
