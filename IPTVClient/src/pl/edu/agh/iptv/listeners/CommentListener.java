@@ -22,6 +22,7 @@ public class CommentListener implements ActionListener {
 		iptvClient.setUserComment(movieComment.getCommentField().getText(),
 				movieComment.getMovieTitle());
 		movieComment.getCommentField().setText("");
+		iptvClient.getMovieInformations(movieComment.getMovieTitle());
 	}
 
 }

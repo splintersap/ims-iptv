@@ -2,6 +2,8 @@ package pl.edu.agh.iptv.view.movies;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -191,8 +193,20 @@ public class MoviesTab extends JPanel {
 	 */
 	public void setListOfMovies(String[] moviesArray) {
 
-		orderedMoviesList.setListData(moviesArray);
-		allMoviesList.setListData(moviesArray);
+		List<String> bought = new ArrayList<String>();
+		String[] allMovies = new String[moviesArray.length];
+
+		for (int i = 0; i < moviesArray.length; i++) {
+			String str = moviesArray[i];
+			int indx = str.indexOf("|");
+			allMovies[i] = str.substring(0, indx);
+			if (str.substring(indx + 1, str.lastIndexOf("|")).compareTo("true") == 0) {
+				bought.add(allMovies[i]);
+			}
+		}
+
+		orderedMoviesList.setListData(bought.toArray());
+		allMoviesList.setListData(allMovies);
 		this.getPanelForMoviesList().repaint();
 
 	}

@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 
+import javax.swing.JOptionPane;
+
 import net.sourceforge.jsdp.Attribute;
 import net.sourceforge.jsdp.SDPFactory;
 import net.sourceforge.jsdp.SDPParseException;
@@ -15,6 +17,7 @@ import pl.edu.agh.iptv.commons.CommonMovieDescription;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.listeners.CommentListener;
+import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.DescriptionPanel;
 import pl.edu.agh.iptv.view.movies.MovieComments;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
@@ -48,15 +51,16 @@ public class IPTVClient implements ActionListener {
 
 	private MoviesTab moviesTab = null;
 
+	private MainView mainView = null;
+
 	/*
 	 * This is in order to pass the reference of IPTVClient class to the
 	 * aggregated class SessionAdapter responsible for querying the server.
 	 */
 	private IPTVClient client;
 
-	public IPTVClient(MoviesTab moviesTab) {
+	public IPTVClient(MainView mainView) {
 		try {
-
 			this.client = this;
 			IPlatform platform = ICPFactory.createPlatform();
 			platform.registerClient("IPTVClient");
@@ -67,7 +71,8 @@ public class IPTVClient implements ActionListener {
 			service = profile.createService("+g.videoclient.ericsson.com", "");
 			service.addListener(new ServiceAdapter());
 
-			this.moviesTab = moviesTab;
+			this.mainView = mainView;
+			this.moviesTab = mainView.getMoviesTab();
 
 			addingListener();
 			triggerMoviesRequest();
@@ -85,7 +90,6 @@ public class IPTVClient implements ActionListener {
 
 		try {
 			session = service.createSession();
-			System.out.println("Startujemy sesje");
 			session.addListener(new SessionAdapter() {
 
 				public void processSessionStartFailed(ErrorReason aError,
@@ -123,8 +127,12 @@ public class IPTVClient implements ActionListener {
 						try {
 							SessionDescription sdp = SDPFactory
 									.parseSessionDescription(message);
-							String description = sdp
-									.getAttribute("description").getValue();
+							String description;
+							if (sdp.getAttribute("description") != null)
+								description = sdp.getAttribute("description")
+										.getValue();
+							else
+								description = "";
 							String title = sdp.getInformation().getValue();
 							String category = sdp.getAttribute("category")
 									.getValue();
@@ -162,29 +170,32 @@ public class IPTVClient implements ActionListener {
 
 								}
 							}
-							
-							Attribute[] paymentAtr = sdp.getAttributes("payment");
+
+							Attribute[] paymentAtr = sdp
+									.getAttributes("payment");
 							for (Attribute atr : paymentAtr) {
 								String payment = atr.getValue();
 								System.out.println(payment);
 								String[] strings = payment.split("\\|");
 								if (strings.length == 3) {
-									
+
 									Date date = null;
 									boolean isOrdered = false;
 									String quality = strings[0];
-									//cmd.setQuality(quality);
+									// cmd.setQuality(quality);
 									Long price = new Long(strings[1]);
-									//cmd.setPrice(price);
-									if("null".equals(strings[2])) {
+									// cmd.setPrice(price);
+									if ("null".equals(strings[2])) {
 										isOrdered = false;
 									} else {
 										date = new Date(new Long(strings[2]));
 										isOrdered = true;
 									}
-									
-									CommonMovieDescription movieDescription = new CommonMovieDescription(quality,price, date, isOrdered);
-									movie.addCommonMovieDescription(movieDescription);
+
+									CommonMovieDescription movieDescription = new CommonMovieDescription(
+											quality, price, date, isOrdered);
+									movie
+											.addCommonMovieDescription(movieDescription);
 								}
 							}
 
@@ -198,6 +209,7 @@ public class IPTVClient implements ActionListener {
 							 */
 							Runnable sh = new DescriptionThread(movie,
 									moviesTab, client);
+
 							EventQueue.invokeLater(sh);
 							/***************************************/
 
@@ -248,7 +260,8 @@ public class IPTVClient implements ActionListener {
 	 * @param e
 	 */
 	private void showError(String message, Exception e) {
-		System.out.println("Error : " + message);
+		JOptionPane.showMessageDialog(this.mainView.getMainFrame(), "Error: "
+				+ message, "Error", JOptionPane.ERROR_MESSAGE);
 		e.printStackTrace();
 	}
 
@@ -295,10 +308,11 @@ public class IPTVClient implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void purchaseMovie(String movieTitle, String quality) {
 		try {
-			session.sendInformation("purchase/" + movieTitle, quality.getBytes(), quality.length());
+			session.sendInformation("purchase/" + movieTitle, quality
+					.getBytes(), quality.length());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -326,6 +340,16 @@ public class IPTVClient implements ActionListener {
 			descriptionPanel.getRatingPanel().setIPTVClient(client);
 
 			this.moviesTab.setDescriptionPanel(descriptionPanel);
+
+			boolean isOrdered = false;
+			for (CommonMovieDescription movieDesc : movie
+					.getMovieDescriptionList()) {
+				if (movieDesc.isOrdered()) {
+					isOrdered = true;
+					break;
+				}
+			}
+			mainView.getOrderMoviebButton().setEnabled(!isOrdered);
 		}
 	}
 

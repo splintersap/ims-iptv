@@ -2,9 +2,12 @@ package pl.edu.agh.iptv.view;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,8 +15,14 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.listeners.OrderMovieListener;
 
-public class OrderMovieView extends JFrame {
+public class OrderMovieView extends JDialog implements ActionListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private String movieTitle = null;
 
@@ -21,9 +30,15 @@ public class OrderMovieView extends JFrame {
 
 	private JButton cancelButton = new JButton("Cancel");
 
-	public OrderMovieView(String movieTitle) {
-		super("Choice window");
-		// this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+	private ButtonGroup group;
+
+	private JRadioButton radio1, radio2, radio3;
+
+	private String quality = "LOW";
+
+	public OrderMovieView(String movieTitle, OrderMovieListener listener,
+			JFrame parent) {
+		super(parent);
 		this.movieTitle = movieTitle;
 		this.setPreferredSize(new Dimension(300, 240));
 		this.setMaximumSize(new Dimension(300, 240));
@@ -31,10 +46,17 @@ public class OrderMovieView extends JFrame {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(5, 1));
 
-		ButtonGroup group = new ButtonGroup();
-		JRadioButton radio1 = new JRadioButton("Low quality");
-		JRadioButton radio2 = new JRadioButton("Medium quality");
-		JRadioButton radio3 = new JRadioButton("High quality");
+		group = new ButtonGroup();
+		radio1 = new JRadioButton("Low quality");
+		radio1.setSelected(true);
+		radio1.setName("LOW");
+		radio1.addActionListener(this);
+		radio2 = new JRadioButton("Medium quality");
+		radio2.setName("MEDIUM");
+		radio2.addActionListener(this);
+		radio3 = new JRadioButton("High quality");
+		radio3.setName("HIGH");
+		radio3.addActionListener(this);
 		group.add(radio1);
 		group.add(radio2);
 		group.add(radio3);
@@ -50,8 +72,13 @@ public class OrderMovieView extends JFrame {
 
 		okButton.setPreferredSize(new Dimension(100, 35));
 		okButton.setMaximumSize(new Dimension(100, 35));
+		okButton.setName("OK");
+		okButton.addActionListener(listener);
+
 		cancelButton.setPreferredSize(new Dimension(100, 35));
 		cancelButton.setMaximumSize(new Dimension(100, 35));
+		cancelButton.setName("CANCEL");
+		cancelButton.addActionListener(listener);
 
 		okButtonPanel.add(okButton);
 		cancelButtonPanel.add(cancelButton);
@@ -75,6 +102,28 @@ public class OrderMovieView extends JFrame {
 		this.pack();
 		this.setVisible(true);
 
+	}
+
+	public String getSelectedMovieTitle() {
+		return this.movieTitle;
+	}
+
+	public String getSelectedQuality() {
+
+		return this.quality;
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (((JRadioButton) e.getSource()).getName().compareTo("LOW") == 0) {
+			quality = "LOW";
+		} else if (((JRadioButton) e.getSource()).getName().compareTo("MEDIUM") == 0) {
+			quality = "MEDIUM";
+		} else {
+			quality = "HIGH";
+		}
 	}
 
 }

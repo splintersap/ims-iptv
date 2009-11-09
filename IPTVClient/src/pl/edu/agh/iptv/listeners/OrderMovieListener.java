@@ -3,25 +3,45 @@ package pl.edu.agh.iptv.listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.view.OrderMovieView;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class OrderMovieListener implements ActionListener {
-	
+
 	private MoviesTab moviesTab;
+	private OrderMovieView view;
+	private JFrame parent;
 	private IPTVClient iptvClient;
 
-	public OrderMovieListener(IPTVClient iptvClient, MoviesTab moviesTab) {
+	public OrderMovieListener(IPTVClient iptvClient, MoviesTab moviesTab,
+			JFrame parent) {
 		this.moviesTab = moviesTab;
 		this.iptvClient = iptvClient;
+		this.parent = parent;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		new OrderMovieView((String) moviesTab.getAllMoviesList()
-				.getSelectedValue());
+
+		if (e.getSource() instanceof JButton) {
+			if (((JButton) e.getSource()).getName() == "OK") {
+				iptvClient.purchaseMovie(view.getSelectedMovieTitle(), view
+						.getSelectedQuality());				
+				iptvClient.actionPerformed(null);
+				view.dispose();
+			} else if (((JButton) e.getSource()).getName() == "CANCEL") {
+				view.dispose();
+			} else if (((JButton) e.getSource()).getName() == "ORDER") {
+				view = new OrderMovieView((String) moviesTab.getAllMoviesList()
+						.getSelectedValue(), this, parent);
+
+			}
+		}
 	}
 
 }

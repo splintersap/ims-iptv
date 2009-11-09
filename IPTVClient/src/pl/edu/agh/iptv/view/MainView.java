@@ -55,7 +55,7 @@ public class MainView {
 	 * 
 	 * @return javax.swing.JFrame
 	 */
-	private JFrame getMainFrame() {
+	public JFrame getMainFrame() {
 		if (mainFrame == null) {
 			mainFrame = new JFrame();
 			mainFrame.setSize(new Dimension(704, 445));
@@ -205,6 +205,8 @@ public class MainView {
 		play = new JButton(new ImageIcon("images/play.gif"));
 
 		orderButton = new JButton(new ImageIcon("images/cart.gif"));
+		orderButton.setName("ORDER");
+		orderButton.setEnabled(false);
 
 		JButton forward = new JButton(new ImageIcon("images/forward.gif"));
 
