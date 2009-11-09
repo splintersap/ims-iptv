@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "Movies")
@@ -127,6 +128,7 @@ public class Movie extends pl.edu.agh.iptv.servlet.persistence.Entity {
 		ratingList.add(mr);
 	}
 	
+	@Transient
 	public MoviePayment getMoviePayments(Quality quality) {
 		
 		Iterator<MoviePayment> iterator = paymentsList.iterator();
@@ -138,5 +140,22 @@ public class Movie extends pl.edu.agh.iptv.servlet.persistence.Entity {
 		}
 		
 		return null;
+	}
+	
+	@Transient
+	public Double getOverallRating()
+	{
+		double overallRating = 0.0;
+
+		for (MovieRating rating : getRating()) {
+			overallRating += rating.getRating();
+		}
+
+		// In case dividing by 0
+		if (getRating().size() != 0) {
+			overallRating /= getRating().size();
+		}
+
+		return overallRating;
 	}
 }

@@ -1,6 +1,7 @@
 package pl.edu.agh.iptv.servlet;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -24,6 +25,7 @@ import net.sourceforge.jsdp.SDPFactory;
 import net.sourceforge.jsdp.SessionDescription;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
 import pl.edu.agh.iptv.servlet.persistence.Movie;
+import pl.edu.agh.iptv.servlet.persistence.MoviePayment;
 import pl.edu.agh.iptv.servlet.persistence.MovieRating;
 import pl.edu.agh.iptv.servlet.persistence.Quality;
 import pl.edu.agh.iptv.servlet.persistence.User;
@@ -192,13 +194,15 @@ public class VideoServlet extends SipServlet {
 		if (ackAlreadyProcessed == null) {
 			log("sending movie list");
 			session.setAttribute(ACK_RECEIVED, true);
-
+			String sip = sipServletRequest.getFrom().getURI().toString();
 			SipServletRequest info = session.createRequest("INFO");
 
 			// SipServletRequest message = session.createRequest("MESSAGE");
 
 			try {
-				String movieList = createMovieList();
+				utx.begin();
+				String movieList = MessageCreator.createMovieList(sip, em);
+				utx.commit();
 
 				info.setContent(movieList, "text/movie-list");
 				// String xml = MessageCreator.getMessage(em, utx,
@@ -210,67 +214,6 @@ public class VideoServlet extends SipServlet {
 			}
 			info.send();
 		}
-	}
-
-	private String createMovieList() {
-		StringBuilder stringBuilder = new StringBuilder("");
-		Query query = em.createQuery("FROM Movie");
-		List<Movie> movieList = query.getResultList();
-		for (Movie movie : movieList) {
-			stringBuilder.append(movie.getTitle());
-			stringBuilder.append("\n");
-		}
-		return stringBuilder.toString();
-	}
-
-	private SessionDescription createSDPFromMovie(Movie movie) {
-		SessionDescription sessionDescription = null;
-		try {
-			sessionDescription = SDPFactory.createSessionDescription();
-		} catch (SDPException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			sessionDescription.setVersion(SDPFactory.createVersion());
-			Origin orgin = SDPFactory.createOrigin();
-			sessionDescription.setOrigin(orgin);
-
-		} catch (SDPException e) {
-			e.printStackTrace();
-		}
-
-		if (movie != null) {
-			try {
-				Information info = SDPFactory.createInformation(movie
-						.getTitle());
-				sessionDescription.setInformation(info);
-				Attribute description = SDPFactory.createAttribute(
-						"description", movie.getDescription());
-				sessionDescription.addAttribute(description);
-				Attribute movieCategory = SDPFactory.createAttribute(
-						"category", movie.getCategory().name());
-				sessionDescription.addAttribute(movieCategory);
-				Attribute director = SDPFactory.createAttribute("director",
-						movie.getDirector());
-				sessionDescription.addAttribute(director);
-				Attribute userRating = SDPFactory.createAttribute("userRating",
-						String.valueOf(3));
-				sessionDescription.addAttribute(userRating);
-				Attribute overallRating = SDPFactory.createAttribute(
-						"overallRating", String.valueOf(2));
-				sessionDescription.addAttribute(overallRating);
-
-			} catch (SDPException e) {
-
-				e.printStackTrace();
-			}
-
-		}
-
-		return sessionDescription;
-
 	}
 
 	/**
