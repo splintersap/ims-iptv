@@ -1,5 +1,6 @@
 package pl.edu.agh.iptv.controllers;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -21,6 +22,7 @@ public class MainController {
 	public MainController() {
 
 		JFrame.setDefaultLookAndFeelDecorated(true);
+		JDialog.setDefaultLookAndFeelDecorated(true);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -43,7 +45,7 @@ public class MainController {
 				 * Creating instance of a class responsible for communication
 				 * with servlet.
 				 */
-				IPTVClient iptvClient = new IPTVClient(mainView.getMoviesTab());
+				IPTVClient iptvClient = new IPTVClient(mainView);
 
 				/*
 				 * Adding listener to the list with movies.
@@ -60,7 +62,8 @@ public class MainController {
 				mainView.getRefreshButton().addActionListener(iptvClient);
 
 				mainView.getOrderMoviebButton().addActionListener(
-						new OrderMovieListener(iptvClient, moviesTab));
+						new OrderMovieListener(iptvClient, moviesTab, mainView
+								.getMainFrame()));
 
 				IPTVPerformanceClient performance = new IPTVPerformanceClient(
 						"192.168.1.224", mainView.getBandwidthLabel());
