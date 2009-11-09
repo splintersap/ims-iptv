@@ -61,7 +61,7 @@ public class MessageCreator {
 			sessionDescription.addAttribute(userRating);
 
 			Attribute overallRating = SDPFactory.createAttribute(
-					"overallRating", String.valueOf(getOverallRating(movie)));
+					"overallRating", String.valueOf(movie.getOverallRating()));
 			sessionDescription.addAttribute(overallRating);
 
 			for (MovieComment comment : movie.getCommentsList()) {
@@ -96,7 +96,7 @@ public class MessageCreator {
 
 	}
 
-	private static double getOverallRating(Movie movie) {
+	/*private static double getOverallRating(Movie movie) {
 
 		double overallRating = 0.0;
 
@@ -110,7 +110,7 @@ public class MessageCreator {
 		}
 
 		return overallRating;
-	}
+	}*/
 
 	private static int getUserRating(Movie movie, String sip) {
 		int userRating = 0;
@@ -146,6 +146,28 @@ public class MessageCreator {
 		User user = getUserFromSip(sip, em);
 		Movie movie = getMovieFromTitle(title, em);
 		user.addOrderedMovie(movie, Quality.valueOf(quality));
+	}
+
+
+	public static String createMovieList(String sip, EntityManager em) {
+		StringBuilder stringBuilder = new StringBuilder("");
+		Query query = em.createQuery("FROM Movie");
+		List<Movie> movieList = query.getResultList();
+		for (Movie movie : movieList) {
+			boolean isOrdered = false;
+			for(MoviePayment moviePayment : movie.getMoviePayments())
+			{
+				Date date = moviePayment.getOrderByUser(sip);
+				if(date != null)
+				{
+					isOrdered = true;
+					break;
+				}
+			}
+			stringBuilder.append(movie.getTitle() + "|" + isOrdered + "|" + movie.getOverallRating());
+			stringBuilder.append("\n");
+		}
+		return stringBuilder.toString();
 	}
 	
 }
