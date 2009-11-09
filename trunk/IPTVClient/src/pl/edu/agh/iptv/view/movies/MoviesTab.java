@@ -36,6 +36,10 @@ public class MoviesTab extends JPanel {
 	 */
 	private JList orderedMoviesList = null;
 
+	private JList allMoviesList = null;
+
+	private JList recommendedMoviesList = null;
+
 	/*
 	 * This is panel which holds the list with movies.
 	 */
@@ -107,14 +111,18 @@ public class MoviesTab extends JPanel {
 			int listWidth = this.moviesListPaneWidth - 50;
 
 			panelForMoviesList = new JPanel();
-			ResizableGridLayout resizableLayout = new ResizableGridLayout(3, 1,
+			ResizableGridLayout resizableLayout = new ResizableGridLayout(4, 1,
 					1, 0);
 
 			panelForMoviesList.setLayout(resizableLayout);
 
 			JLabel orderedMoviesLabel = new JLabel("ORDERED MOVIES");
+			JLabel allMoviesLabel = new JLabel("ALL MOVIES");
 
 			orderedMoviesLabel.setFont(new Font("Times New Roman", Font.BOLD
+					| Font.ITALIC, 14));
+
+			allMoviesLabel.setFont(new Font("Times New Roman", Font.BOLD
 					| Font.ITALIC, 14));
 
 			orderedMoviesList = new JList();
@@ -123,19 +131,35 @@ public class MoviesTab extends JPanel {
 
 			orderedMoviesList.setToolTipText("Ordered movies");
 
-			JScrollPane scroller = new JScrollPane(orderedMoviesList);
-			scroller.setPreferredSize(new Dimension(listWidth - 30, listSize));
-			scroller.setMinimumSize(new Dimension(listWidth - 30, listSize));
+			JScrollPane orderedScroller = new JScrollPane(orderedMoviesList);
+			orderedScroller.setPreferredSize(new Dimension(listWidth - 30,
+					listSize));
+			orderedScroller.setMinimumSize(new Dimension(listWidth - 30,
+					listSize));
 
-			JLabel recommendedMoviesLabel = new JLabel("RECOMMENDED MOVIES");
-			recommendedMoviesLabel.setFont(new Font("Times New Roman",
-					Font.BOLD | Font.ITALIC, 14));
-			recommendedMoviesLabel.setPreferredSize(new Dimension(
-					listWidth - 10, 30));
+			allMoviesList = new JList();
+			allMoviesList.setAutoscrolls(true);
+			allMoviesList.setName("All movies");
+
+			allMoviesList.setToolTipText("All movies");
+
+			JScrollPane allScroller = new JScrollPane(allMoviesList);
+			allScroller
+					.setPreferredSize(new Dimension(listWidth - 30, listSize));
+			allScroller.setMinimumSize(new Dimension(listWidth - 30, listSize));
+
+			JLabel orderedMoviesList = new JLabel("ALL MOVIES");
+			orderedMoviesList.setFont(new Font("Times New Roman", Font.BOLD
+					| Font.ITALIC, 14));
+			orderedMoviesList
+					.setPreferredSize(new Dimension(listWidth - 10, 30));
 
 			panelForMoviesList.add(orderedMoviesLabel);
-			panelForMoviesList.add(scroller);
-			panelForMoviesList.add(recommendedMoviesLabel);
+			panelForMoviesList.add(orderedScroller);
+
+			panelForMoviesList.add(allMoviesLabel);
+			panelForMoviesList.add(allScroller);
+
 		}
 
 		return panelForMoviesList;
@@ -143,9 +167,9 @@ public class MoviesTab extends JPanel {
 	}
 
 	public void changeDescriptionPanel(String Title) {
-		
+
 	}
-	
+
 	/**
 	 * Setting the panel which contains information describing single movie.
 	 * 
@@ -168,12 +192,21 @@ public class MoviesTab extends JPanel {
 	public void setListOfMovies(String[] moviesArray) {
 
 		orderedMoviesList.setListData(moviesArray);
+		allMoviesList.setListData(moviesArray);
 		this.getPanelForMoviesList().repaint();
 
 	}
 
-	public JList getMoviesList() {
+	public JList getOrderedMoviesList() {
 		return this.orderedMoviesList;
+	}
+
+	public JList getAllMoviesList() {
+		return this.allMoviesList;
+	}
+
+	public JList getRecommendedMoviesList() {
+		return this.recommendedMoviesList;
 	}
 
 }

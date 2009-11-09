@@ -20,7 +20,7 @@ public class PlayListener implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		JList list = moviesTab.getMoviesList();
+		JList list = moviesTab.getOrderedMoviesList();
 		int index = list.getSelectedIndex();
 		Object value = list.getSelectedValue();
 		if (value != null) {
