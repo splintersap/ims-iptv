@@ -295,6 +295,14 @@ public class IPTVClient implements ActionListener {
 			e.printStackTrace();
 		}
 	}
+	
+	public void purchaseMovie(String movieTitle, String quality) {
+		try {
+			session.sendInformation("purchase/" + movieTitle, quality.getBytes(), quality.length());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	private class DescriptionThread implements Runnable {
 
