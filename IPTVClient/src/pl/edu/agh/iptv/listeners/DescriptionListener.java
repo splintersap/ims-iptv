@@ -5,7 +5,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.iptv.IPTVClient;
-import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 /**
  * This class listens to the selections performed on the movies list. In case of

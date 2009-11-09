@@ -48,7 +48,7 @@ public class DescriptionPanel extends JPanel {
 		commentHeaderLabel.setFont(headerFont);
 		userCommentHeaderLabel.setFont(headerFont);
 
-		ratingPanel = new Rating(movie.getAllUsersRating());
+		ratingPanel = new Rating(movie);
 		this.add(ratingPanel.displayAverageRating());
 		this.add(ratingPanel.fieldForRating());
 		this.add(titleHeaderLabel);

@@ -12,17 +12,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import pl.edu.agh.iptv.IPTVClient;
+import pl.edu.agh.iptv.commons.CommonMovie;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.listeners.DescriptionListener;
 
 public class Rating {
 
-	/*
-	 * Average rate for a chosen movie.
-	 */
-	double avg;
+	private CommonMovie movie;
 
 	private IPTVClient iptvClient;
+
+	private JPanel output = new JPanel();
 
 	int currentlyHighlighted = 0;
 	int currentlyUnhighlighted = 0;
@@ -30,8 +30,8 @@ public class Rating {
 	ImageIcon smallEmpty = new ImageIcon("images/rating/empty_star_small.gif");
 	ImageIcon smallFull = new ImageIcon("images/rating/full_star_small.gif");
 
-	public Rating(double avg) {
-		this.avg = avg;
+	public Rating(CommonMovie movie) {
+		this.movie = movie;
 	}
 
 	/**
@@ -43,7 +43,9 @@ public class Rating {
 	 */
 	public JPanel displayAverageRating() {
 
-		JPanel output = new JPanel();
+		output = new JPanel();
+
+		double avg = this.movie.getAllUsersRating();
 
 		output.setLayout(new ResizableGridLayout(1, 10));
 
@@ -115,6 +117,8 @@ public class Rating {
 			labelsPanel.add(label);
 
 		}
+
+		labelsPanel.updateRating(movie.getUserRating() - 1);
 
 		ratingPanel.add(labelsPanel);
 
@@ -217,10 +221,22 @@ public class Rating {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
-			if (JOptionPane.showConfirmDialog(rateNameLabel,
-					"Are you sure you want to rate this movie with a rate "
-							+ text) == JOptionPane.YES_OPTION)
-			iptvClient.setUserRating(this.number + 1, DescriptionListener.getSelectedMovie());
+
+			String msg;
+			if (movie.getUserRating() == 0) {
+				msg = "Are you sure you want to rate this movie with a rate"
+						+ text + " ?";
+			} else {
+				msg = "Are you sure you want to change your rate to " + text
+						+ " ?";
+			}
+
+			if (JOptionPane.showConfirmDialog(rateNameLabel, msg) == JOptionPane.YES_OPTION) {
+				iptvClient.setUserRating(this.number + 1, DescriptionListener
+						.getSelectedMovie());
+				ratingPanel.updateRating(this.number);
+				movie.setUserRating(this.number + 1);
+			}
 		}
 
 		@Override
@@ -253,6 +269,7 @@ public class Rating {
 			ratingPanel.updateRating(-1);
 			text = "Your rate";
 			rateNameLabel.setText(text);
+			ratingPanel.updateRating(movie.getUserRating() - 1);
 		}
 
 		@Override

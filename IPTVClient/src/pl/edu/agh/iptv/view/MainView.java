@@ -42,6 +42,8 @@ public class MainView {
 	private JButton play;
 	private JButton refresh;
 
+	private JButton orderButton;
+
 	public MainView() {
 
 		// getMainFrame().pack();
@@ -202,6 +204,8 @@ public class MainView {
 
 		play = new JButton(new ImageIcon("images/play.gif"));
 
+		orderButton = new JButton(new ImageIcon("images/cart.gif"));
+
 		JButton forward = new JButton(new ImageIcon("images/forward.gif"));
 
 		toolBar.add(refresh);
@@ -210,6 +214,8 @@ public class MainView {
 		toolBar.add(rew);
 		toolBar.add(play);
 		toolBar.add(forward);
+		toolBar.addSeparator();
+		toolBar.add(orderButton);
 
 		return toolBar;
 	}
@@ -220,6 +226,10 @@ public class MainView {
 
 	public JButton getRefreshButton() {
 		return this.refresh;
+	}
+
+	public JButton getOrderMoviebButton() {
+		return this.orderButton;
 	}
 
 	public Dimension getSize() {
