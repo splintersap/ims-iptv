@@ -4,20 +4,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pl.edu.agh.iptv.commons.CommonMovie;
+import pl.edu.agh.iptv.data.Movie;
 
 public class MoviesController {
 
-	List<CommonMovie> movies;
+	List<Movie> movies;
 
-	private Map<String, CommonMovie> moviesMap;
+	private Map<String, Movie> moviesMap;
 
-	public MoviesController(List<CommonMovie> movies) {
+	public MoviesController(List<Movie> movies) {
 
 		this.movies = movies;
 
-		moviesMap = new HashMap<String, CommonMovie>();
-		for (CommonMovie movie : movies) {
+		moviesMap = new HashMap<String, Movie>();
+		for (Movie movie : movies) {
 			moviesMap.put(movie.getTitle(), movie);
 		}
 
@@ -30,7 +30,7 @@ public class MoviesController {
 	 *            title of the movie
 	 * @return representation of the movie
 	 */
-	public CommonMovie getMovieByName(String movieTitle) {
+	public Movie getMovieByName(String movieTitle) {
 		return this.moviesMap.get(movieTitle);
 	}
 
@@ -38,7 +38,7 @@ public class MoviesController {
 		String[] titles = new String[this.movies.size()];
 
 		int i = 0;
-		for (CommonMovie movie : this.movies) {
+		for (Movie movie : this.movies) {
 			titles[i] = movie.getTitle();
 			i++;
 		}

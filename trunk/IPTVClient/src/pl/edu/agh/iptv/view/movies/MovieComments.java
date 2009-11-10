@@ -8,17 +8,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import pl.edu.agh.iptv.commons.CommonComment;
-import pl.edu.agh.iptv.commons.CommonMovie;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.data.Comment;
+import pl.edu.agh.iptv.data.Movie;
 
 public class MovieComments {
 
-	private CommonMovie movie;
+	private Movie movie;
 	private JTextArea commentField;
 	private JButton commentButton;
 
-	public MovieComments(CommonMovie movie) {
+	public MovieComments(Movie movie) {
 		this.movie = movie;
 	}
 
@@ -33,7 +33,7 @@ public class MovieComments {
 				.getCommentList().size() * 2, 1);
 		commPanel.setLayout(mainLayout);
 
-		for (CommonComment comment : movie.getCommentList()) {
+		for (Comment comment : movie.getCommentList()) {
 
 			JTextArea commInfo = new JTextArea();
 			commInfo.setLineWrap(true);

@@ -12,13 +12,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import pl.edu.agh.iptv.IPTVClient;
-import pl.edu.agh.iptv.commons.CommonMovie;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.data.Movie;
 import pl.edu.agh.iptv.listeners.DescriptionListener;
 
 public class Rating {
 
-	private CommonMovie movie;
+	private Movie movie;
 
 	private IPTVClient iptvClient;
 
@@ -30,7 +30,7 @@ public class Rating {
 	ImageIcon smallEmpty = new ImageIcon("images/rating/empty_star_small.gif");
 	ImageIcon smallFull = new ImageIcon("images/rating/full_star_small.gif");
 
-	public Rating(CommonMovie movie) {
+	public Rating(Movie movie) {
 		this.movie = movie;
 	}
 
