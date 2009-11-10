@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import pl.edu.agh.iptv.commons.CommonMovie;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.data.Movie;
 
 public class DescriptionPanel extends JPanel {
 
@@ -20,7 +20,7 @@ public class DescriptionPanel extends JPanel {
 	private Rating ratingPanel;
 	private MovieComments commentsPanel;	
 
-	public DescriptionPanel(CommonMovie movie) {
+	public DescriptionPanel(Movie movie) {
 
 		Font headerFont = new Font("Arial", Font.BOLD | Font.ITALIC, 14);
 		this.setLayout(new ResizableGridLayout(15, 1));

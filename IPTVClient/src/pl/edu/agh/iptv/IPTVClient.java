@@ -11,11 +11,11 @@ import net.sourceforge.jsdp.Attribute;
 import net.sourceforge.jsdp.SDPFactory;
 import net.sourceforge.jsdp.SDPParseException;
 import net.sourceforge.jsdp.SessionDescription;
-import pl.edu.agh.iptv.commons.CommonComment;
-import pl.edu.agh.iptv.commons.CommonMovie;
-import pl.edu.agh.iptv.commons.CommonMovieDescription;
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
+import pl.edu.agh.iptv.data.Comment;
+import pl.edu.agh.iptv.data.Movie;
+import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.CommentListener;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.DescriptionPanel;
@@ -143,7 +143,7 @@ public class IPTVClient implements ActionListener {
 							String overallRating = sdp.getAttribute(
 									"overallRating").getValue();
 
-							CommonMovie movie = new CommonMovie(title,
+							Movie movie = new Movie(title,
 									category, description, director, Integer
 											.valueOf(userRating), Double
 											.valueOf(overallRating));
@@ -162,7 +162,7 @@ public class IPTVClient implements ActionListener {
 											.valueOf(strings[1]));
 
 									String com = strings[2];
-									CommonComment commonComment = new CommonComment(
+									Comment commonComment = new Comment(
 											date, com, sip);
 									System.out.println(date + ", " + com + ", "
 											+ sip);
@@ -192,7 +192,7 @@ public class IPTVClient implements ActionListener {
 										isOrdered = true;
 									}
 
-									CommonMovieDescription movieDescription = new CommonMovieDescription(
+									MovieDescription movieDescription = new MovieDescription(
 											quality, price, date, isOrdered);
 									movie
 											.addCommonMovieDescription(movieDescription);
@@ -321,10 +321,10 @@ public class IPTVClient implements ActionListener {
 	private class DescriptionThread implements Runnable {
 
 		MoviesTab moviesTab;
-		CommonMovie movie;
+		Movie movie;
 		IPTVClient client;
 
-		public DescriptionThread(CommonMovie movie, MoviesTab moviesTab,
+		public DescriptionThread(Movie movie, MoviesTab moviesTab,
 				IPTVClient client) {
 			this.movie = movie;
 			this.moviesTab = moviesTab;
@@ -342,7 +342,7 @@ public class IPTVClient implements ActionListener {
 			this.moviesTab.setDescriptionPanel(descriptionPanel);
 
 			boolean isOrdered = false;
-			for (CommonMovieDescription movieDesc : movie
+			for (MovieDescription movieDesc : movie
 					.getMovieDescriptionList()) {
 				if (movieDesc.isOrdered()) {
 					isOrdered = true;
