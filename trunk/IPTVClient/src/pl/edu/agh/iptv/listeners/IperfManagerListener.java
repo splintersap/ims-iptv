@@ -3,7 +3,7 @@ package pl.edu.agh.iptv.listeners;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import pl.edu.agh.performance.client.core.IperfThread;
+import pl.edu.agh.iptv.performance.client.core.IperfThread;
 
 public class IperfManagerListener implements WindowListener{
 

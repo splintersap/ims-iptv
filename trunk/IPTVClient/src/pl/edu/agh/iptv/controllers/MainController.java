@@ -10,9 +10,10 @@ import pl.edu.agh.iptv.listeners.DescriptionListener;
 import pl.edu.agh.iptv.listeners.IperfManagerListener;
 import pl.edu.agh.iptv.listeners.OrderMovieListener;
 import pl.edu.agh.iptv.listeners.PlayListener;
+import pl.edu.agh.iptv.performance.client.IPTVPerformanceClient;
+import pl.edu.agh.iptv.performance.client.PerformanceLauncher;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
-import pl.edu.agh.performance.client.IPTVPerformanceClient;
 
 public class MainController {
 
@@ -65,12 +66,16 @@ public class MainController {
 						new OrderMovieListener(iptvClient, moviesTab, mainView
 								.getMainFrame()));
 
-				IPTVPerformanceClient performance = new IPTVPerformanceClient(
-						"192.168.1.224", mainView.getBandwidthLabel());
-				performance.queryServer();
+				// IPTVPerformanceClient performance = new
+				// IPTVPerformanceClient(
+				// "192.168.1.224", mainView.getBandwidthLabel());
+				// performance.queryServer();
 
-				mainView.setWindowCloseOperation(new IperfManagerListener(
-						performance.getIperfThread()));
+				// mainView.setWindowCloseOperation(new IperfManagerListener(
+				// performance.getIperfThread()));
+
+				new Thread(new PerformanceLauncher(mainView, "192.168.1.224"))
+						.start();
 
 			}
 		});

@@ -3,17 +3,12 @@ package pl.edu.agh.iptv;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 
 import javax.swing.JOptionPane;
 
-import net.sourceforge.jsdp.Attribute;
-import net.sourceforge.jsdp.SDPFactory;
-import net.sourceforge.jsdp.SDPParseException;
-import net.sourceforge.jsdp.SessionDescription;
 import pl.edu.agh.iptv.controllers.MoviesController;
+import pl.edu.agh.iptv.controllers.helper.MessageHelper;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
-import pl.edu.agh.iptv.data.Comment;
 import pl.edu.agh.iptv.data.Movie;
 import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.CommentListener;
@@ -30,6 +25,14 @@ import com.ericsson.icp.ISession;
 import com.ericsson.icp.util.ErrorReason;
 import com.ericsson.icp.util.SdpFactory;
 
+/**
+ * This is very important class responsible for communication with the
+ * application server. This class establishes session with the server and request
+ * server for needed information - movie description, etc.
+ * 
+ * @author Wozniak
+ * 
+ */
 public class IPTVClient implements ActionListener {
 
 	/**
@@ -122,100 +125,16 @@ public class IPTVClient implements ActionListener {
 						String[] movieList = movieString.split("\n");
 						moviesTab.setListOfMovies(movieList);
 					} else if ("application/sdp".equals(aContentType)) {
-						System.out.println("SDP information");
-						String message = new String(aMessage);
-						try {
-							SessionDescription sdp = SDPFactory
-									.parseSessionDescription(message);
-							String description;
-							if (sdp.getAttribute("description") != null)
-								description = sdp.getAttribute("description")
-										.getValue();
-							else
-								description = "";
-							String title = sdp.getInformation().getValue();
-							String category = sdp.getAttribute("category")
-									.getValue();
-							String director = sdp.getAttribute("director")
-									.getValue();
-							String userRating = sdp.getAttribute("userRating")
-									.getValue();
-							String overallRating = sdp.getAttribute(
-									"overallRating").getValue();
 
-							Movie movie = new Movie(title,
-									category, description, director, Integer
-											.valueOf(userRating), Double
-											.valueOf(overallRating));
-							Attribute[] commentAtr = sdp
-									.getAttributes("comment");
-							System.out.println("length = " + commentAtr.length);
-							for (Attribute atr : commentAtr) {
-								String comment = atr.getValue();
-								System.out.println(comment);
-								String[] strings = comment.split("\\|");
+						/*
+						 * Displaying received description about selected movie.
+						 */
+						Runnable sh = new DescriptionThread(new MessageHelper()
+								.parseMovieSDPMessage(aMessage), moviesTab,
+								client);
 
-								if (strings.length == 3) {
-									String sip = strings[0];
-
-									Date date = new Date(Long
-											.valueOf(strings[1]));
-
-									String com = strings[2];
-									Comment commonComment = new Comment(
-											date, com, sip);
-									System.out.println(date + ", " + com + ", "
-											+ sip);
-									movie.addCommonComment(commonComment);
-
-								}
-							}
-
-							Attribute[] paymentAtr = sdp
-									.getAttributes("payment");
-							for (Attribute atr : paymentAtr) {
-								String payment = atr.getValue();
-								System.out.println(payment);
-								String[] strings = payment.split("\\|");
-								if (strings.length == 3) {
-
-									Date date = null;
-									boolean isOrdered = false;
-									String quality = strings[0];
-									// cmd.setQuality(quality);
-									Long price = new Long(strings[1]);
-									// cmd.setPrice(price);
-									if ("null".equals(strings[2])) {
-										isOrdered = false;
-									} else {
-										date = new Date(new Long(strings[2]));
-										isOrdered = true;
-									}
-
-									MovieDescription movieDescription = new MovieDescription(
-											quality, price, date, isOrdered);
-									movie
-											.addCommonMovieDescription(movieDescription);
-								}
-							}
-
-							System.out.println(title + ", " + category + ", "
-									+ director + ", " + description);
-							System.out.println("Before DP");
-
-							/*
-							 * Displaying received description about selected
-							 * movie.
-							 */
-							Runnable sh = new DescriptionThread(movie,
-									moviesTab, client);
-
-							EventQueue.invokeLater(sh);
-							/***************************************/
-
-						} catch (SDPParseException e) {
-							e.printStackTrace();
-						}
+						EventQueue.invokeLater(sh);
+						/***************************************/
 
 					} else {
 						System.out.println("Unrecognized message");
@@ -260,8 +179,13 @@ public class IPTVClient implements ActionListener {
 	 * @param e
 	 */
 	private void showError(String message, Exception e) {
-		JOptionPane.showMessageDialog(this.mainView.getMainFrame(), "Error: "
-				+ message, "Error", JOptionPane.ERROR_MESSAGE);
+
+		if (mainView != null && mainView.getMainFrame() != null)
+			JOptionPane.showMessageDialog(this.mainView.getMainFrame(),
+					"Error: " + message, "Error", JOptionPane.ERROR_MESSAGE);
+		else
+			JOptionPane.showInputDialog("Error: " + message);
+
 		e.printStackTrace();
 	}
 
@@ -299,7 +223,7 @@ public class IPTVClient implements ActionListener {
 		} catch (Exception e) {
 			showError("Error while sending INFO about user rating", e);
 			e.printStackTrace();
-			
+
 		}
 	}
 
@@ -347,8 +271,7 @@ public class IPTVClient implements ActionListener {
 			this.moviesTab.setDescriptionPanel(descriptionPanel);
 
 			boolean isOrdered = false;
-			for (MovieDescription movieDesc : movie
-					.getMovieDescriptionList()) {
+			for (MovieDescription movieDesc : movie.getMovieDescriptionList()) {
 				if (movieDesc.isOrdered()) {
 					isOrdered = true;
 					break;
