@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.servlet.sip.SipServlet;
 
 import net.sourceforge.jsdp.Attribute;
 import net.sourceforge.jsdp.Information;
@@ -41,20 +42,30 @@ public class MessageCreator {
 			Origin orgin = SDPFactory.createOrigin();
 			sessionDescription.setOrigin(orgin);
 
-			Information info = SDPFactory.createInformation(movie.getTitle());
-			sessionDescription.setInformation(info);
+			if (movie.getTitle() != null && (!movie.getTitle().isEmpty())) {
+				Information info = SDPFactory.createInformation(movie
+						.getTitle());
+				sessionDescription.setInformation(info);
+			}
 
-			Attribute description = SDPFactory.createAttribute("description",
-					movie.getDescription());
-			sessionDescription.addAttribute(description);
+			if (movie.getDescription() != null && (!movie.getDescription().isEmpty())) {
+				System.err.println("Description : " + movie.getDescription());
+				Attribute description = SDPFactory.createAttribute(
+						"description", movie.getDescription());
+				sessionDescription.addAttribute(description);
+			}
 
-			Attribute movieCategory = SDPFactory.createAttribute("category",
-					movie.getCategory().name());
-			sessionDescription.addAttribute(movieCategory);
+			if (movie.getCategory() != null ) {
+				Attribute movieCategory = SDPFactory.createAttribute(
+						"category", movie.getCategory().name());
+				sessionDescription.addAttribute(movieCategory);
+			}
 
-			Attribute director = SDPFactory.createAttribute("director", movie
-					.getDirector());
-			sessionDescription.addAttribute(director);
+			if (movie.getDirector() != null && (!movie.getDirector().isEmpty())) {
+				Attribute director = SDPFactory.createAttribute("director",
+						movie.getDirector());
+				sessionDescription.addAttribute(director);
+			}
 
 			Attribute userRating = SDPFactory.createAttribute("userRating",
 					String.valueOf(getUserRating(movie, sip)));
@@ -72,20 +83,19 @@ public class MessageCreator {
 						commentString);
 				sessionDescription.addAttribute(commentAtr);
 			}
-			
-			for(MoviePayment moviePayment : movie.getMoviePayments())
-			{
+
+			for (MoviePayment moviePayment : movie.getMoviePayments()) {
 				Date date = moviePayment.getOrderByUser(sip);
 				String dateString = null;
-				if(date != null)
-				{
+				if (date != null) {
 					dateString = String.valueOf(date.getTime());
 				}
-				String moviePaymentString = moviePayment.getQuality() + "|" + moviePayment.getPirce() + "|" + dateString;
+				String moviePaymentString = moviePayment.getQuality() + "|"
+						+ moviePayment.getPirce() + "|" + dateString;
 				Attribute paymentAtr = SDPFactory.createAttribute("payment",
 						moviePaymentString);
 				sessionDescription.addAttribute(paymentAtr);
-			
+
 			}
 
 		} catch (SDPException e) {
@@ -96,21 +106,6 @@ public class MessageCreator {
 
 	}
 
-	/*private static double getOverallRating(Movie movie) {
-
-		double overallRating = 0.0;
-
-		for (MovieRating rating : movie.getRating()) {
-			overallRating += rating.getRating();
-		}
-
-		// In case dividing by 0
-		if (movie.getRating().size() != 0) {
-			overallRating /= movie.getRating().size();
-		}
-
-		return overallRating;
-	}*/
 
 	private static int getUserRating(Movie movie, String sip) {
 		int userRating = 0;
@@ -134,20 +129,18 @@ public class MessageCreator {
 	}
 
 	private static User getUserFromSip(String sip, EntityManager em) {
-		Query query = em
-				.createQuery("FROM User WHERE sip = '" + sip + "'");
+		Query query = em.createQuery("FROM User WHERE sip = '" + sip + "'");
 		List<User> userList = query.getResultList();
 		User user = userList.get(0);
 		return user;
 	}
 
-	public static void purchaseMovie(String title, String sip, String quality, EntityManager em)
-	{
+	public static void purchaseMovie(String title, String sip, String quality,
+			EntityManager em) {
 		User user = getUserFromSip(sip, em);
 		Movie movie = getMovieFromTitle(title, em);
 		user.addOrderedMovie(movie, Quality.valueOf(quality));
 	}
-
 
 	public static String createMovieList(String sip, EntityManager em) {
 		StringBuilder stringBuilder = new StringBuilder("");
@@ -155,19 +148,18 @@ public class MessageCreator {
 		List<Movie> movieList = query.getResultList();
 		for (Movie movie : movieList) {
 			boolean isOrdered = false;
-			for(MoviePayment moviePayment : movie.getMoviePayments())
-			{
+			for (MoviePayment moviePayment : movie.getMoviePayments()) {
 				Date date = moviePayment.getOrderByUser(sip);
-				if(date != null)
-				{
+				if (date != null) {
 					isOrdered = true;
 					break;
 				}
 			}
-			stringBuilder.append(movie.getTitle() + "|" + isOrdered + "|" + movie.getOverallRating());
+			stringBuilder.append(movie.getTitle() + "|" + isOrdered + "|"
+					+ movie.getOverallRating());
 			stringBuilder.append("\n");
 		}
 		return stringBuilder.toString();
 	}
-	
+
 }
