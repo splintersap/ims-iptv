@@ -12,6 +12,7 @@ import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.data.Movie;
 import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.CommentListener;
+import pl.edu.agh.iptv.presence.PresenceNotifier;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.DescriptionPanel;
 import pl.edu.agh.iptv.view.movies.MovieComments;
@@ -27,8 +28,8 @@ import com.ericsson.icp.util.SdpFactory;
 
 /**
  * This is very important class responsible for communication with the
- * application server. This class establishes session with the server and request
- * server for needed information - movie description, etc.
+ * application server. This class establishes session with the server and
+ * request server for needed information - movie description, etc.
  * 
  * @author Wozniak
  * 
@@ -76,6 +77,8 @@ public class IPTVClient implements ActionListener {
 
 			this.mainView = mainView;
 			this.moviesTab = mainView.getMoviesTab();
+
+			new PresenceNotifier(profile);
 
 			addingListener();
 			triggerMoviesRequest();
@@ -184,7 +187,8 @@ public class IPTVClient implements ActionListener {
 			JOptionPane.showMessageDialog(this.mainView.getMainFrame(),
 					"Error: " + message, "Error", JOptionPane.ERROR_MESSAGE);
 		else
-			JOptionPane.showInputDialog("Error: " + message);
+			JOptionPane.showMessageDialog(null, "Error: " + message, "Error",
+					JOptionPane.ERROR_MESSAGE);
 
 		e.printStackTrace();
 	}
