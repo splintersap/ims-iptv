@@ -13,6 +13,7 @@ import pl.edu.agh.iptv.listeners.PlayListener;
 import pl.edu.agh.iptv.performance.client.IPTVPerformanceClient;
 import pl.edu.agh.iptv.performance.client.PerformanceLauncher;
 import pl.edu.agh.iptv.view.MainView;
+import pl.edu.agh.iptv.view.chat.ChatTab;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class MainController {
@@ -73,6 +74,12 @@ public class MainController {
 
 				// mainView.setWindowCloseOperation(new IperfManagerListener(
 				// performance.getIperfThread()));
+
+				mainView.getMainTabs().addTab(
+						"Chat",
+						new ChatTab(mainView.getMainFrame(), iptvClient
+								.getProfile(), iptvClient.getService(),
+								iptvClient.getSession()));
 
 				new Thread(new PerformanceLauncher(mainView, "192.168.1.224"))
 						.start();

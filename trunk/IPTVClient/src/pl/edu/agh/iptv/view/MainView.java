@@ -21,6 +21,8 @@ import javax.swing.KeyStroke;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.listeners.IperfManagerListener;
+import pl.edu.agh.iptv.view.chat.Chat;
+import pl.edu.agh.iptv.view.chat.ChatTab;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class MainView {
@@ -33,6 +35,7 @@ public class MainView {
 	private JScrollPane statisticsTab = null;
 	private JScrollPane paymentsTab = null;
 	private MoviesTab moviesTab = null;
+	private ChatTab chatTab = null;
 
 	private JLabel bandwidthLabel;
 
@@ -100,12 +103,12 @@ public class MainView {
 	 * 
 	 * @return javax.swing.JTabbedPane
 	 */
-	private JTabbedPane getMainTabs() {
+	public JTabbedPane getMainTabs() {
 		if (mainTabs == null) {
 			mainTabs = new JTabbedPane();
 			mainTabs.addTab("Movies", getMoviesTab());
 			mainTabs.addTab("Statistics", getStatisticsTabBeans());
-			mainTabs.addTab("Payments", getPaymentsTab());
+			mainTabs.addTab("Payments", getPaymentsTab());			
 		}
 		return mainTabs;
 	}
@@ -147,6 +150,7 @@ public class MainView {
 		}
 		return this.moviesTab;
 	}
+	
 
 	private JMenuBar getJMenuBar() {
 
