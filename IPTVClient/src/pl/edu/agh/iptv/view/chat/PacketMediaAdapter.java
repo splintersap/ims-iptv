@@ -13,13 +13,13 @@
  * **********************************************************************/
 package pl.edu.agh.iptv.view.chat;
 
-import java.awt.TextArea;
+import javax.swing.JTextArea;
 
 import com.ericsson.icp.media.IPacketMediaListener;
 
 public class PacketMediaAdapter extends BaseAdapter implements IPacketMediaListener
 {
-    public PacketMediaAdapter(TextArea area)
+    public PacketMediaAdapter(JTextArea area)
     {
         super(area);
     }

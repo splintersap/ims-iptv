@@ -13,16 +13,16 @@
  * **********************************************************************/
 package pl.edu.agh.iptv.view.chat;
 
-import java.awt.TextArea;
+import javax.swing.JTextArea;
 
 import com.ericsson.icp.ISessionListener;
 import com.ericsson.icp.util.ErrorReason;
-import com.ericsson.icp.util.MIMEContainer;
 import com.ericsson.icp.util.ISessionDescription;
+import com.ericsson.icp.util.MIMEContainer;
 
 public class SessionAdapter extends BaseAdapter implements ISessionListener
 {
-    public SessionAdapter(TextArea area)
+    public SessionAdapter(JTextArea area)
     {
         super(area);
     }

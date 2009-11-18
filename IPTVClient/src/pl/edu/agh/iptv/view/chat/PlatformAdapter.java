@@ -13,14 +13,14 @@
  * **********************************************************************/
 package pl.edu.agh.iptv.view.chat;
 
-import java.awt.TextArea;
+import javax.swing.JTextArea;
 
 import com.ericsson.icp.IPlatformListener;
 import com.ericsson.icp.util.ErrorReason;
 
 public class PlatformAdapter extends BaseAdapter implements IPlatformListener
 {
-    public PlatformAdapter(TextArea area)
+    public PlatformAdapter(JTextArea area)
     {
         super(area);
     }

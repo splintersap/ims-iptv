@@ -13,7 +13,7 @@
  * **********************************************************************/
 package pl.edu.agh.iptv.view.chat;
 
-import java.awt.TextArea;
+import javax.swing.JTextArea;
 
 import com.ericsson.icp.IProfileListener;
 import com.ericsson.icp.IProfile.State;
@@ -21,7 +21,7 @@ import com.ericsson.icp.util.ErrorReason;
 
 public class ProfileAdapter extends BaseAdapter implements IProfileListener
 {
-    public ProfileAdapter(TextArea area)
+    public ProfileAdapter(JTextArea area)
     {
         super(area);
     }
