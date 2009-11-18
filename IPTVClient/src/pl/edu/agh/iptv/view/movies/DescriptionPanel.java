@@ -18,10 +18,11 @@ public class DescriptionPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Rating ratingPanel;
-	private MovieComments commentsPanel;	
+	private MovieComments commentsPanel;
+	private Movie movie;
 
 	public DescriptionPanel(Movie movie) {
-
+		this.movie = movie;
 		Font headerFont = new Font("Arial", Font.BOLD | Font.ITALIC, 14);
 		this.setLayout(new ResizableGridLayout(15, 1));
 
@@ -74,10 +75,14 @@ public class DescriptionPanel extends JPanel {
 
 	public Rating getRatingPanel() {
 		return this.ratingPanel;
-	}	
-	
-	public MovieComments getMovieComments(){
+	}
+
+	public MovieComments getMovieComments() {
 		return this.commentsPanel;
 	}
 
+	public Movie getMovie() {
+		return this.movie;
+	}
+	
 }

@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.data.Movie;
+import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.DescriptionListener;
 
 public class Rating {
@@ -101,24 +102,47 @@ public class Rating {
 		JPanel ratingPanel = new JPanel();
 		ratingPanel.setLayout(new ResizableGridLayout(1, 10));
 		Font headerFont = new Font("Arial", Font.BOLD | Font.ITALIC, 14);
+
+		boolean isOrdered = false;
+		for (MovieDescription movieDesc : movie.getMovieDescriptionList()) {
+			if (movieDesc.isOrdered()) {
+				isOrdered = true;
+				break;
+			}
+		}
+
 		JLabel ratingHeader = new JLabel("Your rate");
-		JLabel rateNameLabel = new JLabel("Your choice");
+
+		JLabel rateNameLabel;
+		if (isOrdered)
+			rateNameLabel = new JLabel("Your choice");
+		else
+			rateNameLabel = new JLabel("You can not rate this movie");
 		ratingHeader.setFont(headerFont);
 		ratingPanel.add(ratingHeader);
 
 		RatingPanel labelsPanel = new RatingPanel(5);
 		labelsPanel.setLayout(new GridLayout(1, 5));
 
-		for (int i = 0; i < 5; i++) {
-			JLabel label = new JLabel(smallEmpty);
-			labelsPanel.addLabel(label, i);
-			label.addMouseListener(new SingleLabelRatingListener(labelsPanel,
-					i, rateNameLabel));
-			labelsPanel.add(label);
+		if (isOrdered) {
+			for (int i = 0; i < 5; i++) {
+				JLabel label = new JLabel(smallEmpty);
+				labelsPanel.addLabel(label, i);
+				label.addMouseListener(new SingleLabelRatingListener(
+						labelsPanel, i, rateNameLabel));
+				labelsPanel.add(label);
 
+			}
+
+			labelsPanel.updateRating(movie.getUserRating() - 1);
+		} else {
+			for (int i = 0; i < 5; i++) {
+				JLabel label = new JLabel(smallEmpty);
+				label.setEnabled(false);
+				labelsPanel.addLabel(label, i);
+				labelsPanel.add(label);
+			}
 		}
-
-		labelsPanel.updateRating(movie.getUserRating() - 1);
 
 		ratingPanel.add(labelsPanel);
 

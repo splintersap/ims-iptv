@@ -17,8 +17,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Label;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -29,6 +27,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -57,7 +56,7 @@ public class Chat {
 	/**
 	 * Default ICP Profile
 	 */
-	private static final String ICP_PROFILE = "IMSSetting";	
+	private static final String ICP_PROFILE = "IMSSetting";
 
 	/**
 	 * Text area containing logging information.
@@ -127,16 +126,14 @@ public class Chat {
 
 	JFrame mainFrame;
 
-	public Chat(JFrame mainFrame, IProfile profile, IService service,
-			ISession session) {
+	private int globalPercentage;
+
+	public Chat(JFrame mainFrame) {
 		this.mainFrame = mainFrame;
-		openChat(profile, service, session);
+		this.run();
 	}
 
-	public void openChat(IProfile profile, IService service, ISession session) {
-		// this.profile = profile;
-		// this.service = service;
-		// this.session = session;
+	public void openChat() {
 		this.run();
 	}
 
@@ -203,7 +200,7 @@ public class Chat {
 				hangup();
 			}
 		});
-		
+
 		JButton clearButton = new JButton("Clear");
 		clearButton.addActionListener(new ActionListener() {
 
@@ -212,9 +209,9 @@ public class Chat {
 			}
 		});
 
-		Panel infoPanel = new Panel();
+		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new GridBagLayout());
-		Label uriLabel = new Label("Callee URI:");
+		JLabel uriLabel = new JLabel("Callee URI:");
 		uriField = new JTextField();
 		messageField = new JTextField();
 		sendFileButton = new JButton("Send File");
@@ -252,7 +249,7 @@ public class Chat {
 		});
 		infoPanel.add(fileField, createConstraints(1, 2, 1));
 
-		Panel buttonPanel = new Panel();
+		JPanel buttonPanel = new JPanel();
 		GridLayout layout = new GridLayout(1, 0);
 		layout.setHgap(5);
 		buttonPanel.setLayout(layout);
@@ -267,7 +264,7 @@ public class Chat {
 		GridBagConstraints c = createConstraints(0, 2, 1);
 		c.weighty = 1;
 		panel.add(messageArea, c);
-		Panel bottomPanel = new Panel();
+		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new GridLayout());
 		bottomPanel.add(clearButton);
 		panel.add(bottomPanel, createConstraints(0, 3, 0));
@@ -387,7 +384,7 @@ public class Chat {
 												aProvisionalRequired, aSdpBody,
 												aContainer);
 										try {
-											log("Got remote SDP!");
+											log("Got remote SDP!");											
 											ISessionDescription remoteSdp = (ISessionDescription) aSdpBody
 													.duplicate();
 											ISessionDescription localSdp = createLocalSdp();
