@@ -4,9 +4,6 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.MessageHelper;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
@@ -184,14 +181,12 @@ public class IPTVClient implements ActionListener {
 	 */
 	private void showError(String message, Exception e) {
 
-//		if (mainView != null && mainView.getMainFrame() != null)
-//			JOptionPane.showMessageDialog(this.mainView.getMainFrame(),
-//					"Error: " + message, "Error", JOptionPane.ERROR_MESSAGE);
-//		else
-//			JOptionPane.showMessageDialog(null, "Error: " + message, "Error",
-//					JOptionPane.ERROR_MESSAGE);
-			
-			
+		// if (mainView != null && mainView.getMainFrame() != null)
+		// JOptionPane.showMessageDialog(this.mainView.getMainFrame(),
+		// "Error: " + message, "Error", JOptionPane.ERROR_MESSAGE);
+		// else
+		// JOptionPane.showMessageDialog(null, "Error: " + message, "Error",
+		// JOptionPane.ERROR_MESSAGE);
 
 		e.printStackTrace();
 	}
@@ -284,7 +279,7 @@ public class IPTVClient implements ActionListener {
 					break;
 				}
 			}
-			mainView.getOrderMoviebButton().setEnabled(!isOrdered);
+			mainView.setButtonsEnabelment(isOrdered);
 		}
 	}
 

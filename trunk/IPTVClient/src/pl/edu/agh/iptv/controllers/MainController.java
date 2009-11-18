@@ -7,13 +7,10 @@ import javax.swing.UIManager;
 
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.listeners.DescriptionListener;
-import pl.edu.agh.iptv.listeners.IperfManagerListener;
 import pl.edu.agh.iptv.listeners.OrderMovieListener;
 import pl.edu.agh.iptv.listeners.PlayListener;
-import pl.edu.agh.iptv.performance.client.IPTVPerformanceClient;
 import pl.edu.agh.iptv.performance.client.PerformanceLauncher;
 import pl.edu.agh.iptv.view.MainView;
-import pl.edu.agh.iptv.view.chat.ChatTab;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class MainController {
@@ -73,13 +70,7 @@ public class MainController {
 				// performance.queryServer();
 
 				// mainView.setWindowCloseOperation(new IperfManagerListener(
-				// performance.getIperfThread()));
-
-				mainView.getMainTabs().addTab(
-						"Chat",
-						new ChatTab(mainView.getMainFrame(), iptvClient
-								.getProfile(), iptvClient.getService(),
-								iptvClient.getSession()));
+				// performance.getIperfThread()));				
 
 				new Thread(new PerformanceLauncher(mainView, "192.168.1.224"))
 						.start();

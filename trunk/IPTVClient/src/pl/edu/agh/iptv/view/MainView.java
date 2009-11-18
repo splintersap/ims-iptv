@@ -21,7 +21,6 @@ import javax.swing.KeyStroke;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.listeners.IperfManagerListener;
-import pl.edu.agh.iptv.view.chat.Chat;
 import pl.edu.agh.iptv.view.chat.ChatTab;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
@@ -35,7 +34,6 @@ public class MainView {
 	private JScrollPane statisticsTab = null;
 	private JScrollPane paymentsTab = null;
 	private MoviesTab moviesTab = null;
-	private ChatTab chatTab = null;
 
 	private JLabel bandwidthLabel;
 
@@ -43,6 +41,9 @@ public class MainView {
 	 * Menu buttons.
 	 */
 	private JButton play;
+	private JButton stop;
+	private JButton rew;
+	private JButton forward;
 	private JButton refresh;
 
 	private JButton orderButton;
@@ -66,6 +67,8 @@ public class MainView {
 			mainFrame.setTitle("Watcher");
 
 			mainFrame.setJMenuBar(getJMenuBar());
+
+			mainTabs.addTab("Chat", new ChatTab(mainFrame));
 
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			mainFrame.pack();
@@ -108,7 +111,7 @@ public class MainView {
 			mainTabs = new JTabbedPane();
 			mainTabs.addTab("Movies", getMoviesTab());
 			mainTabs.addTab("Statistics", getStatisticsTabBeans());
-			mainTabs.addTab("Payments", getPaymentsTab());			
+			mainTabs.addTab("Payments", getPaymentsTab());
 		}
 		return mainTabs;
 	}
@@ -150,7 +153,6 @@ public class MainView {
 		}
 		return this.moviesTab;
 	}
-	
 
 	private JMenuBar getJMenuBar() {
 
@@ -202,17 +204,21 @@ public class MainView {
 
 		refresh = new JButton(new ImageIcon("images/refresh.gif"));
 
-		JButton stop = new JButton(new ImageIcon("images/stop.gif"));
+		stop = new JButton(new ImageIcon("images/stop.gif"));
+		stop.setEnabled(false);
 
-		JButton rew = new JButton(new ImageIcon("images/rew.gif"));
+		rew = new JButton(new ImageIcon("images/rew.gif"));
+		rew.setEnabled(false);
 
 		play = new JButton(new ImageIcon("images/play.gif"));
+		play.setEnabled(false);
 
 		orderButton = new JButton(new ImageIcon("images/cart.gif"));
 		orderButton.setName("ORDER");
 		orderButton.setEnabled(false);
 
-		JButton forward = new JButton(new ImageIcon("images/forward.gif"));
+		forward = new JButton(new ImageIcon("images/forward.gif"));
+		forward.setEnabled(false);
 
 		toolBar.add(refresh);
 		toolBar.addSeparator();
@@ -255,6 +261,14 @@ public class MainView {
 
 	public void setWindowCloseOperation(IperfManagerListener iperfListener) {
 		getMainFrame().addWindowListener(iperfListener);
+	}
+
+	public void setButtonsEnabelment(boolean ordered) {
+		play.setEnabled(ordered);
+		stop.setEnabled(ordered);
+		rew.setEnabled(ordered);
+		forward.setEnabled(ordered);
+		orderButton.setEnabled(!ordered);
 	}
 
 }
