@@ -43,8 +43,9 @@ public class VLCHelper {
 
 	private void playMovie() {
 
-		jvlc = new JVLC();
-		ds = new MediaDescriptor(jvlc, "udp://@:1234");
+		String[] params = new String[]{"-vvv"};
+		jvlc = new JVLC(params);
+		ds = new MediaDescriptor(jvlc, "rtsp://127.0.0.1:5554/MyMusic");
 		mp = ds.getMediaPlayer();
 		mp.setJVLC(jvlc);
 		video = new Video(jvlc);
