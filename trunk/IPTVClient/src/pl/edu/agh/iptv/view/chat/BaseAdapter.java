@@ -13,16 +13,17 @@
  * **********************************************************************/
 package pl.edu.agh.iptv.view.chat;
 
-import java.awt.TextArea;
 import java.io.PrintStream;
+
+import javax.swing.JTextArea;
 
 import com.ericsson.icp.util.ErrorReason;
 
 public class BaseAdapter
 {
-    private TextArea area;
+    private JTextArea area;
 
-    protected BaseAdapter(TextArea area)
+    protected BaseAdapter(JTextArea area)
     {
         this.area = area;
     }

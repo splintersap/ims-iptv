@@ -13,14 +13,14 @@
  * **********************************************************************/
 package pl.edu.agh.iptv.view.chat;
 
-import java.awt.TextArea;
+import javax.swing.JTextArea;
 
 import com.ericsson.icp.IServiceListener;
 import com.ericsson.icp.ISession;
 
 public class ServiceAdapter extends BaseAdapter implements IServiceListener
 {
-    public ServiceAdapter(TextArea area)
+    public ServiceAdapter(JTextArea area)
     {
         super(area);
     }

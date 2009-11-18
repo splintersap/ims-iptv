@@ -13,15 +13,12 @@
  * **********************************************************************/
 package pl.edu.agh.iptv.view.chat;
 
-import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.Panel;
-import java.awt.TextArea;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -30,8 +27,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import com.ericsson.icp.IBase;
 import com.ericsson.icp.ICPFactory;
@@ -57,13 +57,7 @@ public class Chat {
 	/**
 	 * Default ICP Profile
 	 */
-	private static final String ICP_PROFILE = "IMSSetting";
-
-	/**
-	 * Flag indicating that the application is still running (value=false) or is
-	 * done processing.
-	 */
-	private boolean done;
+	private static final String ICP_PROFILE = "IMSSetting";	
 
 	/**
 	 * Text area containing logging information.
@@ -73,28 +67,28 @@ public class Chat {
 	/**
 	 * Field containing URI of the callee
 	 */
-	private TextField uriField;
+	private JTextField uriField;
 
 	/**
 	 * Field containing message to send.
 	 */
-	private TextField messageField;
+	private JTextField messageField;
 
 	/**
 	 * When pressed, invites the callee as defined in the field
 	 * <code>uriField</code>
 	 */
-	private Button inviteButton;
+	private JButton inviteButton;
 
 	/**
 	 * Ends the current session when pressed.
 	 */
-	private Button hangupButton;
+	private JButton hangupButton;
 
 	/**
 	 * Send message in the field <code>messageField</code>
 	 */
-	private Button sendMessageButton;
+	private JButton sendMessageButton;
 
 	/**
 	 * Reference to the icp platform.
@@ -124,7 +118,7 @@ public class Chat {
 	/**
 	 * Button that allows the user to send the file.
 	 */
-	private Button sendFileButton;
+	private JButton sendFileButton;
 
 	/**
 	 * This is the main Panel.
@@ -133,15 +127,16 @@ public class Chat {
 
 	JFrame mainFrame;
 
-	public Chat(JFrame mainFrame, IProfile profile, IService service, ISession session) {
+	public Chat(JFrame mainFrame, IProfile profile, IService service,
+			ISession session) {
 		this.mainFrame = mainFrame;
 		openChat(profile, service, session);
 	}
 
 	public void openChat(IProfile profile, IService service, ISession session) {
-//		this.profile = profile;
-//		this.service = service;
-//		this.session = session;
+		// this.profile = profile;
+		// this.service = service;
+		// this.session = session;
 		this.run();
 	}
 
@@ -160,26 +155,9 @@ public class Chat {
 	 */
 	private void run() {
 		mainPanel = createGui();
-		// frame.setVisible(true);
-		// try {
 		initIcp(mainPanel);
-		//
-		 initializeField();
-		//
-		// while (!done) {
-		// try {
-		// Thread.sleep(10);
-		// } catch (InterruptedException e1) {
-		// }
-		// }
-		// clean();
-		// release(service);
-		// release(platform);
-		// } catch (Exception e) {
-		// logMessage("Could not init", e);
-		// }
+		initializeField();
 		mainPanel.setVisible(true);
-		// mainPanel.dispose();
 	}
 
 	/**
@@ -202,15 +180,15 @@ public class Chat {
 		final JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 
-		inviteButton = new Button("Invite Chat");
+		inviteButton = new JButton("Invite Chat");
 		inviteButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				 call(panel);
+				call(panel);
 
 			}
 		});
-		sendMessageButton = new Button("Send Msg");
+		sendMessageButton = new JButton("Send Msg");
 		sendMessageButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -218,21 +196,15 @@ public class Chat {
 			}
 
 		});
-		hangupButton = new Button("End Chat");
+		hangupButton = new JButton("End Chat");
 		hangupButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 				hangup();
 			}
 		});
-		Button quitButton = new Button("Quit");
-		quitButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				done = true;
-			}
-		});
-		Button clearButton = new Button("Clear");
+		
+		JButton clearButton = new JButton("Clear");
 		clearButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -243,10 +215,10 @@ public class Chat {
 		Panel infoPanel = new Panel();
 		infoPanel.setLayout(new GridBagLayout());
 		Label uriLabel = new Label("Callee URI:");
-		uriField = new TextField();
-		messageField = new TextField();
-		sendFileButton = new Button("Send File");
-		final TextField fileField = new TextField();
+		uriField = new JTextField();
+		messageField = new JTextField();
+		sendFileButton = new JButton("Send File");
+		final JTextField fileField = new JTextField();
 		fileField.setText("");
 
 		infoPanel.add(uriLabel, createConstraints(0, 0, 0));
@@ -298,7 +270,6 @@ public class Chat {
 		Panel bottomPanel = new Panel();
 		bottomPanel.setLayout(new GridLayout());
 		bottomPanel.add(clearButton);
-		bottomPanel.add(quitButton);
 		panel.add(bottomPanel, createConstraints(0, 3, 0));
 		panel.setSize(new Dimension(200, 300));
 
@@ -382,14 +353,14 @@ public class Chat {
 	 */
 	private void initIcp(final JPanel panel) {
 		try {
-			 platform = ICPFactory.createPlatform();
-			 platform.registerClient("ChatClient");
+			platform = ICPFactory.createPlatform();
+			platform.registerClient("ChatClient");
 			platform.addListener(new PlatformAdapter(messageArea));
 
-			 profile = platform.createProfile(ICP_PROFILE);
+			profile = platform.createProfile(ICP_PROFILE);
 			profile.addListener(new ProfileAdapter(messageArea));
 
-			 service = profile.createService("+g.chatservice", "chatapp");
+			service = profile.createService("+g.chatservice", "chatapp");
 			service.addListener(new ServiceAdapter(messageArea) {
 				/**
 				 * This callback method will be called when a session comes from
@@ -676,7 +647,7 @@ public class Chat {
 		}
 	}
 
-	private class CustomTextArea extends TextArea {
+	private class CustomTextArea extends JTextArea {
 		/**
          * 
          */
@@ -692,7 +663,7 @@ public class Chat {
 	}
 
 	private class ChatSessionAdapter extends SessionAdapter {
-		protected ChatSessionAdapter(TextArea area) {
+		protected ChatSessionAdapter(JTextArea area) {
 			super(area);
 		}
 
