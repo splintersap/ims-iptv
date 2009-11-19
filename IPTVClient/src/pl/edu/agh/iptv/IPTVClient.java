@@ -76,7 +76,7 @@ public class IPTVClient implements ActionListener {
 			this.mainView = mainView;
 			this.moviesTab = mainView.getMoviesTab();
 
-			new PresenceNotifier(profile);
+			//new PresenceNotifier(profile);
 
 			addingListener();
 			triggerMoviesRequest();
@@ -136,7 +136,9 @@ public class IPTVClient implements ActionListener {
 
 						EventQueue.invokeLater(sh);
 						/***************************************/
-
+					} else if("vlc/uri".equals(aContentType)) {
+						String vlcCommand = new String(aMessage);
+						System.out.println(vlcCommand);
 					} else {
 						System.out.println("Unrecognized message");
 					}
@@ -181,12 +183,14 @@ public class IPTVClient implements ActionListener {
 	 */
 	private void showError(String message, Exception e) {
 
+
 		// if (mainView != null && mainView.getMainFrame() != null)
 		// JOptionPane.showMessageDialog(this.mainView.getMainFrame(),
 		// "Error: " + message, "Error", JOptionPane.ERROR_MESSAGE);
 		// else
 		// JOptionPane.showMessageDialog(null, "Error: " + message, "Error",
 		// JOptionPane.ERROR_MESSAGE);
+
 
 		e.printStackTrace();
 	}

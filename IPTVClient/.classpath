@@ -8,7 +8,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jna.jar"/>
-	<classpathentry kind="lib" path="lib/jvlc.jar"/>
 	<classpathentry kind="lib" path="lib/substance.jar"/>
 	<classpathentry kind="lib" path="lib/jsdp-1.1.jar"/>
 	<classpathentry kind="var" path="SDS_LIBRARY_DIR/icp/PGMJni.jar">
@@ -16,5 +15,6 @@
 			<attribute name="javadoc_location" value="file:/C:\Ericsson\SDS4.1FD1\extension\eclipse\plugins\com.ericsson.sds_4.1.1.v20090217/doc/icp_api"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/jvlc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
