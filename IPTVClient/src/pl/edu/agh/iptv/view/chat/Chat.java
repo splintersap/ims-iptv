@@ -14,6 +14,7 @@
 package pl.edu.agh.iptv.view.chat;
 
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -28,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -125,8 +127,6 @@ public class Chat {
 	JPanel mainPanel;
 
 	JFrame mainFrame;
-
-	private int globalPercentage;
 
 	public Chat(JFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -256,7 +256,8 @@ public class Chat {
 		buttonPanel.add(inviteButton);
 		buttonPanel.add(hangupButton);
 
-		messageArea = new CustomTextArea("Ready!");
+		// messageArea = new CustomTextArea("Ready!");
+		messageArea = new CustomTextArea("");
 		messageArea.setEditable(false);
 
 		panel.add(infoPanel, createConstraints(0, 0, 0));
@@ -384,7 +385,7 @@ public class Chat {
 												aProvisionalRequired, aSdpBody,
 												aContainer);
 										try {
-											log("Got remote SDP!");											
+											log("Got remote SDP!");
 											ISessionDescription remoteSdp = (ISessionDescription) aSdpBody
 													.duplicate();
 											ISessionDescription localSdp = createLocalSdp();
@@ -406,20 +407,39 @@ public class Chat {
 											localSdp
 													.addMediaDescription(localDesc);
 
-											ConfirmDialog dialog = new ConfirmDialog(
-													mainFrame,
-													"Accept incoming chat?");
+											final JFrame frame = mainFrame;
+											final ISessionDescription myLocalSdp = localSdp;
+											EventQueue
+													.invokeLater(new Runnable() {
 
-											if (dialog.hasAccepted()) {
-												log("Accept invite");
-												session
-														.acceptInvitation(localSdp);
-												setTalking(true);
-											} else {
-												log("Reject invite");
-												session.rejectInvitation();
-												setTalking(false);
-											}
+														@Override
+														public void run() {
+															// TODO
+															// Auto-generated
+															// method stub
+
+															try {
+																if (JOptionPane
+																		.showConfirmDialog(
+																				frame,
+																				"Accept incoming chat?") == JOptionPane.YES_OPTION) {
+																	log("Accept invite");
+																	session
+																			.acceptInvitation(myLocalSdp);
+																	setTalking(true);
+																} else {
+																	log("Reject invite");
+																	session
+																			.rejectInvitation();
+																	setTalking(false);
+																}
+															} catch (Exception e) {
+																log("Could not establish chat session");
+															}
+														}
+
+													});
+
 										} catch (Exception e) {
 											log(
 													"Could not establish chat session",
@@ -601,9 +621,7 @@ public class Chat {
 					super.processReceivingStarted(fileName, contentType);
 
 					try {
-						currentReceivedFile = new File(
-								"c:\\Media Files\\document\\unfiled\\"
-										+ fileName);
+						currentReceivedFile = new File("");
 						currentReceivedFile.mkdirs();
 						if (currentReceivedFile.exists()) {
 							currentReceivedFile.delete();
@@ -619,21 +637,31 @@ public class Chat {
 				public void processSendingProgress(int percentage) {
 					super.processSendingProgress(percentage);
 
-					if (percentage == 100 && (currentReceivedFile != null)) {
-						ConfirmDialog dialog = new ConfirmDialog(mainFrame,
-								"Save received file "
+					final int localPerc = percentage;
+					EventQueue.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							if (localPerc == 100
+									&& (currentReceivedFile != null)) {
+								String query = "Save received file "
 										+ currentReceivedFile.getName()
 										+ " in \n"
 										+ currentReceivedFile.getParentFile()
-												.getAbsolutePath() + "?");
+												.getAbsolutePath() + "?";
 
-						if (!dialog.hasAccepted()) {
-							currentReceivedFile.delete();
+								if (JOptionPane.showConfirmDialog(mainFrame,
+										query) != JOptionPane.YES_OPTION) {
+									currentReceivedFile.delete();
+								}
+
+								currentReceivedFile = null;
+								output = null;
+							}
 						}
 
-						currentReceivedFile = null;
-						output = null;
-					}
+					});
+
 				}
 
 			});

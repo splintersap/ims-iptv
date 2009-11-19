@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JOptionPane;
+
 import pl.edu.agh.iptv.controllers.MoviesController;
 import pl.edu.agh.iptv.controllers.helper.MessageHelper;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
@@ -76,7 +78,7 @@ public class IPTVClient implements ActionListener {
 			this.mainView = mainView;
 			this.moviesTab = mainView.getMoviesTab();
 
-			//new PresenceNotifier(profile);
+			new PresenceNotifier(profile);
 
 			addingListener();
 			triggerMoviesRequest();
@@ -136,9 +138,7 @@ public class IPTVClient implements ActionListener {
 
 						EventQueue.invokeLater(sh);
 						/***************************************/
-					} else if("vlc/uri".equals(aContentType)) {
-						String vlcCommand = new String(aMessage);
-						System.out.println(vlcCommand);
+
 					} else {
 						System.out.println("Unrecognized message");
 					}
@@ -183,14 +183,35 @@ public class IPTVClient implements ActionListener {
 	 */
 	private void showError(String message, Exception e) {
 
+		final String msg = message;
 
-		// if (mainView != null && mainView.getMainFrame() != null)
-		// JOptionPane.showMessageDialog(this.mainView.getMainFrame(),
-		// "Error: " + message, "Error", JOptionPane.ERROR_MESSAGE);
-		// else
-		// JOptionPane.showMessageDialog(null, "Error: " + message, "Error",
-		// JOptionPane.ERROR_MESSAGE);
+		if (mainView != null && mainView.getMainFrame() != null)
 
+			EventQueue.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					JOptionPane
+							.showMessageDialog(mainView.getMainFrame(),
+									"Error: " + msg, "Error",
+									JOptionPane.ERROR_MESSAGE);
+				}
+
+			});
+
+		else
+
+			EventQueue.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					JOptionPane.showMessageDialog(null, "Error: " + msg,
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
+
+			});
 
 		e.printStackTrace();
 	}
