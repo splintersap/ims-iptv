@@ -1,7 +1,6 @@
 package pl.edu.agh.iptv.servlet;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,24 +12,14 @@ import javax.servlet.sip.SipServlet;
 import javax.servlet.sip.SipServletRequest;
 import javax.servlet.sip.SipServletResponse;
 import javax.servlet.sip.SipSession;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import net.sourceforge.jsdp.Attribute;
-import net.sourceforge.jsdp.Information;
-import net.sourceforge.jsdp.Origin;
-import net.sourceforge.jsdp.SDPException;
-import net.sourceforge.jsdp.SDPFactory;
 import net.sourceforge.jsdp.SessionDescription;
+import pl.edu.agh.iptv.persistence.Movie;
+import pl.edu.agh.iptv.persistence.MovieRating;
+import pl.edu.agh.iptv.persistence.User;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
-import pl.edu.agh.iptv.servlet.persistence.Movie;
-import pl.edu.agh.iptv.servlet.persistence.MoviePayment;
-import pl.edu.agh.iptv.servlet.persistence.MovieRating;
-import pl.edu.agh.iptv.servlet.persistence.Quality;
-import pl.edu.agh.iptv.servlet.persistence.User;
 
-@javax.servlet.sip.annotation.SipServlet
 public class VideoServlet extends SipServlet {
 
 	@PersistenceContext(unitName = "PU")
@@ -52,10 +41,16 @@ public class VideoServlet extends SipServlet {
 			throws ServletException, IOException {
 		log("inside doMessage method");
 		sipServletRequest.createResponse(200).send();
-		String content = new String(sipServletRequest.getRawContent());
-		String moviePath = getMoviePath(content);
+		String movieTitle = new String(sipServletRequest.getRawContent());
+		String moviePath = getMoviePath(movieTitle);
+		
+		SipSession session = sipServletRequest.getSession(true);
+		SipServletRequest info = session.createRequest("INFO");
+		info.setContent(moviePath, "vlc/uri");
+		info.send();
+		
 		// start streaming
-		runStreamer(sipServletRequest.getInitialRemoteAddr(), moviePath);
+		//runStreamer(sipServletRequest.getInitialRemoteAddr(), moviePath);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -65,7 +60,7 @@ public class VideoServlet extends SipServlet {
 				+ "'");
 		List<Movie> movieList = query.getResultList();
 		Movie movie = movieList.get(0);
-		return movie.getMoviePath();
+		return movie.getMovieUrl();
 	}
 
 	private void setRatingToDatabase(String title, Integer rating, String sip) {

@@ -2,11 +2,26 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
 	version="1.0">
 	<persistence-unit name="PU" transaction-type="JTA">
-
 		<provider>org.hibernate.ejb.HibernatePersistence
 		</provider>
 
+
 		<jta-data-source>jdbc/__default</jta-data-source>
+
+		<class>pl.edu.agh.iptv.persistence.Category
+		</class>
+		<class>pl.edu.agh.iptv.persistence.Movie
+		</class>
+		<class>pl.edu.agh.iptv.persistence.MovieComment
+		</class>
+		<class>pl.edu.agh.iptv.persistence.MoviePayment
+		</class>
+		<class>pl.edu.agh.iptv.persistence.MovieRating
+		</class>
+		<class>pl.edu.agh.iptv.persistence.OrderedMovie
+		</class>
+		<class>pl.edu.agh.iptv.persistence.User
+		</class>
 
 		<properties>
 
