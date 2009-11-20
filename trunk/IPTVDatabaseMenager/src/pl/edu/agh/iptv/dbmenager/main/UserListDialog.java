@@ -14,8 +14,8 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
-import pl.edu.agh.iptv.dbmenager.persistence.MoviePayment;
-import pl.edu.agh.iptv.dbmenager.persistence.User;
+import pl.edu.agh.iptv.persistence.MoviePayment;
+import pl.edu.agh.iptv.persistence.User;
 
 public class UserListDialog extends JDialog implements ActionListener {
 

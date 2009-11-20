@@ -1,13 +1,13 @@
 <persistence>
     <persistence-unit name="examplePersistenceUnit" 
                       transaction-type="RESOURCE_LOCAL">
-		<class>pl.edu.agh.iptv.dbmenager.persistence.Category</class>
-		<class>pl.edu.agh.iptv.dbmenager.persistence.Movie</class>
-		<class>pl.edu.agh.iptv.dbmenager.persistence.MovieComment</class>
-		<class>pl.edu.agh.iptv.dbmenager.persistence.MoviePayment</class>
-		<class>pl.edu.agh.iptv.dbmenager.persistence.MovieRating</class>
-		<class>pl.edu.agh.iptv.dbmenager.persistence.OrderedMovie</class>
-		<class>pl.edu.agh.iptv.dbmenager.persistence.User</class>
+		<class>pl.edu.agh.iptv.persistence.Category</class>
+		<class>pl.edu.agh.iptv.persistence.Movie</class>
+		<class>pl.edu.agh.iptv.persistence.MovieComment</class>
+		<class>pl.edu.agh.iptv.persistence.MoviePayment</class>
+		<class>pl.edu.agh.iptv.persistence.MovieRating</class>
+		<class>pl.edu.agh.iptv.persistence.OrderedMovie</class>
+		<class>pl.edu.agh.iptv.persistence.User</class>
 		
         <properties>
             <property name="hibernate.show_sql" value="true" />

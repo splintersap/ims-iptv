@@ -4,7 +4,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
-import pl.edu.agh.iptv.dbmenager.persistence.Quality;
+import pl.edu.agh.iptv.persistence.Quality;
 
 public class QualitySpinner extends JSpinner{
 

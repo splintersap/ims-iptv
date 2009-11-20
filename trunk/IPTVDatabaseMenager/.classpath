@@ -17,5 +17,7 @@
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.8.jar"/>
 	<classpathentry kind="lib" path="lib/derbyclient.jar"/>
 	<classpathentry kind="lib" path="lib/substance.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/IPTVPersistence"/>
+	<classpathentry kind="lib" path="lib/commons-net-2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
