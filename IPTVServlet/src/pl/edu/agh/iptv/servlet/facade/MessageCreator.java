@@ -13,12 +13,12 @@ import net.sourceforge.jsdp.Origin;
 import net.sourceforge.jsdp.SDPException;
 import net.sourceforge.jsdp.SDPFactory;
 import net.sourceforge.jsdp.SessionDescription;
-import pl.edu.agh.iptv.servlet.persistence.Movie;
-import pl.edu.agh.iptv.servlet.persistence.MovieComment;
-import pl.edu.agh.iptv.servlet.persistence.MoviePayment;
-import pl.edu.agh.iptv.servlet.persistence.MovieRating;
-import pl.edu.agh.iptv.servlet.persistence.Quality;
-import pl.edu.agh.iptv.servlet.persistence.User;
+import pl.edu.agh.iptv.persistence.Movie;
+import pl.edu.agh.iptv.persistence.MovieComment;
+import pl.edu.agh.iptv.persistence.MoviePayment;
+import pl.edu.agh.iptv.persistence.MovieRating;
+import pl.edu.agh.iptv.persistence.Quality;
+import pl.edu.agh.iptv.persistence.User;
 
 public class MessageCreator {
 

@@ -6,10 +6,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
-import pl.edu.agh.iptv.servlet.persistence.Category;
-import pl.edu.agh.iptv.servlet.persistence.Movie;
-import pl.edu.agh.iptv.servlet.persistence.Quality;
-import pl.edu.agh.iptv.servlet.persistence.User;
+import pl.edu.agh.iptv.persistence.Category;
+import pl.edu.agh.iptv.persistence.Movie;
+import pl.edu.agh.iptv.persistence.Quality;
+import pl.edu.agh.iptv.persistence.User;
 
 public class RandomDatabaseData {
 	@SuppressWarnings("unchecked")

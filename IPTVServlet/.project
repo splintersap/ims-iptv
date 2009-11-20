@@ -3,6 +3,7 @@
 	<name>IPTVServlet</name>
 	<comment></comment>
 	<projects>
+		<project>IPTVPersistence</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
