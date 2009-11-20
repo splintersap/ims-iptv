@@ -15,9 +15,10 @@ public class ChatTab extends JPanel {
 	JFrame mainFrame = null;
 
 	public ChatTab(JFrame mainFrame) {
-		this.setLayout(new GridLayout(1, 1));
+		this.setLayout(new GridLayout(1, 2));
 		this.mainFrame = mainFrame;
 		this.add(getChat().returnMainPanel());
+		this.add(new ContactsPanel());
 	}
 
 	public Chat getChat() {
