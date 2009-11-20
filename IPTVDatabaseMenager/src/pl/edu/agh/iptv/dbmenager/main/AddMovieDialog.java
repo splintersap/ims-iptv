@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,9 +20,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import pl.edu.agh.iptv.dbmenager.persistence.Category;
-import pl.edu.agh.iptv.dbmenager.persistence.Movie;
-import pl.edu.agh.iptv.dbmenager.persistence.Quality;
+import pl.edu.agh.iptv.persistence.Category;
+import pl.edu.agh.iptv.persistence.Movie;
+import pl.edu.agh.iptv.persistence.Quality;
+import pl.edu.agh.iptv.telnet.TelnetWorker;
 
 public class AddMovieDialog extends JDialog implements ActionListener {
 
@@ -28,10 +31,16 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 	final JTextField titleTextFiled;
 	final JTextField directorTextFiled;
 	final JComboBox categoryComboBox;
+	final JComboBox streamingComboBox;
 	final JTextField moviePathTextField;
 	final JTextArea descriptionTextArea;
 	final JButton cancelButton;
 	final JButton saveButton;
+	private int RTSP_PORT = 5554;
+
+	public final String VOD = "Vod";
+	public final String MULTICAST = "Multicast";
+
 	QualitySpinner[] spinners;
 
 	public AddMovieDialog() {
@@ -39,7 +48,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
 		JPanel informationPanel = new JPanel();
-		informationPanel.setLayout(new GridLayout(4, 2, 10, 6));
+		informationPanel.setLayout(new GridLayout(5, 2, 10, 6));
 		JLabel titleLabel = new JLabel("Title");
 		titleTextFiled = new JTextField(20);
 		informationPanel.add(titleLabel);
@@ -61,6 +70,11 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 		JLabel moviePathLabel = new JLabel("Movie Path");
 		final JButton browseButton = new JButton("Browse");
 		final JFileChooser fc = new JFileChooser();
+
+		JLabel streamingLabel = new JLabel("Streaming");
+		streamingComboBox = new JComboBox(new String[] { VOD, MULTICAST });
+		informationPanel.add(streamingLabel);
+		informationPanel.add(streamingComboBox);
 
 		browseButton.addActionListener(new ActionListener() {
 
@@ -142,9 +156,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 		} else if (arg0.getSource().equals(saveButton)) {
 			Movie movie = new Movie(titleTextFiled.getText(),
 					moviePathTextField.getText());
-			movie
-					.setCategory((Category) categoryComboBox
-							.getSelectedItem());
+			movie.setCategory((Category) categoryComboBox.getSelectedItem());
 			movie.setDirector(directorTextFiled.getText());
 			movie.setDescription(descriptionTextArea.getText());
 			for (QualitySpinner spinner : spinners) {
@@ -153,8 +165,45 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 						.getQuality());
 			}
 
+			String streaming = (String) streamingComboBox.getSelectedItem();
+
+			TelnetWorker telnet = null;
+
+			if (VOD.equals(streaming)) {
+				telnet = TelnetWorker
+						.getVodClient(moviePathTextField.getText());
+				String address = getIpAddress();
+				movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
+						+ telnet.getUuid().toString());
+			} else if (MULTICAST.equals(streaming)) {
+				telnet = TelnetWorker.getMulticastClient(moviePathTextField
+						.getText(), "239.255.12.42");
+				// getIpAddress();
+				movie.setMovieUrl("rtp://@239.255.12.42:5004");
+			}
+			movie.setUuid(telnet.getUuid().toString());
+			System.out.println("Starting telnet");
+			telnet.start();
+			try {
+				telnet.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
 			Starter.persistMovie(movie);
+
 			this.dispose();
 		}
+
+	}
+
+	private String getIpAddress() {
+		String address = null;
+		try {
+			InetAddress addr = InetAddress.getLocalHost();
+			address = addr.getHostAddress();
+		} catch (UnknownHostException e) {
+		}
+		return address;
 	}
 }

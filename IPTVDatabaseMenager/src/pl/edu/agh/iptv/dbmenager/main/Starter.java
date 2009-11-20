@@ -32,9 +32,10 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jvnet.substance.api.renderers.SubstanceDefaultTableCellRenderer;
 
-import pl.edu.agh.iptv.dbmenager.persistence.Category;
-import pl.edu.agh.iptv.dbmenager.persistence.Movie;
-import pl.edu.agh.iptv.dbmenager.persistence.MoviePayment;
+import pl.edu.agh.iptv.persistence.Category;
+import pl.edu.agh.iptv.persistence.Movie;
+import pl.edu.agh.iptv.persistence.MoviePayment;
+import pl.edu.agh.iptv.telnet.TelnetWorker;
 
 public class Starter extends JPanel {
 
@@ -97,8 +98,16 @@ public class Starter extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Remove button started");
 				System.out.println("Selected row = " + table.getSelectedRow());
+				String uuid = (String) table.getValueAt(table.getSelectedRow(), 6);
 				int selectedRow = table.getSelectedRow();
-
+				TelnetWorker telnet = TelnetWorker.removeInstance(uuid);
+				telnet.start();
+				try {
+					telnet.join();
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
+				
 				model.removeMovie(table.convertRowIndexToModel(selectedRow));
 			}
 		});

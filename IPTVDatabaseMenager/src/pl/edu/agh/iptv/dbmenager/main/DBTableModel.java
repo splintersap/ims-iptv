@@ -5,8 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.swing.table.AbstractTableModel;
 
-import pl.edu.agh.iptv.dbmenager.persistence.Category;
-import pl.edu.agh.iptv.dbmenager.persistence.Movie;
+import pl.edu.agh.iptv.persistence.Category;
+import pl.edu.agh.iptv.persistence.Movie;
 
 public class DBTableModel extends AbstractTableModel {
 
@@ -14,12 +14,10 @@ public class DBTableModel extends AbstractTableModel {
 
 	private List<Movie> movieList;
 	
-
-
 	EntityManager em;
 
 	String[] columnNames = { "Id", "Title", "Category", "Director",
-			"Description", "Movie Path" };
+			"Description", "Movie Url", "UUID" };
 
 	DBTableModel(List<Movie> movieList, EntityManager em) {
 		this.movieList = movieList;
@@ -54,7 +52,7 @@ public class DBTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return 6;
+		return 7;
 	}
 
 	@Override
@@ -84,8 +82,10 @@ public class DBTableModel extends AbstractTableModel {
 			value = movie.getDescription();
 			break;
 		case 5:
-			value = movie.getMoviePath();
+			value = movie.getMovieUrl();
 			break;
+		case 6:
+			value = movie.getUuid();
 		}
 
 		return value;
@@ -120,7 +120,7 @@ public class DBTableModel extends AbstractTableModel {
 			movie.setDescription(strValue);
 			break;
 		case 5:
-			movie.setMoviePath(strValue);
+			movie.setMovieUrl(strValue);
 			break;
 		}
 		

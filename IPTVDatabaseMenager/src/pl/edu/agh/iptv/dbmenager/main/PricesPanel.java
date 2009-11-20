@@ -20,9 +20,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import pl.edu.agh.iptv.dbmenager.persistence.MoviePayment;
-import pl.edu.agh.iptv.dbmenager.persistence.OrderedMovie;
-import pl.edu.agh.iptv.dbmenager.persistence.User;
+import pl.edu.agh.iptv.persistence.MoviePayment;
+import pl.edu.agh.iptv.persistence.OrderedMovie;
+import pl.edu.agh.iptv.persistence.User;
 
 public class PricesPanel extends JPanel implements ActionListener {
 
