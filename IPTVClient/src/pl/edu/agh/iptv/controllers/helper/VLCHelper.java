@@ -35,17 +35,19 @@ public class VLCHelper {
 	static JPanel jvcc;
 
 	private MoviesTab moviesTab;
+	private String playMovieCommand;
 
-	public VLCHelper(MoviesTab moviesTab) {
+	public VLCHelper(MoviesTab moviesTab, String playMovieCommand) {
 		this.moviesTab = moviesTab;
+		this.playMovieCommand = playMovieCommand;
 		this.playMovie();
 	}
 
 	private void playMovie() {
 
-		String[] params = new String[]{"-vvv"};
+		String[] params = new String[] { "-vvv" };
 		jvlc = new JVLC(params);
-		ds = new MediaDescriptor(jvlc, "rtsp://127.0.0.1:5554/MyMusic");
+		ds = new MediaDescriptor(jvlc, playMovieCommand);
 		mp = ds.getMediaPlayer();
 		mp.setJVLC(jvlc);
 		video = new Video(jvlc);
@@ -104,7 +106,8 @@ public class VLCHelper {
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 
-		this.moviesTab.getMoviesDescPane().getViewport().add(jvcc, gridBagConstraints);
+		this.moviesTab.getMoviesDescPane().getViewport().add(jvcc,
+				gridBagConstraints);
 
 		jvcanvas.addNotify();
 		jvcanvas.requestFocus();
