@@ -23,7 +23,9 @@ import javax.swing.JTextField;
 import pl.edu.agh.iptv.persistence.Category;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.Quality;
-import pl.edu.agh.iptv.telnet.TelnetWorker;
+import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
+import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
+import pl.edu.agh.iptv.telnet.VodTelnetClient;
 
 public class AddMovieDialog extends JDialog implements ActionListener {
 
@@ -167,16 +169,15 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 
 			String streaming = (String) streamingComboBox.getSelectedItem();
 
-			TelnetWorker telnet = null;
+			AbstractTelnetWorker telnet = null;
 
 			if (VOD.equals(streaming)) {
-				telnet = TelnetWorker
-						.getVodClient(moviePathTextField.getText());
+				telnet = new VodTelnetClient(moviePathTextField.getText());
 				String address = getIpAddress();
 				movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
 						+ telnet.getUuid().toString());
 			} else if (MULTICAST.equals(streaming)) {
-				telnet = TelnetWorker.getMulticastClient(moviePathTextField
+				telnet =  new MulticastTelnetClient(moviePathTextField
 						.getText(), "239.255.12.42");
 				// getIpAddress();
 				movie.setMovieUrl("rtp://@239.255.12.42:5004");
