@@ -10,6 +10,7 @@ import pl.edu.agh.iptv.listeners.DescriptionListener;
 import pl.edu.agh.iptv.listeners.OrderMovieListener;
 import pl.edu.agh.iptv.listeners.PlayListener;
 import pl.edu.agh.iptv.performance.client.PerformanceLauncher;
+import pl.edu.agh.iptv.presence.controller.PresenceController;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
@@ -64,6 +65,11 @@ public class MainController {
 						new OrderMovieListener(iptvClient, moviesTab, mainView
 								.getMainFrame()));
 
+				/*
+				 * Functionality responsible for chat.
+				 */
+				new PresenceController(mainView);
+				
 				// IPTVPerformanceClient performance = new
 				// IPTVPerformanceClient(
 				// "192.168.1.224", mainView.getBandwidthLabel());

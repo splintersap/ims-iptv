@@ -727,4 +727,12 @@ public class Chat {
 			log("processSessionMessage " + message);
 		}
 	}
+
+	public JTextField getURIField() {
+		return uriField;
+	}
+
+	public void setURI(String uri) {
+		this.uriField.setText(uri);
+	}
 }

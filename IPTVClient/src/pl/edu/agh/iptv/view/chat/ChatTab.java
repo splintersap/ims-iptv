@@ -13,12 +13,14 @@ public class ChatTab extends JPanel {
 	private static final long serialVersionUID = 1L;
 	Chat chat = null;
 	JFrame mainFrame = null;
+	ContactsPanel contactsPanel = null;
 
 	public ChatTab(JFrame mainFrame) {
 		this.setLayout(new GridLayout(1, 2));
 		this.mainFrame = mainFrame;
 		this.add(getChat().returnMainPanel());
-		this.add(new ContactsPanel());
+		this.contactsPanel = new ContactsPanel();
+		this.add(contactsPanel);
 	}
 
 	public Chat getChat() {
@@ -26,6 +28,10 @@ public class ChatTab extends JPanel {
 			chat = new Chat(mainFrame);
 		}
 		return this.chat;
+	}
+	
+	public ContactsPanel getContactsPanel(){
+		return this.contactsPanel;
 	}
 
 }

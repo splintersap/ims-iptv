@@ -48,6 +48,8 @@ public class MainView {
 
 	private JButton orderButton;
 
+	private ChatTab chatTab;
+
 	public MainView() {
 
 		// getMainFrame().pack();
@@ -68,7 +70,7 @@ public class MainView {
 
 			mainFrame.setJMenuBar(getJMenuBar());
 
-			mainTabs.addTab("Chat", new ChatTab(mainFrame));
+			mainTabs.addTab("Chat", chatTab = new ChatTab(mainFrame));
 
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			mainFrame.pack();
@@ -250,6 +252,10 @@ public class MainView {
 
 	public int getMenuBarHeight() {
 		return this.menuBarHeight;
+	}
+
+	public ChatTab getChatTab() {
+		return this.chatTab;
 	}
 
 	public JLabel getBandwidthLabel() {
