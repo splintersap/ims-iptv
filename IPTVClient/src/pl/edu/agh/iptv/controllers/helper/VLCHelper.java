@@ -51,7 +51,7 @@ public class VLCHelper {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String[] params = new String[] { "-vvv" };
+				String[] params = new String[] { "-vvv" , "--plugin-path=C:\\Program Files\\VideoLAN\\VLC\\plugins"};
 				jvlc = new JVLC(params);
 				ds = new MediaDescriptor(jvlc, playMovieCommand);
 				mp = ds.getMediaPlayer();
