@@ -84,7 +84,7 @@ public class IPTVClient implements ActionListener {
 			triggerMoviesRequest();
 
 		} catch (Exception e) {
-			showError("Could not initialize ICP", e);
+			showError("Could not initialize ICP.", e);
 		}
 	}
 
@@ -225,7 +225,7 @@ public class IPTVClient implements ActionListener {
 					profile.getIdentity(), SdpFactory.createMIMEContainer());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			showError("Error wile starting session", e);
+			showError("Error wile starting session.", e);
 			e.printStackTrace();
 		}
 	}
@@ -248,7 +248,7 @@ public class IPTVClient implements ActionListener {
 			session.sendInformation("rating/" + title, ratingString.getBytes(),
 					ratingString.length());
 		} catch (Exception e) {
-			showError("Error while sending INFO about user rating", e);
+			showError("Error while sending INFO about user rating.", e);
 			e.printStackTrace();
 
 		}
@@ -259,7 +259,7 @@ public class IPTVClient implements ActionListener {
 			session.sendInformation("text/title-info", item.getBytes(), item
 					.length());
 		} catch (Exception e) {
-			showError("Error while sending INFO about movie movie", e);
+			showError("Error while sending INFO about movie movie.", e);
 			e.printStackTrace();
 		}
 	}
@@ -269,7 +269,7 @@ public class IPTVClient implements ActionListener {
 			session.sendInformation("purchase/" + movieTitle, quality
 					.getBytes(), quality.length());
 		} catch (Exception e) {
-			showError("Error while sending INFO about purchaseing movie", e);
+			showError("Error while sending INFO about purchaseing movie.", e);
 			e.printStackTrace();
 		}
 	}
@@ -313,7 +313,7 @@ public class IPTVClient implements ActionListener {
 			session.sendInformation("comment/" + movieTitle, text.getBytes(),
 					text.length());
 		} catch (Exception e) {
-			showError("Error while sending INFO with comment", e);
+			showError("Error while sending INFO with comment.", e);
 			e.printStackTrace();
 		}
 	}
