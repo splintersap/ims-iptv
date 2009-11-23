@@ -139,7 +139,16 @@ public class IPTVClient implements ActionListener {
 						EventQueue.invokeLater(sh);
 						/***************************************/
 
-					} else {
+					} else if("vlc/uri".equals(aContentType)) {
+						String vlcCommand = new String(aMessage);
+						System.out.println(vlcCommand);
+						/*
+						 * This is in order to open the stream.
+						 */
+						new VLCHelper(moviesTab, vlcCommand);
+						
+						}
+					else {
 						System.out.println("Unrecognized message");
 					}
 				}
@@ -163,12 +172,7 @@ public class IPTVClient implements ActionListener {
 	public void showChosenMovie(String movieTitle) {
 		try {
 			session.sendMessage("movies/choice", movieTitle.getBytes(),
-					movieTitle.length());
-
-			/*
-			 * This is in order to open the stream.
-			 */
-			new VLCHelper(this.moviesTab);
+					movieTitle.length());			
 
 		} catch (Exception e) {
 			showError("Sending message", e);
