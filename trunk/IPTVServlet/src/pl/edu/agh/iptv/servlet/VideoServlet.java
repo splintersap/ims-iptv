@@ -1,9 +1,11 @@
 package pl.edu.agh.iptv.servlet;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.management.timer.Timer;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -19,6 +21,8 @@ import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.MovieRating;
 import pl.edu.agh.iptv.persistence.User;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
+import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
+import pl.edu.agh.iptv.telnet.RecordingTelnetClient;
 
 public class VideoServlet extends SipServlet {
 
@@ -43,14 +47,14 @@ public class VideoServlet extends SipServlet {
 		sipServletRequest.createResponse(200).send();
 		String movieTitle = new String(sipServletRequest.getRawContent());
 		String moviePath = getMoviePath(movieTitle);
-		
+
 		SipSession session = sipServletRequest.getSession(true);
 		SipServletRequest info = session.createRequest("INFO");
 		info.setContent(moviePath, "vlc/uri");
 		info.send();
-		
+
 		// start streaming
-		//runStreamer(sipServletRequest.getInitialRemoteAddr(), moviePath);
+		// runStreamer(sipServletRequest.getInitialRemoteAddr(), moviePath);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -170,6 +174,19 @@ public class VideoServlet extends SipServlet {
 				e.printStackTrace();
 			}
 
+		} else if (mimeTab.length == 2 && "record".equals(mimeTab[0])) {
+			String informations = mimeTab[1];
+			Date now = new Date();
+			Date startDate = new Date(now.getTime() + Timer.ONE_MINUTE);
+			Date endDate = new Date(now.getTime() + 3L * Timer.ONE_MINUTE);
+			AbstractTelnetWorker telnet = new RecordingTelnetClient(
+					"mms://stream.onet.pl/media.wsx?/live/aljazeera", startDate, endDate);
+			telnet.start();
+			try {
+				telnet.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		} else {
 			log("Unrecognized INFO message " + req);
 		}

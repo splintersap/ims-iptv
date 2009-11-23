@@ -1,5 +1,7 @@
 package pl.edu.agh.iptv.servlet;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,27 +12,31 @@ import pl.edu.agh.iptv.persistence.Category;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.persistence.User;
+import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
+import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
+import pl.edu.agh.iptv.telnet.VodTelnetClient;
 
 public class RandomDatabaseData {
+	
+	private static int RTSP_PORT = 5554;
+	
 	@SuppressWarnings("unchecked")
 	public static void fillDatabase(EntityManager em, UserTransaction utx) {
-		
+
 		// return when there are alredy movies in database
 		try {
 			utx.begin();
-			
+
 			Query query = em.createQuery("FROM Movie");
-			List<Movie> movieList = query.getResultList();			
+			List<Movie> movieList = query.getResultList();
 			utx.commit();
-			if(movieList.size() > 1) {
+			if (movieList.size() > 1) {
 				return;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
-		
+
 		User coco = new User("sip:coco@ericsson.com");
 		User maciek = new User("sip:maciek@ericsson.com");
 		User alice = new User("sip:alice@ericsson.com");
@@ -75,7 +81,8 @@ public class RandomDatabaseData {
 		forrest.addMoviePayment(800, Quality.HIGH);
 		forrest.addMovieComment("Very good movie", maciek);
 		forrest.addMovieComment("I like it very much", alice);
-		
+		addVodMovieToTelnet(forrest, "C:/Movies/Shining.avi");
+
 		Movie shawshank = new Movie("The shawshank redemption",
 				"C:/Movies/MVI_1165.avi");
 		shawshank
@@ -102,8 +109,10 @@ public class RandomDatabaseData {
 		shawshank.addMovieComment("Second comment", coco);
 		shawshank.addMovieComment("Another comment", alice);
 		shawshank.addMovieComment("Tratatatatatata", coco);
-		
-		Movie sstory = new Movie("The Straight Story", "C:/Movies/WyznaniaGejszy.2.LekPL.avi");
+		addVodMovieToTelnet(shawshank, "C:/Movies/MVI_1165.avi");
+
+		Movie sstory = new Movie("The Straight Story",
+				"C:/Movies/WyznaniaGejszy.2.LekPL.avi");
 		sstory
 				.setDescription("The Straight Story is a 1999 film directed by David"
 						+ " Lynch. It is based on the true story of Alvin Straight's journey"
@@ -114,7 +123,7 @@ public class RandomDatabaseData {
 						+ "vin's surname, but also refers to the story\'s seemingly st"
 						+ "raightforward nature, as compared to the complex, interweav"
 						+ "ing, mysterious plots of Lynch\'s other films.");
-		
+
 		sstory.setCategory(Category.Drama);
 		sstory.setDirector("David Lynch");
 		sstory.addMoviePayment(400, Quality.LOW);
@@ -122,29 +131,56 @@ public class RandomDatabaseData {
 		sstory.addMoviePayment(600, Quality.HIGH);
 		sstory.addMovieRating(coco, 4);
 		sstory.addMovieRating(maciek, 5);
-		
+		addVodMovieToTelnet(sstory, "C:/Movies/WyznaniaGejszy.2.LekPL.avi");
+
 		try {
 			utx.begin();
-			
+
 			em.persist(coco);
 			em.persist(alice);
 			em.persist(maciek);
-			
+
 			em.persist(forrest);
 			em.persist(sstory);
 			em.persist(shawshank);
-			
+
 			coco.addOrderedMovie(sstory, Quality.LOW);
 			coco.addOrderedMovie(forrest, Quality.MEDIUM);
 			alice.addOrderedMovie(forrest, Quality.HIGH);
-			
+
 			utx.commit();
 		} catch (Exception e) {
 
-			
 			e.printStackTrace();
-		} 
-		
-		
+		}
 	}
+
+	private static void addVodMovieToTelnet(Movie movie, String source) {
+		AbstractTelnetWorker telnet = null;
+
+		telnet = new VodTelnetClient(source);
+		String address = getIpAddress();
+		movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
+				+ telnet.getUuid().toString());
+
+		movie.setUuid(telnet.getUuid().toString());
+		System.out.println("Starting telnet");
+		telnet.start();
+		try {
+			telnet.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static String getIpAddress() {
+		String address = null;
+		try {
+			InetAddress addr = InetAddress.getLocalHost();
+			address = addr.getHostAddress();
+		} catch (UnknownHostException e) {
+		}
+		return address;
+	}
+
 }

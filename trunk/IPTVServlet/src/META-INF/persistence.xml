@@ -33,7 +33,7 @@
 
 			<property name="hibernate.connection.url" value="jdbc:derby://localhost:1527/ht;create=true" />
 
-			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.hbm2ddl.auto" value="create" />
 
 			<property name="hibernate.connection.username" value="video" />
 
