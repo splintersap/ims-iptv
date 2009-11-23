@@ -35,7 +35,8 @@ import org.jvnet.substance.api.renderers.SubstanceDefaultTableCellRenderer;
 import pl.edu.agh.iptv.persistence.Category;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.MoviePayment;
-import pl.edu.agh.iptv.telnet.TelnetWorker;
+import pl.edu.agh.iptv.telnet.RemovingTelnetClient;
+import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 
 public class Starter extends JPanel {
 
@@ -100,7 +101,8 @@ public class Starter extends JPanel {
 				System.out.println("Selected row = " + table.getSelectedRow());
 				String uuid = (String) table.getValueAt(table.getSelectedRow(), 6);
 				int selectedRow = table.getSelectedRow();
-				TelnetWorker telnet = TelnetWorker.removeInstance(uuid);
+				AbstractTelnetWorker telnet = new RemovingTelnetClient(uuid.toString());
+				
 				telnet.start();
 				try {
 					telnet.join();
