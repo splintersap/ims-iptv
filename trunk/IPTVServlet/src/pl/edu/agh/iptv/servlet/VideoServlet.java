@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.management.timer.Timer;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -135,7 +134,6 @@ public class VideoServlet extends SipServlet {
 								.toString(), em);
 
 				SipServletRequest info = req.getSession().createRequest("INFO");
-				System.out.println(sessionDescription);
 				info.setContent(sessionDescription.toString().getBytes(),
 						"application/sdp");
 				info.send();
@@ -175,18 +173,26 @@ public class VideoServlet extends SipServlet {
 			}
 
 		} else if (mimeTab.length == 2 && "record".equals(mimeTab[0])) {
-			String informations = mimeTab[1];
-			Date now = new Date();
-			Date startDate = new Date(now.getTime() + Timer.ONE_MINUTE);
-			Date endDate = new Date(now.getTime() + 3L * Timer.ONE_MINUTE);
-			AbstractTelnetWorker telnet = new RecordingTelnetClient(
-					"mms://stream.onet.pl/media.wsx?/live/aljazeera", startDate, endDate);
-			telnet.start();
-			try {
-				telnet.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			String[] informationsTab = mimeTab[1].split("|");
+			if(informationsTab.length == 3)
+			{
+				Long startDateLong = Long.valueOf(informationsTab[0]); 
+				Date startDate = new Date(startDateLong);
+				Long endDateLong = Long.valueOf(informationsTab[1]);
+				Date endDate = new Date(endDateLong);
+				AbstractTelnetWorker telnet = new RecordingTelnetClient(
+						"mms://stream.onet.pl/media.wsx?/live/aljazeera", startDate, endDate);
+				telnet.start();
+				try {
+					telnet.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
+			//Date now = new Date();
+			//Date startDate = new Date(now.getTime() + Timer.ONE_MINUTE);
+			//Date endDate = new Date(now.getTime() + 3L * Timer.ONE_MINUTE);
+			
 		} else {
 			log("Unrecognized INFO message " + req);
 		}
@@ -249,16 +255,13 @@ public class VideoServlet extends SipServlet {
 		response.send();
 	}
 
-	private void runStreamer(String ip, String movieLocation)
+	/*private void runStreamer(String ip, String movieLocation)
 			throws IOException {
 
 		String vlcCommandString = "\"" + vlcLocation + "\" \"" + movieLocation
 				+ "\" --sout=udp/ts://" + ip + ":1234";
-
 		log("Streamer runs with command : " + vlcCommandString);
-
 		Runtime runtime = Runtime.getRuntime();
-
 		runtime.exec(vlcCommandString);
-	}
+	}*/
 }
