@@ -76,9 +76,7 @@ public class IPTVClient implements ActionListener {
 			service.addListener(new ServiceAdapter());
 
 			this.mainView = mainView;
-			this.moviesTab = mainView.getMoviesTab();
-
-			new PresenceNotifier(profile);
+			this.moviesTab = mainView.getMoviesTab();			
 
 			addingListener();
 			triggerMoviesRequest();

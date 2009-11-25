@@ -735,4 +735,8 @@ public class Chat {
 	public void setURI(String uri) {
 		this.uriField.setText(uri);
 	}
+	
+	public IProfile getProfile(){
+		return this.profile;
+	}
 }
