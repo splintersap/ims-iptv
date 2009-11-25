@@ -23,6 +23,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.UUID;
 
+import javax.management.timer.Timer;
+
 import org.apache.commons.net.telnet.EchoOptionHandler;
 import org.apache.commons.net.telnet.InvalidTelnetOptionException;
 import org.apache.commons.net.telnet.SuppressGAOptionHandler;
@@ -121,7 +123,7 @@ public abstract class AbstractTelnetWorker extends Thread {
 		int ret_read = 0;
 		do {
 			try {
-				sleep(1000);
+				sleep(Timer.ONE_SECOND/10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
