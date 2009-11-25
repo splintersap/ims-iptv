@@ -174,4 +174,8 @@ public class PresenceNotifier {
 		}
 	}
 
+	public IPresence getPresence() {
+		return this.presence;
+	}
+
 }

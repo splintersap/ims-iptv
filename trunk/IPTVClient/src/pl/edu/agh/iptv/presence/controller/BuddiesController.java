@@ -17,6 +17,15 @@ import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.chat.AddUserFrame;
 import pl.edu.agh.iptv.view.chat.ContactsPanel;
 
+import com.ericsson.icp.IProfile;
+import com.ericsson.icp.services.PGM.IPresence;
+import com.ericsson.icp.services.PGM.IRLSGroup;
+import com.ericsson.icp.services.PGM.IRLSManager;
+import com.ericsson.icp.services.PGM.PGMFactory;
+import com.ericsson.icp.util.IBuddy;
+import com.ericsson.icp.util.IIterator;
+import com.ericsson.icp.util.IUri;
+
 public class BuddiesController implements ActionListener, ListSelectionListener {
 
 	private Map<String, Buddy> buddies = null;
@@ -24,15 +33,35 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 	private MainView mainView = null;
 	private ContactsPanel contactsPanel = null;
 
-	public BuddiesController(MainView mainView) {
+	/**
+	 * The ICP group list manager
+	 */
+	private IRLSManager groupListManagement;
+
+	IPresence presence;
+
+	public BuddiesController(IProfile profile, IPresence presence,
+			MainView mainView) {
+		this.presence = presence;
 		this.mainView = mainView;
-		this.buddies = getBuddies();
+		this.buddies = new HashMap<String, Buddy>();
 
 		this.contactsPanel = this.mainView.getChatTab().getContactsPanel();
-		this.contactsPanel.setContactsList(this.buddies.keySet().toArray());
+		
+		try {
+			groupListManagement = PGMFactory.createRLSManager(profile);
+			loadGroups();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			showErrorMsg("Problem loading buddies list");
+			e.printStackTrace();
+		}
+		
+//		this.contactsPanel.setContactsList(this.buddies.keySet().toArray());
 		this.contactsPanel.getNewContactB().addActionListener(this);
 		this.contactsPanel.getRemoveContactB().addActionListener(this);
 		this.contactsPanel.getContactsList().addListSelectionListener(this);
+
 	}
 
 	public void addBuddy(String buddyName, Buddy buddy) {
@@ -51,7 +80,7 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 		result.put("Bob", new Buddy("Bob", "sip:bob@ericsson.com"));
 		result.put("Coco", new Buddy("Coco", "sip:coco@ericsson.com"));
 
-		return result;
+		return this.buddies;
 	}
 
 	public void removeBuddies(Object[] buddiesToRemove, int[] selectedInd) {
@@ -118,6 +147,66 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 									.toString()).getUri());
 		else
 			this.mainView.getChatTab().getChat().setURI("");
+	}
+
+	/**
+	 * Define the black list
+	 * 
+	 * @throws Exception
+	 */
+	private void loadBlackList() throws Exception {
+		IIterator itr = presence.getBlockedWatcherList();
+		while (itr.hasNext()) {
+			itr.next();
+			IUri icpBuddyUri = (IUri) itr.getElement();
+			IBuddy buddy = groupListManagement
+					.searchBuddy(icpBuddyUri.getUri());
+			// The black listed buddy may not be in our contact list
+			this.addBuddy(buddy.getDisplayName(), new Buddy(buddy
+					.getDisplayName(), buddy.getUri()));
+
+		}
+	}
+
+	private void showErrorMsg(String message) {
+
+		final String msg = message;
+
+		EventQueue.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				JOptionPane.showMessageDialog(mainView.getMainFrame(),
+						"Error: " + msg, "Error", JOptionPane.ERROR_MESSAGE);
+			}
+
+		});
+	}
+
+	/**
+	 * Get the groups and the buddies
+	 * 
+	 * @throws Exception
+	 */
+	private void loadGroups() throws Exception {
+		IIterator groupList = groupListManagement.getGroupIterator();
+		while (groupList.hasNext()) {
+			groupList.next();
+			IRLSGroup icpGroup = (IRLSGroup) groupList.getElement();
+
+			if (!StringUtil.isEmpty(icpGroup.getDisplayName())) {
+
+				IIterator buddyList = icpGroup.getMembers();
+				while (buddyList.hasNext()) {
+					buddyList.next();
+					IBuddy icpBuddy = (IBuddy) buddyList.getElement();
+					Buddy buddy = new Buddy(icpBuddy.getDisplayName(), icpBuddy
+							.getUri());
+					this.addBuddy(icpBuddy.getDisplayName(), buddy);
+				}
+			}
+		}
 	}
 
 }

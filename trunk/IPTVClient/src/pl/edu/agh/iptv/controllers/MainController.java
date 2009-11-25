@@ -68,15 +68,15 @@ public class MainController {
 				/*
 				 * Functionality responsible for chat.
 				 */
-				new PresenceController(mainView);
-				
+				new PresenceController(iptvClient.getProfile(), mainView);
+
 				// IPTVPerformanceClient performance = new
 				// IPTVPerformanceClient(
 				// "192.168.1.224", mainView.getBandwidthLabel());
 				// performance.queryServer();
 
 				// mainView.setWindowCloseOperation(new IperfManagerListener(
-				// performance.getIperfThread()));				
+				// performance.getIperfThread()));
 
 				new Thread(new PerformanceLauncher(mainView, "192.168.1.224"))
 						.start();
