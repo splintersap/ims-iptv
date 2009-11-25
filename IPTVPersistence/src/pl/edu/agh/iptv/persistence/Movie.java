@@ -30,7 +30,7 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 	private String description;
 
 	@Column(nullable = false)
-	private String moviePath;
+	private String url;
 	
 	private String uuid;
 
@@ -43,7 +43,7 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 
 	public Movie(String title, String moviePath) {
 		this.title = title;
-		this.moviePath = moviePath;
+		this.url = moviePath;
 	}
 	
 	public String getTitle() {
@@ -80,11 +80,11 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 	}
 
 	public String getMovieUrl() {
-		return moviePath;
+		return url;
 	}
 
 	public void setMovieUrl(String moviePath) {
-		this.moviePath = moviePath;
+		this.url = moviePath;
 	}
 
 	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = MovieRating.class)
