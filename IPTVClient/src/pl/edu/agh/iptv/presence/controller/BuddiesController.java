@@ -38,6 +38,8 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 	private MainView mainView = null;
 	private ContactsPanel contactsPanel = null;
 
+	private IRLSGroup mainGroup = null;
+
 	/**
 	 * The ICP group list manager
 	 */
@@ -75,6 +77,28 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 		this.contactsPanel.addElement(buddy, isAvailable);
 		// Subscription to the presence notification.
 		this.presenceNot.subscribe(buddy.getUri());
+		
+	}
+	
+	public void addNewBuddy(String buddyName, Buddy buddy, boolean isAvailable) {
+		this.buddies.put(buddyName, buddy);
+		this.buddyUriToName.put(buddy.getUri(), buddyName);
+		this.contactsPanel.addElement(buddy, isAvailable);
+		// Subscription to the presence notification.
+		this.presenceNot.subscribe(buddy.getUri());
+
+		/*
+		 * This is copied part.
+		 */		
+		IRLSGroup icpGroup = mainGroup;
+		try {
+			IBuddy newBuddy = PGMFactory.createBuddy(buddy.getUri());
+			newBuddy.setDisplayName(buddy.getDisplayName());
+			icpGroup.addMember(newBuddy);
+			groupListManagement.modifyGroup(icpGroup);
+		} catch (Exception e) {
+			showErrorMsg("Problem with adding new buddy");
+		}
 	}
 
 	public void refreshContactsList() {
@@ -191,6 +215,7 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 			if (!StringUtil.isEmpty(icpGroup.getDisplayName())) {
 
 				IIterator buddyList = icpGroup.getMembers();
+				mainGroup = icpGroup;
 				while (buddyList.hasNext()) {
 					buddyList.next();
 					IBuddy icpBuddy = (IBuddy) buddyList.getElement();
