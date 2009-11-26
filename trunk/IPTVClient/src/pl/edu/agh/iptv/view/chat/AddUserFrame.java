@@ -117,7 +117,7 @@ public class AddUserFrame extends JDialog implements ActionListener {
 
 				});
 			} else {
-				this.controller.addBuddy(contactName.getText(), new Buddy(
+				this.controller.addNewBuddy(contactName.getText(), new Buddy(
 						contactName.getText(), contactUri.getText()), false);
 				this.dispose();
 			}
