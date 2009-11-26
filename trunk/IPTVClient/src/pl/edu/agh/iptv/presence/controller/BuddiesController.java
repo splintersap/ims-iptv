@@ -12,10 +12,12 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import pl.edu.agh.iptv.presence.PresenceNotifier;
 import pl.edu.agh.iptv.presence.data.Buddy;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.chat.AddUserFrame;
 import pl.edu.agh.iptv.view.chat.ContactsPanel;
+import pl.edu.agh.iptv.view.components.ListItem;
 
 import com.ericsson.icp.IProfile;
 import com.ericsson.icp.services.PGM.IPresence;
@@ -24,11 +26,14 @@ import com.ericsson.icp.services.PGM.IRLSManager;
 import com.ericsson.icp.services.PGM.PGMFactory;
 import com.ericsson.icp.util.IBuddy;
 import com.ericsson.icp.util.IIterator;
-import com.ericsson.icp.util.IUri;
 
 public class BuddiesController implements ActionListener, ListSelectionListener {
 
 	private Map<String, Buddy> buddies = null;
+
+	private Map<String, String> buddyUriToName = null;
+
+	private PresenceNotifier presenceNot;
 
 	private MainView mainView = null;
 	private ContactsPanel contactsPanel = null;
@@ -40,14 +45,15 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 
 	IPresence presence;
 
-	public BuddiesController(IProfile profile, IPresence presence,
-			MainView mainView) {
-		this.presence = presence;
+	public BuddiesController(IProfile profile, MainView mainView) {
+		presenceNot = new PresenceNotifier(profile, this);
+		this.presence = presenceNot.getPresence();
 		this.mainView = mainView;
 		this.buddies = new HashMap<String, Buddy>();
+		this.buddyUriToName = new HashMap<String, String>();
 
 		this.contactsPanel = this.mainView.getChatTab().getContactsPanel();
-		
+
 		try {
 			groupListManagement = PGMFactory.createRLSManager(profile);
 			loadGroups();
@@ -56,36 +62,40 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 			showErrorMsg("Problem loading buddies list");
 			e.printStackTrace();
 		}
-		
-//		this.contactsPanel.setContactsList(this.buddies.keySet().toArray());
+
 		this.contactsPanel.getNewContactB().addActionListener(this);
 		this.contactsPanel.getRemoveContactB().addActionListener(this);
 		this.contactsPanel.getContactsList().addListSelectionListener(this);
 
 	}
 
-	public void addBuddy(String buddyName, Buddy buddy) {
+	public void addBuddy(String buddyName, Buddy buddy, boolean isAvailable) {
 		this.buddies.put(buddyName, buddy);
-		this.contactsPanel.addElement(buddyName);
+		this.buddyUriToName.put(buddy.getUri(), buddyName);
+		this.contactsPanel.addElement(buddy, isAvailable);
+		// Subscription to the presence notification.
+		this.presenceNot.subscribe(buddy.getUri());
 	}
 
-	public void removeBuddy(String buddyName) {
-		this.buddies.remove(buddyName);
+	public void refreshContactsList() {
+
 	}
 
-	private Map<String, Buddy> getBuddies() {
-		Map<String, Buddy> result = new HashMap<String, Buddy>();
-
-		result.put("Alicja", new Buddy("Alicja", "sip:alice@ericsson.com"));
-		result.put("Bob", new Buddy("Bob", "sip:bob@ericsson.com"));
-		result.put("Coco", new Buddy("Coco", "sip:coco@ericsson.com"));
-
-		return this.buddies;
+	public void removeBuddy(Buddy buddy) {
+		this.buddies.remove(buddy.getDisplayName());
+		this.buddyUriToName.remove(buddy.getUri());
 	}
 
 	public void removeBuddies(Object[] buddiesToRemove, int[] selectedInd) {
 		for (int i = 0; i < buddiesToRemove.length; i++) {
 			this.buddies.remove(buddiesToRemove[i]);
+			for (String key : this.buddyUriToName.keySet()) {
+				if (this.buddyUriToName.get(key).compareTo(
+						(String) buddiesToRemove[i]) == 0) {
+					this.buddyUriToName.remove(key);
+					break;
+				}
+			}
 			this.contactsPanel.removeElementAt(selectedInd[i]);
 		}
 		this.contactsPanel.getContactsList().repaint();
@@ -115,7 +125,9 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 							String displayString = new String(
 									"Are you sure you want to remove: ");
 							for (int i = 0; i < contacts.getSelectedValues().length; i++) {
-								displayString += selectedC[i] + "\n";
+								displayString += ((ListItem) selectedC[i])
+										.getValue()
+										+ "\n";
 							}
 
 							if (JOptionPane.showConfirmDialog(mainView
@@ -143,29 +155,10 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 		if (((JList) selection.getSource()).getSelectedValue() != null)
 			this.mainView.getChatTab().getChat().setURI(
 					this.buddies.get(
-							((JList) selection.getSource()).getSelectedValue()
-									.toString()).getUri());
+							((ListItem) ((JList) selection.getSource())
+									.getSelectedValue()).getValue()).getUri());
 		else
 			this.mainView.getChatTab().getChat().setURI("");
-	}
-
-	/**
-	 * Define the black list
-	 * 
-	 * @throws Exception
-	 */
-	private void loadBlackList() throws Exception {
-		IIterator itr = presence.getBlockedWatcherList();
-		while (itr.hasNext()) {
-			itr.next();
-			IUri icpBuddyUri = (IUri) itr.getElement();
-			IBuddy buddy = groupListManagement
-					.searchBuddy(icpBuddyUri.getUri());
-			// The black listed buddy may not be in our contact list
-			this.addBuddy(buddy.getDisplayName(), new Buddy(buddy
-					.getDisplayName(), buddy.getUri()));
-
-		}
 	}
 
 	private void showErrorMsg(String message) {
@@ -203,10 +196,19 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 					IBuddy icpBuddy = (IBuddy) buddyList.getElement();
 					Buddy buddy = new Buddy(icpBuddy.getDisplayName(), icpBuddy
 							.getUri());
-					this.addBuddy(icpBuddy.getDisplayName(), buddy);
+
+					// Subscription to the presence notification.
+					this.presenceNot.subscribe(icpBuddy.getUri());
+
+					this.addBuddy(icpBuddy.getDisplayName(), buddy, false);
 				}
 			}
 		}
 	}
 
+	public void changeStatus(String uri, boolean isAvailable) {
+		this.contactsPanel.changeStatus(this.buddyUriToName.get(uri),
+				isAvailable);
+		this.mainView.getMainFrame().repaint();
+	}
 }

@@ -1,5 +1,7 @@
 package pl.edu.agh.iptv.presence;
 
+import pl.edu.agh.iptv.presence.controller.BuddiesController;
+
 import com.ericsson.icp.IProfile;
 import com.ericsson.icp.services.PGM.IPresence;
 import com.ericsson.icp.services.PGM.IPresenceListener;
@@ -12,6 +14,8 @@ import com.ericsson.icp.util.ITuple;
 import com.ericsson.icp.util.IWatcher;
 
 public class PresenceNotifier {
+
+	private BuddiesController buddiesC;
 
 	/**
 	 * A reference to the ICP profile.
@@ -34,8 +38,9 @@ public class PresenceNotifier {
 	 */
 	final private int ONLINE_STATUS = 0;
 
-	public PresenceNotifier(IProfile profile) {
+	public PresenceNotifier(IProfile profile, BuddiesController buddiesC) {
 		this.profile = profile;
+		this.buddiesC = buddiesC;
 		initializePresence();
 	}
 
@@ -48,16 +53,13 @@ public class PresenceNotifier {
 			e.printStackTrace();
 		}
 		publish(ONLINE_STATUS);
-		subscribe();
 	}
 
 	/**
 	 * Subscribe to a the user defined in the field <code>uriField</code>. The
 	 * sip of the field is validated.
 	 */
-	private void subscribe() {
-		// final String uri = uriField.getText();
-		final String uri = "sip:bob@ericsson.com";
+	public void subscribe(String uri) {
 		if (uri.compareTo("") == 0 || !uri.startsWith("sip:")) {
 			System.out
 					.println("please enter a valid uri. Ex: sip:alice@ericsson.com");
@@ -108,8 +110,10 @@ public class PresenceNotifier {
 					ITuple tuple = (ITuple) itr.getElement();
 					if (tuple.getBasic() == 0) {
 						System.out.println(aRemote + " is online");
+						buddiesC.changeStatus(aRemote, true);
 					} else if (tuple.getBasic() == 1) {
 						System.out.println(aRemote + " is offline");
+						buddiesC.changeStatus(aRemote, false);
 					}
 				}
 			} catch (Exception e) {
