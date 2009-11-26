@@ -1,5 +1,6 @@
 package pl.edu.agh.iptv.view.chat;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.DefaultListModel;
@@ -9,11 +10,13 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.presence.data.Buddy;
+import pl.edu.agh.iptv.view.components.ListItem;
+import pl.edu.agh.iptv.view.components.MyCellRenderer;
 
-public class ContactsPanel extends JPanel{
+public class ContactsPanel extends JPanel {
 
 	/**
 	 * 
@@ -23,12 +26,16 @@ public class ContactsPanel extends JPanel{
 	DefaultListModel listModel = new DefaultListModel();
 	private JList contactsList = new JList(listModel);
 
+	private ImageIcon available = new ImageIcon("images/chat/available.gif");
+	private ImageIcon unavailable = new ImageIcon("images/chat/unavailable.gif");
+
 	private JToolBar toolBar = null;
 
 	private JButton newContactB = null;
 	private JButton removeContactB = null;
 
 	public ContactsPanel() {
+		contactsList.setCellRenderer(new MyCellRenderer());
 		this.setLayout(new ResizableGridLayout(2, 1));
 		this.add(getJToolBar());
 
@@ -74,8 +81,12 @@ public class ContactsPanel extends JPanel{
 		this.listModel.remove(index);
 	}
 
-	public void addElement(String buddy) {
-		this.listModel.addElement(buddy);
+	public void addElement(Buddy buddy, boolean isAvailable) {
+
+		ListItem item = new ListItem(Color.GREEN, buddy.getDisplayName(), buddy
+				.getUri(), isAvailable ? available : unavailable);
+		listModel.addElement(item);
+
 	}
 
 	public JButton getNewContactB() {
@@ -86,4 +97,18 @@ public class ContactsPanel extends JPanel{
 		return removeContactB;
 	}
 
+	public void changeStatus(String dispName, boolean isAvailable) {
+
+		for (int i = 0; i < this.listModel.getSize(); i++) {
+			ListItem item = (ListItem) this.listModel.getElementAt(i);
+			if (item.getValue().compareTo(dispName) == 0) {
+				if (isAvailable)
+					item.setImage(available);
+				else
+					item.setImage(unavailable);
+				break;
+			}
+		}
+
+	}
 }
