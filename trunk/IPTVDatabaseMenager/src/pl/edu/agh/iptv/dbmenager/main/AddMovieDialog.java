@@ -8,7 +8,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Date;
 
+import javax.management.timer.Timer;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -21,10 +23,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import pl.edu.agh.iptv.persistence.Category;
+import pl.edu.agh.iptv.persistence.MediaType;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.Quality;
-import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
+import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
+import pl.edu.agh.iptv.telnet.RecordingTelnetClient;
 import pl.edu.agh.iptv.telnet.VodTelnetClient;
 
 public class AddMovieDialog extends JDialog implements ActionListener {
@@ -41,7 +45,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 	private int RTSP_PORT = 5554;
 
 	public final String VOD = "Vod";
-	public final String MULTICAST = "Multicast";
+	public final String BROADCAST = "Broadcast";
 
 	QualitySpinner[] spinners;
 
@@ -74,7 +78,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 		final JFileChooser fc = new JFileChooser();
 
 		JLabel streamingLabel = new JLabel("Streaming");
-		streamingComboBox = new JComboBox(new String[] { VOD, MULTICAST });
+		streamingComboBox = new JComboBox(new String[] { VOD, BROADCAST });
 		informationPanel.add(streamingLabel);
 		informationPanel.add(streamingComboBox);
 
@@ -82,7 +86,6 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 
 			public void actionPerformed(ActionEvent e) {
 				int returnVal = fc.showOpenDialog(browseButton);
-
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
 					moviePathTextField.setText(file.getAbsolutePath());
@@ -90,7 +93,6 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 				} else {
 					System.out.println("Open command cancelled by user.");
 				}
-
 			}
 		});
 		moviePathTextField = new JTextField(20);
@@ -154,6 +156,18 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource().equals(cancelButton)) {
+			//just for test
+			Date now = new Date();
+			Date startDate = new Date(now.getTime() + Timer.ONE_MINUTE);
+			Date endDate = new Date(now.getTime() + 3L * Timer.ONE_MINUTE);
+			AbstractTelnetWorker telnet = new RecordingTelnetClient(
+					"mms://stream.onet.pl/media.wsx?/live/aljazeera", startDate, endDate);
+			telnet.start();
+			try {
+				telnet.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			this.dispose();
 		} else if (arg0.getSource().equals(saveButton)) {
 			Movie movie = new Movie(titleTextFiled.getText(),
@@ -176,11 +190,13 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 				String address = getIpAddress();
 				movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
 						+ telnet.getUuid().toString());
-			} else if (MULTICAST.equals(streaming)) {
+				movie.setMediaType(MediaType.VOD);
+			} else if (BROADCAST.equals(streaming)) {
 				telnet =  new MulticastTelnetClient(moviePathTextField
 						.getText(), "239.255.12.42");
 				// getIpAddress();
 				movie.setMovieUrl("rtp://@239.255.12.42:5004");
+				movie.setMediaType(MediaType.BROADCAST);
 			}
 			movie.setUuid(telnet.getUuid().toString());
 			System.out.println("Starting telnet");
