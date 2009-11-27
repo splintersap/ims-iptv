@@ -19,6 +19,7 @@ public class User extends pl.edu.agh.iptv.persistence.Entity {
 	private long credit;
 	private List<MovieRating> ratingList = new ArrayList<MovieRating>();
 	private List<OrderedMovie> orderedMoviesList = new ArrayList<OrderedMovie>();
+	private List<Movie> recordedMovies = new ArrayList<Movie>();
 
 	public User() {
 		
@@ -62,6 +63,15 @@ public class User extends pl.edu.agh.iptv.persistence.Entity {
 		this.orderedMoviesList = orderedMoviesList;
 	}
 	
+	@OneToMany(mappedBy = "recordingUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Movie.class)
+	public List<Movie> getRecordedMovies() {
+		return recordedMovies;
+	}
+
+	public void setRecordedMovies(List<Movie> recordedMovies) {
+		this.recordedMovies = recordedMovies;
+	}
+
 	public OrderedMovie addOrderedMovie(Movie movie, Quality quality) {
 		OrderedMovie orderedMovie = new OrderedMovie(this, movie.getMoviePayments(quality));
 		orderedMoviesList.add(orderedMovie);

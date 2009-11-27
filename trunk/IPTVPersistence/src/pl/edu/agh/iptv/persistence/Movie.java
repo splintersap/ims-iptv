@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -24,6 +26,9 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 	@Enumerated(EnumType.STRING)
 	private Category category;
 
+	@Enumerated(EnumType.STRING)
+	private MediaType mediaType;
+
 	private String director;
 
 	@Column(nullable = false)
@@ -31,8 +36,12 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 
 	@Column(nullable = false)
 	private String url;
-	
+
 	private String uuid;
+
+	private String moviePath;
+	
+	private User recordingUser;
 
 	private List<MovieRating> ratingList = new ArrayList<MovieRating>();
 	private List<MoviePayment> paymentsList = new ArrayList<MoviePayment>();
@@ -43,9 +52,9 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 
 	public Movie(String title, String moviePath) {
 		this.title = title;
-		this.url = moviePath;
+		this.moviePath = moviePath;
 	}
-	
+
 	public String getTitle() {
 		return title;
 	}
@@ -70,7 +79,7 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 		this.director = director;
 	}
 
-	@javax.persistence.Column(length=10000)
+	@javax.persistence.Column(length = 10000)
 	public String getDescription() {
 		return description;
 	}
@@ -110,26 +119,25 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 		return commentsList;
 	}
 
-	
 	public void setCommentsList(List<MovieComment> commentsList) {
 		this.commentsList = commentsList;
 	}
-	
+
 	public void addMoviePayment(long price, Quality quality) {
 		MoviePayment mp = new MoviePayment(this, price, quality);
 		paymentsList.add(mp);
 	}
-	
+
 	public void addMovieComment(String comment, User user) {
 		MovieComment mc = new MovieComment(comment, user, this);
 		commentsList.add(mc);
 	}
-	
+
 	public void addMovieRating(User user, int rating) {
 		MovieRating mr = new MovieRating(user, this, rating);
 		ratingList.add(mr);
 	}
-	
+
 	public String getUuid() {
 		return uuid;
 	}
@@ -138,24 +146,48 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 		this.uuid = uuid;
 	}
 
+	public MediaType getMediaType() {
+		return mediaType;
+	}
+
+	public void setMediaType(MediaType mediaType) {
+		this.mediaType = mediaType;
+	}
 	
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
+	@JoinColumn(nullable = true)
+	public User getRecordingUser() {
+		return recordingUser;
+	}
+
+	public void setRecordingUser(User recordingUser) {
+		this.recordingUser = recordingUser;
+	}
+
+	public String getMoviePath() {
+		return moviePath;
+	}
+
+	public void setMoviePath(String moviePath) {
+		this.moviePath = moviePath;
+	}
+
 	@Transient
 	public MoviePayment getMoviePayments(Quality quality) {
-		
+
 		Iterator<MoviePayment> iterator = paymentsList.iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			MoviePayment payment = iterator.next();
-			if(payment.getQuality().equals(quality)) {
+			if (payment.getQuality().equals(quality)) {
 				return payment;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	@Transient
-	public Double getOverallRating()
-	{
+	public Double getOverallRating() {
 		double overallRating = 0.0;
 
 		for (MovieRating rating : getRating()) {
