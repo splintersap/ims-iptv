@@ -198,9 +198,11 @@ public class MoviesTab extends JPanel {
 
 		for (int i = 0; i < moviesArray.length; i++) {
 			String str = moviesArray[i];
-			int indx = str.indexOf("|");
-			allMovies[i] = str.substring(0, indx);
-			if (str.substring(indx + 1, str.lastIndexOf("|")).compareTo("true") == 0) {
+			String[] movieInformations = str.split("\\|");
+			System.out.println(movieInformations[0]);
+			allMovies[i] = movieInformations[0];
+		
+			if ("true".equals(movieInformations[1])) {
 				bought.add(allMovies[i]);
 			}
 		}
