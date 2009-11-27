@@ -13,11 +13,12 @@ public class DBTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = -5338903864691224720L;
 
 	private List<Movie> movieList;
-	
+
 	EntityManager em;
 
 	String[] columnNames = { "Id", "Title", "Category", "Director",
-			"Description", "Movie Url", "UUID" };
+			"Description", "Movie Url", "UUID", "Movie path", "Media type",
+			"Record by" };
 
 	DBTableModel(List<Movie> movieList, EntityManager em) {
 		this.movieList = movieList;
@@ -27,12 +28,12 @@ public class DBTableModel extends AbstractTableModel {
 	public List<Movie> getMovieList() {
 		return movieList;
 	}
-	
+
 	public void addMovie(Movie movie) {
 		movieList.add(movie);
 		fireTableDataChanged();
 	}
-	
+
 	public void removeMovie(int index) {
 		System.out.println("Removieng movie");
 		Movie movie = movieList.get(index);
@@ -40,11 +41,11 @@ public class DBTableModel extends AbstractTableModel {
 		em.getTransaction().begin();
 		em.persist(movie);
 		em.remove(movie);
-		
+
 		em.getTransaction().commit();
 		fireTableDataChanged();
 	}
-	
+
 	@Override
 	public String getColumnName(int number) {
 		return columnNames[number];
@@ -52,12 +53,11 @@ public class DBTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return 7;
+		return 10;
 	}
 
 	@Override
 	public int getRowCount() {
-
 		return movieList.size();
 	}
 
@@ -65,27 +65,42 @@ public class DBTableModel extends AbstractTableModel {
 	public Object getValueAt(int arg0, int arg1) {
 		String value = null;
 		Movie movie = movieList.get(arg0);
-		switch (arg1) {
-		case 0:
-			value = movie.getId().toString();
-			break;
-		case 1:
-			value = movie.getTitle();
-			break;
-		case 2:
-			value = movie.getCategory().name();
-			break;
-		case 3:
-			value = movie.getDirector();
-			break;
-		case 4:
-			value = movie.getDescription();
-			break;
-		case 5:
-			value = movie.getMovieUrl();
-			break;
-		case 6:
-			value = movie.getUuid();
+		try {
+			switch (arg1) {
+			case 0:
+				value = movie.getId().toString();
+				break;
+			case 1:
+				value = movie.getTitle();
+				break;
+			case 2:
+				value = movie.getCategory().name();
+				break;
+			case 3:
+				value = movie.getDirector();
+				break;
+			case 4:
+				value = movie.getDescription();
+				break;
+			case 5:
+				value = movie.getMovieUrl();
+				break;
+			case 6:
+				value = movie.getUuid();
+				break;
+			case 7:
+				value = movie.getMoviePath();
+				break;
+			case 8:
+				value = movie.getMediaType().name();
+				break;
+			case 9:
+				value = movie.getRecordingUser().getSip();
+				break;
+
+			}
+		} catch (NullPointerException e) {
+			value = null;
 		}
 
 		return value;
@@ -94,19 +109,19 @@ public class DBTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
 		Movie movie = movieList.get(rowIndex);
-		
+
 		em.getTransaction().begin();
 		em.persist(movie);
-		
-		if(columnIndex == 2) {
+
+		if (columnIndex == 2) {
 			Category category = (Category) value;
 			movie.setCategory(category);
-		} 
+		}
 		String strValue = null;
-		if(value instanceof String) {
+		if (value instanceof String) {
 			strValue = (String) value;
 		}
-		
+
 		switch (columnIndex) {
 		case 1:
 			movie.setTitle(strValue);
@@ -122,10 +137,13 @@ public class DBTableModel extends AbstractTableModel {
 		case 5:
 			movie.setMovieUrl(strValue);
 			break;
+		case 7:
+			movie.setMoviePath(strValue);
+			break;
 		}
-		
+
 		em.getTransaction().commit();
-		
+
 	}
 
 	@Override
@@ -137,6 +155,4 @@ public class DBTableModel extends AbstractTableModel {
 		return value;
 	}
 
-	
-	
 }

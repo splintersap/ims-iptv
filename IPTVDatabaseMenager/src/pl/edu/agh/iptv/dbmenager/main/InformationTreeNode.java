@@ -4,6 +4,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class InformationTreeNode extends DefaultMutableTreeNode{
 
+	private static final long serialVersionUID = -3426530917706827205L;
+	
 	public Object object;
 
 	public Object getObject() {

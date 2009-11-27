@@ -76,7 +76,6 @@ public class Starter extends JPanel {
 		table.setFillsViewportHeight(true);
 		table.setAutoCreateRowSorter(true);
 
-
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				selectMovieAction(table);
