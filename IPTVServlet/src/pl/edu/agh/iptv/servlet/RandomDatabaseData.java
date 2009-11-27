@@ -9,11 +9,11 @@ import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
 import pl.edu.agh.iptv.persistence.Category;
+import pl.edu.agh.iptv.persistence.MediaType;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.persistence.User;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
-import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
 import pl.edu.agh.iptv.telnet.RemovingTelnetClient;
 import pl.edu.agh.iptv.telnet.VodTelnetClient;
 
@@ -24,7 +24,7 @@ public class RandomDatabaseData {
 	@SuppressWarnings("unchecked")
 	public static void fillDatabase(EntityManager em, UserTransaction utx) {
 
-		// return when there are alredy movies in database
+		// return when there are already movies in database
 		try {
 			utx.begin();
 
@@ -44,8 +44,8 @@ public class RandomDatabaseData {
 		User maciek = new User("sip:maciek@ericsson.com");
 		User alice = new User("sip:alice@ericsson.com");
 
-		Movie forrest = new Movie("Up", "C:/Movies/Up.mov");
-		forrest
+		Movie up = new Movie("Up", "C:/Movies/Up.mov");
+		up
 				.setDescription("Carl Fredricksen, a shy and quiet young boy, meets" +
 						" an energetic and outgoing bucktoothed barefooted tomboy nam" +
 						"ed Ellie, discovering they share the same interest in explor" +
@@ -70,14 +70,15 @@ public class RandomDatabaseData {
 						"s final merit badge for \"Assisting the Elderly\", has stowed away " +
 						"on the porch after being sent on a snipe hunt by Carl the day before.");
 
-		forrest.setCategory(Category.Animation);
-		forrest.setDirector("Pete Docter");
-		forrest.addMoviePayment(500, Quality.LOW);
-		forrest.addMoviePayment(600, Quality.MEDIUM);
-		forrest.addMoviePayment(800, Quality.HIGH);
-		forrest.addMovieComment("Very good movie", maciek);
-		forrest.addMovieComment("I like it very much", alice);
-		addVodMovieToTelnet(forrest, "C:/Movies/Up.mov");
+		up.setCategory(Category.Animation);
+		up.setDirector("Pete Docter");
+		up.addMoviePayment(500, Quality.LOW);
+		up.addMoviePayment(600, Quality.MEDIUM);
+		up.addMoviePayment(800, Quality.HIGH);
+		up.addMovieComment("Very good movie", maciek);
+		up.addMovieComment("I like it very much", alice);
+		up.setMediaType(MediaType.VOD);
+		addVodMovieToTelnet(up);
 
 		Movie terminatorSalvation = new Movie("Terminator salvation",
 				"C:/Movies/Terminator_salvation.avi");
@@ -102,7 +103,8 @@ public class RandomDatabaseData {
 		terminatorSalvation.addMovieComment("Second comment", coco);
 		terminatorSalvation.addMovieComment("Another comment", alice);
 		terminatorSalvation.addMovieComment("Tratatatatatata", coco);
-		addVodMovieToTelnet(terminatorSalvation, "C:/Movies/Terminator_salvation.mov");
+		terminatorSalvation.setMediaType(MediaType.VOD);
+		addVodMovieToTelnet(terminatorSalvation);
 
 		Movie movie2012 = new Movie("2012",
 				"C:/Movies/2012.mov");
@@ -127,7 +129,8 @@ public class RandomDatabaseData {
 		movie2012.addMoviePayment(600, Quality.HIGH);
 		movie2012.addMovieRating(coco, 4);
 		movie2012.addMovieRating(maciek, 5);
-		addVodMovieToTelnet(movie2012, "C:/Movies/2012.mov");
+		movie2012.setMediaType(MediaType.VOD);
+		addVodMovieToTelnet(movie2012);
 
 		Movie basterds = new Movie("Inglourious Basterds",
 				"C:/Movies/Inglourious_basterds.mov");
@@ -151,8 +154,9 @@ public class RandomDatabaseData {
 		basterds.addMoviePayment(600, Quality.HIGH);
 		basterds.addMovieRating(maciek, 5);
 		basterds.setCategory(Category.Drama);
+		basterds.setMediaType(MediaType.VOD);
 		
-		addVodMovieToTelnet(basterds, "C:/Movies/Inglourious_basterds.mov");
+		addVodMovieToTelnet(basterds);
 		
 		Movie avatar = new Movie("Avatar",
 				"C:/Movies/Avatar.mov");
@@ -176,7 +180,9 @@ public class RandomDatabaseData {
 		avatar.addMovieRating(alice, 5);
 		avatar.addMovieComment("Coming soon", coco);
 		avatar.setCategory(Category.Sci_Fi);
-		addVodMovieToTelnet(avatar, "C:/Movies/Avatar.mov");
+		avatar.setMediaType(MediaType.VOD);
+
+		addVodMovieToTelnet(avatar);
 		
 		Movie aliceInWonderland =  new Movie("Alice in Wonderland", "C:/Movies/Alice_in_wonderland.mov");
 		
@@ -194,8 +200,9 @@ public class RandomDatabaseData {
 		aliceInWonderland.addMoviePayment(400, Quality.LOW);
 		aliceInWonderland.addMoviePayment(500, Quality.MEDIUM);
 		aliceInWonderland.addMoviePayment(600, Quality.HIGH);
-		
-		addVodMovieToTelnet(aliceInWonderland, "C:/Movies/Alice_in_wonderland.mov");
+		aliceInWonderland.setMediaType(MediaType.VOD);
+
+		addVodMovieToTelnet(aliceInWonderland);
 		
 		
 		Movie xman =  new Movie("X-Men Origins: Wolverine", "C:/Movies/x-man.mov");
@@ -211,8 +218,10 @@ public class RandomDatabaseData {
 		xman.addMoviePayment(400, Quality.LOW);
 		xman.addMoviePayment(600, Quality.MEDIUM);
 		xman.addMoviePayment(700, Quality.HIGH);
+		xman.setMediaType(MediaType.VOD);
+
 		
-		addVodMovieToTelnet(xman, "C:/Movies/x-man.mov");
+		addVodMovieToTelnet(xman);
 		
 		try {
 			utx.begin();
@@ -221,7 +230,7 @@ public class RandomDatabaseData {
 			em.persist(alice);
 			em.persist(maciek);
 
-			em.persist(forrest);
+			em.persist(up);
 			em.persist(movie2012);
 			em.persist(terminatorSalvation);
 			em.persist(basterds);
@@ -230,9 +239,9 @@ public class RandomDatabaseData {
 			em.persist(xman);
 
 			coco.addOrderedMovie(movie2012, Quality.LOW);
-			coco.addOrderedMovie(forrest, Quality.MEDIUM);
+			coco.addOrderedMovie(up, Quality.MEDIUM);
 			coco.addOrderedMovie(xman, Quality.MEDIUM);
-			alice.addOrderedMovie(forrest, Quality.HIGH);
+			alice.addOrderedMovie(up, Quality.HIGH);
 			alice.addOrderedMovie(aliceInWonderland, Quality.HIGH);
 
 			utx.commit();
@@ -255,10 +264,10 @@ public class RandomDatabaseData {
 		
 	}
 
-	private static void addVodMovieToTelnet(Movie movie, String source) {
+	private static void addVodMovieToTelnet(Movie movie) {
 		AbstractTelnetWorker telnet = null;
 
-		telnet = new VodTelnetClient(source);
+		telnet = new VodTelnetClient(movie.getMoviePath());
 		String address = getIpAddress();
 		movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
 				+ telnet.getUuid().toString());
