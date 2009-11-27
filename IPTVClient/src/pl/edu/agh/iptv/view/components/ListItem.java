@@ -32,6 +32,10 @@ public class ListItem {
 	public ImageIcon getImage() {
 		return image;
 	}
+	
+	public String getUri(){
+		return uri;
+	}
 
 	public void setImage(ImageIcon image) {
 		this.image = image;
