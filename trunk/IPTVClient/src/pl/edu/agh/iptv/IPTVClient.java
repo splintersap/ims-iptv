@@ -12,7 +12,6 @@ import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.data.Movie;
 import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.CommentListener;
-import pl.edu.agh.iptv.presence.PresenceNotifier;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.DescriptionPanel;
 import pl.edu.agh.iptv.view.movies.MovieComments;

@@ -45,6 +45,7 @@ public class MainView {
 	private JButton rew;
 	private JButton forward;
 	private JButton refresh;
+	private JButton record;
 
 	private JButton orderButton;
 
@@ -222,12 +223,17 @@ public class MainView {
 		forward = new JButton(new ImageIcon("images/forward.gif"));
 		forward.setEnabled(false);
 
+		record = new JButton(new ImageIcon("images/record.gif"));
+		record.setName("RECORD");
+
 		toolBar.add(refresh);
 		toolBar.addSeparator();
 		toolBar.add(stop);
 		toolBar.add(rew);
 		toolBar.add(play);
 		toolBar.add(forward);
+		toolBar.addSeparator();
+		toolBar.add(record);
 		toolBar.addSeparator();
 		toolBar.add(orderButton);
 
