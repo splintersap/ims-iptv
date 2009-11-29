@@ -186,7 +186,7 @@ public class IPTVClient implements ActionListener {
 
 		final String msg = message;
 
-		if (mainView != null && mainView.getMainFrame() != null)
+		if (mainView != null)
 
 			EventQueue.invokeLater(new Runnable() {
 

@@ -252,6 +252,10 @@ public class MainView {
 		return this.orderButton;
 	}
 
+	public JButton getRecordMovieButton() {
+		return this.record;
+	}
+
 	public Dimension getSize() {
 		return this.mainFrame.getSize();
 	}
