@@ -1,20 +1,178 @@
 package pl.edu.agh.iptv.view;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-public class RecordMovieView extends JDialog {	
-	
+import com.toedter.calendar.JCalendar;
+
+public class RecordMovieView extends JDialog implements ActionListener {
+
+	private JTextField dayS = new JTextField(2);
+	private JTextField monthS = new JTextField(2);
+	private JTextField yearS = new JTextField(4);
+	private JTextField hourS = new JTextField(2);
+	private JTextField minuteS = new JTextField(2);
+
+	private JTextField dayE = new JTextField(2);
+	private JTextField monthE = new JTextField(2);
+	private JTextField yearE = new JTextField(4);
+	private JTextField hourE = new JTextField(2);
+	private JTextField minuteE = new JTextField(2);
+
+	private MyCalendar myCalendar;
+
+	JCalendar calendar = new JCalendar();
+
+	private JFrame parent;
+
+	private boolean isStart;
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public RecordMovieView(ActionListener listener, JFrame parent, String movieTitle){
+	public RecordMovieView(ActionListener listener, JFrame parent,
+			String movieTitle) {
 		super(parent);
-		
+		this.parent = parent;
+		this.setTitle("Recording settings");
+
+		this.setPreferredSize(new Dimension(550, 150));
+		this.setMaximumSize(new Dimension(550, 150));
+		this.setMinimumSize(new Dimension(550, 150));
+
+		JPanel startP = new JPanel();
+		startP.setLayout(new FlowLayout());
+		startP.add(new JLabel("Start date:"));
+		startP.add(new JLabel());
+		startP.add(new JLabel("day"));
+		startP.add(dayS);
+		startP.add(new JLabel("month"));
+		startP.add(monthS);
+		startP.add(new JLabel("year"));
+		startP.add(yearS);
+		startP.add(new JLabel());
+		JButton calendarBS = new JButton(new ImageIcon(
+				"images/recording/calendar.gif"));
+		calendarBS.addActionListener(this);
+		calendarBS.setName("START");
+		startP.add(calendarBS);
+		startP.add(new JLabel());
+		startP.add(new JLabel("Start time:"));
+		startP.add(new JLabel());
+		startP.add(new JLabel("hour"));
+		startP.add(hourS);
+		startP.add(new JLabel("minute"));
+		startP.add(minuteS);
+
+		JPanel endP = new JPanel();
+		endP.setLayout(new FlowLayout());
+		endP.add(new JLabel("  End date:"));
+		endP.add(new JLabel());
+		endP.add(new JLabel("day"));
+		endP.add(dayE);
+		endP.add(new JLabel("month"));
+		endP.add(monthE);
+		endP.add(new JLabel("year"));
+		endP.add(yearE);
+		endP.add(new JLabel());
+		JButton calendarBE = new JButton(new ImageIcon(
+				"images/recording/calendar.gif"));
+		calendarBE.addActionListener(this);
+		calendarBE.setName("END");
+		endP.add(calendarBE);
+		endP.add(new JLabel());
+		endP.add(new JLabel("  End time:"));
+		endP.add(new JLabel());
+		endP.add(new JLabel("hour"));
+		endP.add(hourE);
+		endP.add(new JLabel("minute"));
+		endP.add(minuteE);
+
+		this.add(startP, BorderLayout.NORTH);
+		this.add(endP, BorderLayout.CENTER);
+
+		this.pack();
+		this.setVisible(true);
 	}
-	
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (((JButton) e.getSource()).getName().compareTo("START") == 0) {
+			isStart = true;
+			myCalendar = new MyCalendar();
+		} else if (((JButton) e.getSource()).getName().compareTo("END") == 0) {
+			isStart = false;
+			myCalendar = new MyCalendar();
+		} else if (((JButton) e.getSource()).getName().compareTo("OK") == 0) {
+			if (isStart) {
+
+				Integer day = new Integer(calendar.getDayChooser().getDay());
+				this.dayS.setText(day.toString());
+
+				Integer month = new Integer(calendar.getMonthChooser()
+						.getMonth() + 1);
+				this.monthS.setText(month.toString());
+
+				Integer year = new Integer(calendar.getYearChooser().getYear());
+				this.yearS.setText(year.toString());
+
+				myCalendar.dispose();
+			} else {
+				Integer day = new Integer(calendar.getDayChooser().getDay());
+				this.dayE.setText(day.toString());
+
+				Integer month = new Integer(calendar.getMonthChooser()
+						.getMonth() + 1);
+				this.monthE.setText(month.toString());
+
+				Integer year = new Integer(calendar.getYearChooser().getYear());
+				this.yearE.setText(year.toString());
+				myCalendar.dispose();
+			}
+		} else {
+			myCalendar.dispose();
+		}
+	}
+
+	private class MyCalendar extends JDialog {
+
+		public MyCalendar() {
+			super(RecordMovieView.this);
+
+			this.add(calendar, BorderLayout.CENTER);
+			JPanel buttonsP = new JPanel();
+			buttonsP.setLayout(new FlowLayout());
+			buttonsP.add(new JLabel());
+			JButton ok = new JButton("OK");
+			ok.setName("OK");
+			ok.addActionListener(RecordMovieView.this);
+			buttonsP.add(ok);
+			buttonsP.add(new JLabel());
+			JButton cancel = new JButton("CANCEL");
+			cancel.setName("CANCEL");
+			cancel.addActionListener(RecordMovieView.this);
+			buttonsP.add(cancel);
+			this.add(buttonsP, BorderLayout.SOUTH);
+			this.pack();
+			this.setVisible(true);
+
+		}
+
+	}
+
 }

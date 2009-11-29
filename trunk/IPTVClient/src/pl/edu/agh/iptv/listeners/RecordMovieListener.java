@@ -31,8 +31,8 @@ public class RecordMovieListener implements ActionListener {
 		if (e.getSource() instanceof JButton) {
 
 			if (((JButton) e.getSource()).getName().compareTo("RECORD") == 0) {
-				new RecordMovieView(this, parent, (String) moviesTab.getAllMoviesList()
-						.getSelectedValue());
+				new RecordMovieView(this, parent, (String) moviesTab
+						.getOrderedMoviesList().getSelectedValue());
 			} else if (((JButton) e.getSource()).getName().compareTo("OK") == 0) {
 
 			} else if (((JButton) e.getSource()).getName().compareTo("CANCELa") == 0) {

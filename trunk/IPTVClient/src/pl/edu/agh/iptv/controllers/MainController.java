@@ -9,6 +9,7 @@ import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.listeners.DescriptionListener;
 import pl.edu.agh.iptv.listeners.OrderMovieListener;
 import pl.edu.agh.iptv.listeners.PlayListener;
+import pl.edu.agh.iptv.listeners.RecordMovieListener;
 import pl.edu.agh.iptv.performance.client.PerformanceLauncher;
 import pl.edu.agh.iptv.presence.controller.PresenceController;
 import pl.edu.agh.iptv.view.MainView;
@@ -64,6 +65,10 @@ public class MainController {
 				mainView.getOrderMoviebButton().addActionListener(
 						new OrderMovieListener(iptvClient, moviesTab, mainView
 								.getMainFrame()));
+
+				mainView.getRecordMovieButton().addActionListener(
+						new RecordMovieListener(iptvClient, mainView
+								.getMainFrame(), moviesTab));
 
 				/*
 				 * Functionality responsible for chat.
