@@ -104,22 +104,27 @@ public class VideoServlet extends SipServlet {
 					+ ", sip = " + sip);
 
 		} else if ("record".equals(mimeTab[0])) {
-			String[] informationsTab = mimeTab[1].split("|");
-			if (informationsTab.length == 3) {
+			String content = new String(req.getRawContent());
+			String[] informationsTab = content.split("|");
+			if (informationsTab.length == 2) {
 				Long startDateLong = Long.valueOf(informationsTab[0]);
 				Date startDate = new Date(startDateLong);
 				Long endDateLong = Long.valueOf(informationsTab[1]);
 				Date endDate = new Date(endDateLong);
-				String movieTitle = informationsTab[2];
+				String movieTitle = mimeTab[1];
 				Movie movie = helper.getMovieFromTitle(movieTitle);
 				AbstractTelnetWorker telnet = new RecordingTelnetClient(movie
 						.getMoviePath(), startDate, endDate);
 				telnet.start();
+				helper.createRecordedMovie(telnet.getUuid(), movieTitle, req.getFrom().getURI().toString());
 				try {
 					telnet.join();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				
+				
+				
 				log("Recording movie " + movieTitle + " from: " + startDate
 						+ " to: " + endDate);
 			} else {

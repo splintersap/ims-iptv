@@ -14,6 +14,7 @@ import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.persistence.User;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
+import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
 import pl.edu.agh.iptv.telnet.RemovingTelnetClient;
 import pl.edu.agh.iptv.telnet.VodTelnetClient;
 
@@ -219,9 +220,14 @@ public class RandomDatabaseData {
 		xman.addMoviePayment(600, Quality.MEDIUM);
 		xman.addMoviePayment(700, Quality.HIGH);
 		xman.setMediaType(MediaType.VOD);
-
-		
 		addVodMovieToTelnet(xman);
+		
+		Movie aljazera = new Movie("Aljazera", "mms://stream.onet.pl/media.wsx?/live/aljazeera");
+		aljazera.setCategory(Category.Documentary);
+		aljazera.addMoviePayment(700, Quality.HIGH);
+		aljazera.setDirector("director");
+		aljazera.setMediaType(MediaType.BROADCAST);
+		addBroadcastToTelnet(aljazera);
 		
 		try {
 			utx.begin();
@@ -247,6 +253,21 @@ public class RandomDatabaseData {
 			utx.commit();
 		} catch (Exception e) {
 
+			e.printStackTrace();
+		}
+	}
+
+	private static void addBroadcastToTelnet(Movie aljazera) {
+		AbstractTelnetWorker telnet = null;
+
+		telnet = new MulticastTelnetClient(aljazera.getMoviePath(), "239.255.12.42");
+		aljazera.setMovieUrl("rtp://@239.255.12.42:5004");
+
+		System.out.println("Starting telnet");
+		telnet.start();
+		try {
+			telnet.join();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -282,7 +303,7 @@ public class RandomDatabaseData {
 		}
 	}
 
-	private static String getIpAddress() {
+	public static String getIpAddress() {
 		String address = null;
 		try {
 			InetAddress addr = InetAddress.getLocalHost();
