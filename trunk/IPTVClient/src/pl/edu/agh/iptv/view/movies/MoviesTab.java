@@ -220,19 +220,20 @@ public class MoviesTab extends JPanel {
 
 			@Override
 			public int compare(MenuListItem item1, MenuListItem item2) {
-				if(!item1.isOrdered().equals(item2.isOrdered()))
-				{
-					return item1.isOrdered().compareTo(item2.isOrdered())*(-1);
+				if (!item1.isOrdered().equals(item2.isOrdered())) {
+					return item1.isOrdered().compareTo(item2.isOrdered())
+							* (-1);
 				}
-				
-				if(!item1.getCategory().equals(item2.getCategory())) {
+
+				if (!item1.getCategory().equals(item2.getCategory())) {
 					return item1.getCategory().compareTo(item2.getCategory());
 				}
-				
-				if(!item1.getRating().equals(item2.getRating())) {
-					return item1.getRating().compareTo(item2.getRating()) * (-1);
+
+				if (!item1.getRating().equals(item2.getRating())) {
+					return item1.getRating().compareTo(item2.getRating())
+							* (-1);
 				}
-				
+
 				return item1.getTitle().compareTo(item2.getTitle());
 			}
 
@@ -253,6 +254,10 @@ public class MoviesTab extends JPanel {
 
 	public JList getRecommendedMoviesList() {
 		return this.recommendedMoviesList;
+	}
+
+	public List getAllMovies() {
+		return new ArrayList<String>();
 	}
 
 }

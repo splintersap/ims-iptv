@@ -71,7 +71,7 @@ public class MainView {
 
 			mainFrame.setJMenuBar(getJMenuBar());
 
-			mainTabs.addTab("Chat", chatTab = new ChatTab(mainFrame));
+			mainTabs.addTab("Chat", chatTab = new ChatTab(mainFrame, getMoviesTab()));
 
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			mainFrame.pack();

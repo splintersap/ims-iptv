@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import pl.edu.agh.iptv.view.movies.MoviesTab;
+
 public class ChatTab extends JPanel {
 
 	/**
@@ -15,11 +17,11 @@ public class ChatTab extends JPanel {
 	JFrame mainFrame = null;
 	ContactsPanel contactsPanel = null;
 
-	public ChatTab(JFrame mainFrame) {
+	public ChatTab(JFrame mainFrame, MoviesTab moviesTab) {
 		this.setLayout(new GridLayout(1, 2));
 		this.mainFrame = mainFrame;
 		this.add(getChat().returnMainPanel());
-		this.contactsPanel = new ContactsPanel();
+		this.contactsPanel = new ContactsPanel(mainFrame, moviesTab);
 		this.add(contactsPanel);
 	}
 

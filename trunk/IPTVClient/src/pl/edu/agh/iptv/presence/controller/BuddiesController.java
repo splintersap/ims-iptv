@@ -77,9 +77,9 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 		this.contactsPanel.addElement(buddy, isAvailable);
 		// Subscription to the presence notification.
 		this.presenceNot.subscribe(buddy.getUri());
-		
+
 	}
-	
+
 	public void addNewBuddy(String buddyName, Buddy buddy, boolean isAvailable) {
 		this.buddies.put(buddyName, buddy);
 		this.buddyUriToName.put(buddy.getUri(), buddyName);
@@ -89,7 +89,7 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 
 		/*
 		 * This is copied part.
-		 */		
+		 */
 		IRLSGroup icpGroup = mainGroup;
 		try {
 			IBuddy newBuddy = PGMFactory.createBuddy(buddy.getUri());
@@ -108,18 +108,26 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 	public void removeBuddy(Buddy buddy) {
 		this.buddies.remove(buddy.getDisplayName());
 		this.buddyUriToName.remove(buddy.getUri());
+
+		if (mainGroup != null) {
+			IBuddy buddyToRemove = findBuddy(mainGroup, buddy.getUri());
+			if (buddyToRemove != null) {
+				try {
+					mainGroup.removeMember(buddyToRemove);
+					groupListManagement.modifyGroup(mainGroup);
+				} catch (Exception e) {
+					showErrorMsg("Problem removing buddy "
+							+ buddy.getDisplayName());
+				}
+			}
+		}
+
 	}
 
 	public void removeBuddies(Object[] buddiesToRemove, int[] selectedInd) {
 		for (int i = 0; i < buddiesToRemove.length; i++) {
-			this.buddies.remove(buddiesToRemove[i]);
-			for (String key : this.buddyUriToName.keySet()) {
-				if (this.buddyUriToName.get(key).compareTo(
-						(String) buddiesToRemove[i]) == 0) {
-					this.buddyUriToName.remove(key);
-					break;
-				}
-			}
+			Buddy buddy = this.buddies.get(((ListItem)buddiesToRemove[i]).getValue());
+			removeBuddy(buddy);
 			this.contactsPanel.removeElementAt(selectedInd[i]);
 		}
 		this.contactsPanel.getContactsList().repaint();
@@ -223,7 +231,7 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 							.getUri());
 
 					// Subscription to the presence notification.
-					this.presenceNot.subscribe(icpBuddy.getUri());
+					// this.presenceNot.subscribe(icpBuddy.getUri());
 
 					this.addBuddy(icpBuddy.getDisplayName(), buddy, false);
 				}
@@ -235,5 +243,22 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 		this.contactsPanel.changeStatus(this.buddyUriToName.get(uri),
 				isAvailable);
 		this.mainView.getMainFrame().repaint();
+	}
+
+	private IBuddy findBuddy(IRLSGroup group, String contactUri) {
+		IBuddy icpBuddy = null;
+		try {
+			IIterator itr = group.getMembers();
+			while (itr.hasNext() && (icpBuddy == null)) {
+				itr.next();
+				icpBuddy = (IBuddy) itr.getElement();
+				if (!icpBuddy.getUri().equals(contactUri)) {
+					icpBuddy = null;
+				}
+			}
+		} catch (Exception e) {
+			showErrorMsg("Error searching for buddy");
+		}
+		return icpBuddy;
 	}
 }

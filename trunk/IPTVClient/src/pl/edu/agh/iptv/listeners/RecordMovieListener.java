@@ -2,6 +2,7 @@ package pl.edu.agh.iptv.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,6 +19,8 @@ public class RecordMovieListener implements ActionListener {
 
 	private MoviesTab moviesTab;
 
+	private RecordMovieView recM;
+
 	public RecordMovieListener(IPTVClient iptvClient, JFrame parent,
 			MoviesTab moviesTab) {
 		this.iptvClient = iptvClient;
@@ -31,12 +34,27 @@ public class RecordMovieListener implements ActionListener {
 		if (e.getSource() instanceof JButton) {
 
 			if (((JButton) e.getSource()).getName().compareTo("RECORD") == 0) {
-				//new RecordMovieView(this, parent, (String) moviesTab
-				//		.getOrderedMoviesList().getSelectedValue());
+				recM = new RecordMovieView(this, parent, (String) moviesTab
+						.getAllMoviesList().getSelectedValue());
 			} else if (((JButton) e.getSource()).getName().compareTo("OK") == 0) {
+				Date startDate = new Date(new Integer(recM.getYearS()),
+						new Integer(recM.getMonthS()), new Integer(recM
+								.getDayS()), new Integer(recM.getHourS()),
+						new Integer(recM.getMinuteS()));
+				Date endDate = new Date(new Integer(recM.getYearE()),
+						new Integer(recM.getMonthE()), new Integer(recM
+								.getDayE()), new Integer(recM.getHourE()),
+						new Integer(recM.getMinuteE()));
 
-			} else if (((JButton) e.getSource()).getName().compareTo("CANCELa") == 0) {
+				String movieTitle = (String) moviesTab.getAllMoviesList()
+						.getSelectedValue();
 
+				iptvClient.recordMovie(startDate, endDate, movieTitle);
+
+				recM.dispose();
+
+			} else if (((JButton) e.getSource()).getName().compareTo("CANCEL") == 0) {
+				recM.dispose();
 			}
 
 		}

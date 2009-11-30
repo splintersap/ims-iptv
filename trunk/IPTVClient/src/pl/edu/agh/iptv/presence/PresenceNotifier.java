@@ -65,8 +65,6 @@ public class PresenceNotifier {
 					.println("please enter a valid uri. Ex: sip:alice@ericsson.com");
 			return;
 		}
-		// enableButton(subscribeButton, false);
-		// enableButton(unSubscribeButton, true);
 		try {
 			buddy = PGMFactory.createBuddy(uri);
 			presence.subscribeToPresentity(buddy, 3600);
