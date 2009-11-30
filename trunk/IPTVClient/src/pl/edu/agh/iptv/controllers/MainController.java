@@ -51,8 +51,8 @@ public class MainController {
 				/*
 				 * Adding listener to the list with movies.
 				 */
-				moviesTab.getOrderedMoviesList().addListSelectionListener(
-						new DescriptionListener(iptvClient));
+				//moviesTab.getOrderedMoviesList().addListSelectionListener(
+				//		new DescriptionListener(iptvClient));
 
 				moviesTab.getAllMoviesList().addListSelectionListener(
 						new DescriptionListener(iptvClient));
