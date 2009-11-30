@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.view.OrderMovieView;
+import pl.edu.agh.iptv.view.components.MenuListItem;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class OrderMovieListener implements ActionListener {
@@ -37,8 +38,8 @@ public class OrderMovieListener implements ActionListener {
 			} else if (((JButton) e.getSource()).getName() == "CANCEL") {
 				view.dispose();
 			} else if (((JButton) e.getSource()).getName() == "ORDER") {
-				view = new OrderMovieView((String) moviesTab.getAllMoviesList()
-						.getSelectedValue(), this, parent);
+				MenuListItem menuItem = (MenuListItem) moviesTab.getAllMoviesList().getSelectedValue();
+				view = new OrderMovieView(menuItem.getTitle() , this, parent);
 
 			}
 		}

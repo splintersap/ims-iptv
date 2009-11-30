@@ -3,6 +3,8 @@ package pl.edu.agh.iptv.view.movies;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -12,6 +14,8 @@ import javax.swing.JScrollPane;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.view.MainView;
+import pl.edu.agh.iptv.view.components.MenuCellRenderer;
+import pl.edu.agh.iptv.view.components.MenuListItem;
 
 public class MoviesTab extends JPanel {
 
@@ -36,8 +40,7 @@ public class MoviesTab extends JPanel {
 	/*
 	 * List containing ordered movies.
 	 */
-	private JList orderedMoviesList = null;
-
+	// private JList orderedMoviesList = null;
 	private JList allMoviesList = null;
 
 	private JList recommendedMoviesList = null;
@@ -127,21 +130,22 @@ public class MoviesTab extends JPanel {
 			allMoviesLabel.setFont(new Font("Times New Roman", Font.BOLD
 					| Font.ITALIC, 14));
 
-			orderedMoviesList = new JList();
-			orderedMoviesList.setAutoscrolls(true);
-			orderedMoviesList.setName("Ordered movies");
+			// orderedMoviesList = new JList();
+			// orderedMoviesList.setAutoscrolls(true);
+			// orderedMoviesList.setName("Ordered movies");
 
-			orderedMoviesList.setToolTipText("Ordered movies");
+			// orderedMoviesList.setToolTipText("Ordered movies");
 
-			JScrollPane orderedScroller = new JScrollPane(orderedMoviesList);
-			orderedScroller.setPreferredSize(new Dimension(listWidth - 30,
-					listSize));
-			orderedScroller.setMinimumSize(new Dimension(listWidth - 30,
-					listSize));
+			// JScrollPane orderedScroller = new JScrollPane(orderedMoviesList);
+			// orderedScroller.setPreferredSize(new Dimension(listWidth - 30,
+			// listSize));
+			// orderedScroller.setMinimumSize(new Dimension(listWidth - 30,
+			// listSize));
 
 			allMoviesList = new JList();
 			allMoviesList.setAutoscrolls(true);
-			allMoviesList.setName("All movies");
+			allMoviesList.setName("Movies");
+			allMoviesList.setCellRenderer(new MenuCellRenderer());
 
 			allMoviesList.setToolTipText("All movies");
 
@@ -156,8 +160,8 @@ public class MoviesTab extends JPanel {
 			orderedMoviesList
 					.setPreferredSize(new Dimension(listWidth - 10, 30));
 
-			panelForMoviesList.add(orderedMoviesLabel);
-			panelForMoviesList.add(orderedScroller);
+			// panelForMoviesList.add(orderedMoviesLabel);
+			// panelForMoviesList.add(orderedScroller);
 
 			panelForMoviesList.add(allMoviesLabel);
 			panelForMoviesList.add(allScroller);
@@ -193,29 +197,55 @@ public class MoviesTab extends JPanel {
 	 */
 	public void setListOfMovies(String[] moviesArray) {
 
-		List<String> bought = new ArrayList<String>();
-		String[] allMovies = new String[moviesArray.length];
+		List<MenuListItem> movieList = new ArrayList<MenuListItem>();
 
-		for (int i = 0; i < moviesArray.length; i++) {
-			String str = moviesArray[i];
-			String[] movieInformations = str.split("\\|");
-			System.out.println(movieInformations[0]);
-			allMovies[i] = movieInformations[0];
-		
-			if ("true".equals(movieInformations[1])) {
-				bought.add(allMovies[i]);
+		for (String movieLine : moviesArray) {
+			String[] movieInformations = movieLine.split("\\|");
+			String title = movieInformations[0];
+			String isOrderedString = movieInformations[1];
+			Double rating = Double.valueOf(movieInformations[2]);
+			String mediaType = movieInformations[3];
+			boolean isOrdered = false;
+
+			if ("true".equals(isOrderedString)) {
+				isOrdered = true;
 			}
+
+			MenuListItem listItem = new MenuListItem(title, rating, mediaType,
+					isOrdered);
+			movieList.add(listItem);
 		}
 
-		orderedMoviesList.setListData(bought.toArray());
-		allMoviesList.setListData(allMovies);
+		Collections.sort(movieList, new Comparator<MenuListItem>() {
+
+			@Override
+			public int compare(MenuListItem item1, MenuListItem item2) {
+				if(!item1.isOrdered().equals(item2.isOrdered()))
+				{
+					return item1.isOrdered().compareTo(item2.isOrdered())*(-1);
+				}
+				
+				if(!item1.getCategory().equals(item2.getCategory())) {
+					return item1.getCategory().compareTo(item2.getCategory());
+				}
+				
+				if(!item1.getRating().equals(item2.getRating())) {
+					return item1.getRating().compareTo(item2.getRating()) * (-1);
+				}
+				
+				return item1.getTitle().compareTo(item2.getTitle());
+			}
+
+		});
+
+		allMoviesList.setListData(movieList.toArray());
 		this.getPanelForMoviesList().repaint();
 
 	}
 
-	public JList getOrderedMoviesList() {
-		return this.orderedMoviesList;
-	}
+	/*
+	 * public JList getOrderedMoviesList() { return this.orderedMoviesList; }
+	 */
 
 	public JList getAllMoviesList() {
 		return this.allMoviesList;

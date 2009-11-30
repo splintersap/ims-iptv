@@ -5,6 +5,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.iptv.IPTVClient;
+import pl.edu.agh.iptv.view.components.MenuListItem;
 
 /**
  * This class listens to the selections performed on the movies list. In case of
@@ -40,7 +41,8 @@ public class DescriptionListener implements ListSelectionListener {
 		}
 
 		JList list = (JList) selection.getSource();
-		String item = (String) list.getSelectedValue();
+		MenuListItem itemList = (MenuListItem) list.getSelectedValue();
+		String item = itemList.getTitle();
 		if (item == null) {
 			return;
 		}
