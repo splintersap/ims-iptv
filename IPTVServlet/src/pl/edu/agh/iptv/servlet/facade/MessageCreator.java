@@ -230,12 +230,14 @@ public class MessageCreator {
 	}
 
 	public void createRecordedMovie(String uuid, String movieTitle,
-			String string) {
+			String sip) {
 		String title = "Recorded : " + movieTitle;
 		Movie movie = new Movie(title, "C:/Movies/"+ uuid + ".avi");
 		movie.setMediaType(MediaType.RECORDING);
 		movie.setMovieUrl("rtsp://127.0.0.1:5554/" + uuid);
 		movie.setUuid(uuid);
+		User user = getUserFromSip(sip);
+		movie.setRecordingUser(user);
 
 		try {
 			utx.begin();
