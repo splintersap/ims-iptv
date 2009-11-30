@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import net.sourceforge.jsdp.Attribute;
@@ -13,6 +15,7 @@ import net.sourceforge.jsdp.Origin;
 import net.sourceforge.jsdp.SDPException;
 import net.sourceforge.jsdp.SDPFactory;
 import net.sourceforge.jsdp.SessionDescription;
+import pl.edu.agh.iptv.persistence.MediaType;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.MovieComment;
 import pl.edu.agh.iptv.persistence.MoviePayment;
@@ -224,6 +227,25 @@ public class MessageCreator {
 			e.printStackTrace();
 		}
 		return stringBuilder.toString();
+	}
+
+	public void createRecordedMovie(String uuid, String movieTitle,
+			String string) {
+		String title = "Recorded : " + movieTitle;
+		Movie movie = new Movie(title, "C:/Movies/"+ uuid + ".avi");
+		movie.setMediaType(MediaType.RECORDING);
+		movie.setMovieUrl("rtsp://127.0.0.1:5554/" + uuid);
+		movie.setUuid(uuid);
+
+		try {
+			utx.begin();
+			em.persist(movie);
+			utx.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }
