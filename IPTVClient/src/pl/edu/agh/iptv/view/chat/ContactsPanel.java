@@ -2,26 +2,36 @@ package pl.edu.agh.iptv.view.chat;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.presence.data.Buddy;
+import pl.edu.agh.iptv.view.CommonWatchingView;
 import pl.edu.agh.iptv.view.components.ListItem;
 import pl.edu.agh.iptv.view.components.MyCellRenderer;
+import pl.edu.agh.iptv.view.movies.MoviesTab;
 
-public class ContactsPanel extends JPanel {
+public class ContactsPanel extends JPanel implements ActionListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private JFrame mainFrame;
+	private MoviesTab moviesTab;
 
 	DefaultListModel listModel = new DefaultListModel();
 	private JList contactsList = new JList(listModel);
@@ -33,8 +43,11 @@ public class ContactsPanel extends JPanel {
 
 	private JButton newContactB = null;
 	private JButton removeContactB = null;
+	private JButton inviteM = null;
 
-	public ContactsPanel() {
+	public ContactsPanel(JFrame mainFrame, MoviesTab moviesTab) {
+		this.mainFrame = mainFrame;
+		this.moviesTab = moviesTab;
 		contactsList.setCellRenderer(new MyCellRenderer());
 		this.setLayout(new ResizableGridLayout(2, 1));
 		this.add(getJToolBar());
@@ -43,6 +56,7 @@ public class ContactsPanel extends JPanel {
 		contactsPane.setPreferredSize(new Dimension(150, 250));
 
 		this.add(contactsPane);
+
 	}
 
 	private JToolBar getJToolBar() {
@@ -62,8 +76,14 @@ public class ContactsPanel extends JPanel {
 			removeContactB.setName("Remove Contact");
 			removeContactB.setEnabled(true);
 
+			inviteM = new JButton(new ImageIcon("images/chat/remove_buddy.gif"));
+			inviteM.setName("INVITE");
+			inviteM.addActionListener(this);
+			inviteM.setEnabled(true);
+
 			toolBar.add(newContactB);
 			toolBar.add(removeContactB);
+			toolBar.add(inviteM);
 		}
 		return toolBar;
 	}
@@ -84,7 +104,7 @@ public class ContactsPanel extends JPanel {
 	public void addElement(Buddy buddy, boolean isAvailable) {
 
 		ListItem item = new ListItem(Color.GREEN, buddy.getDisplayName(), buddy
-				.getUri(), isAvailable ? available : unavailable);
+				.getUri(), isAvailable ? available : unavailable, isAvailable);
 		listModel.addElement(item);
 
 	}
@@ -106,7 +126,57 @@ public class ContactsPanel extends JPanel {
 					item.setImage(available);
 				else
 					item.setImage(unavailable);
+				item.setIsAvailable(isAvailable);
 				break;
+			}
+		}
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (contactsList.getSelectedIndex() == -1) {
+			EventQueue.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					JOptionPane.showMessageDialog(mainFrame,
+							"Select at least one buddy", "Wrong input",
+							JOptionPane.ERROR_MESSAGE);
+				}
+
+			});
+			return;
+		} else {
+			String unavailable = new String();
+			for (Object element : contactsList.getSelectedValues()) {
+				if (!((ListItem) element).isAvailable()) {
+					unavailable += (((ListItem) element).getValue());
+				}
+			}
+			final String unav = unavailable;
+			if (unavailable.length() > 0) {
+				EventQueue.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						JOptionPane
+								.showMessageDialog(
+										mainFrame,
+										"You selected upsent user: "
+												+ unav
+												+ "\n You need to select only available users.",
+										"Wrong input",
+										JOptionPane.ERROR_MESSAGE);
+					}
+
+				});
+				return;
+			} else {
+				new CommonWatchingView(mainFrame, moviesTab);
 			}
 		}
 

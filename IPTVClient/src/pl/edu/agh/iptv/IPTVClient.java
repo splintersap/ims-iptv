@@ -3,6 +3,7 @@ package pl.edu.agh.iptv;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.JOptionPane;
 
@@ -75,7 +76,7 @@ public class IPTVClient implements ActionListener {
 			service.addListener(new ServiceAdapter());
 
 			this.mainView = mainView;
-			this.moviesTab = mainView.getMoviesTab();			
+			this.moviesTab = mainView.getMoviesTab();
 
 			addingListener();
 			triggerMoviesRequest();
@@ -136,16 +137,15 @@ public class IPTVClient implements ActionListener {
 						EventQueue.invokeLater(sh);
 						/***************************************/
 
-					} else if("vlc/uri".equals(aContentType)) {
+					} else if ("vlc/uri".equals(aContentType)) {
 						String vlcCommand = new String(aMessage);
 						System.out.println(vlcCommand);
 						/*
 						 * This is in order to open the stream.
 						 */
 						new VLCHelper(moviesTab, vlcCommand);
-						
-						}
-					else {
+
+					} else {
 						System.out.println("Unrecognized message");
 					}
 				}
@@ -169,7 +169,7 @@ public class IPTVClient implements ActionListener {
 	public void showChosenMovie(String movieTitle) {
 		try {
 			session.sendMessage("movies/choice", movieTitle.getBytes(),
-					movieTitle.length());			
+					movieTitle.length());
 
 		} catch (Exception e) {
 			showError("Sending message", e);
@@ -312,6 +312,17 @@ public class IPTVClient implements ActionListener {
 	public void setUserComment(String text, String movieTitle) {
 		try {
 			session.sendInformation("comment/" + movieTitle, text.getBytes(),
+					text.length());
+		} catch (Exception e) {
+			showError("Error while sending INFO with comment.", e);
+			e.printStackTrace();
+		}
+	}
+
+	public void recordMovie(Date startDate, Date endDate, String movieTitle) {
+		String text = startDate.getTime() + "|" + endDate.getTime();
+		try {
+			session.sendInformation("record/" + movieTitle, text.getBytes(),
 					text.length());
 		} catch (Exception e) {
 			showError("Error while sending INFO with comment.", e);
