@@ -1,24 +1,44 @@
 package pl.edu.agh.iptv.view.components;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Insets;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.ListUI;
 
-import org.jvnet.substance.api.renderers.SubstanceDefaultListCellRenderer;
+import org.jvnet.lafwidget.animation.FadeKind;
+import org.jvnet.substance.SubstanceListUI;
+import org.jvnet.substance.SubstanceLookAndFeel;
+import org.jvnet.substance.api.ColorSchemeAssociationKind;
+import org.jvnet.substance.api.ComponentState;
+import org.jvnet.substance.api.SubstanceColorScheme;
+import org.jvnet.substance.utils.SubstanceColorSchemeUtilities;
+import org.jvnet.substance.utils.SubstanceColorUtilities;
+import org.jvnet.substance.utils.SubstanceSizeUtils;
+import org.jvnet.substance.utils.SubstanceStripingUtils;
 
-public class MenuCellRenderer extends JPanel implements ListCellRenderer  {
+import com.sun.xml.internal.bind.v2.runtime.reflect.Accessor.SetterOnlyReflection;
 
-	/**
-	 * 
-	 */
+public class MenuCellRenderer extends JPanel implements ListCellRenderer {
+
+	protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
+	private static final Border SAFE_NO_FOCUS_BORDER = new EmptyBorder(1, 1, 1, 1);
+
+
 
 	public MenuCellRenderer() {
 		super(new BorderLayout());
+		//this.putClientProperty(SubstanceLookAndFeel.COLORIZATION_FACTOR, 1.0);
 		setOpaque(true);
 	}
 
@@ -41,6 +61,9 @@ public class MenuCellRenderer extends JPanel implements ListCellRenderer  {
 			boolean hasFocus) // cell has focus?
 	{
 		this.removeAll();
+		
+		
+		
 		MenuListItem listItem = (MenuListItem) value;
 		JLabel starLabel = new JLabel(starIcon);
 		JLabel categoryLabel = null;
@@ -71,28 +94,28 @@ public class MenuCellRenderer extends JPanel implements ListCellRenderer  {
 			starLabel.setEnabled(false);
 		}
 
+		
+		
 		ratingPanel.add(starLabel);
 
 		this.add(titlePanel, BorderLayout.WEST);
 		this.add(ratingPanel, BorderLayout.EAST);
 
 		if (isSelected) {
-			// this.setForeground(list.getSelectionForeground());
-			setBackground(list.getSelectionBackground());
+			 ratingLabel.setForeground(new ColorUIResource(Color.BLACK));
+			 titleLabel.setForeground(new ColorUIResource(Color.BLACK));
+			 setBackground(list.getSelectionBackground());
+			 
+			 
 		} else {
-			
-			setBackground(list.getBackground());
-			this.setForeground(list.getForeground());
+			if (SubstanceLookAndFeel.isCurrentLookAndFeel())
+				SubstanceStripingUtils
+						.applyStripedBackground(list, index, this);
+			 this.setForeground(list.getForeground());
 		}
-
+		
 		return this;
-		/*setText("sadfasdfasd");
-		setIcon(broadcastIcon);
-		//setLayout(new BorderLayout());
-		add(new JLabel("asdfasdf"), BorderLayout.PAGE_END);
-		//JLabel test = new JLabel("Test");
-		//add(test);
-		return this;*/
+
 	}
 
 }

@@ -1,5 +1,6 @@
 package pl.edu.agh.iptv.view.movies;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.view.MainView;
@@ -116,31 +118,23 @@ public class MoviesTab extends JPanel {
 			int listWidth = this.moviesListPaneWidth - 50;
 
 			panelForMoviesList = new JPanel();
-			ResizableGridLayout resizableLayout = new ResizableGridLayout(4, 1,
-					1, 0);
+			//ResizableGridLayout resizableLayout = new ResizableGridLayout(4, 1,
+			//		1, 0);
 
-			panelForMoviesList.setLayout(resizableLayout);
+			BorderLayout layout = new BorderLayout();
+			layout.setVgap(10);
+			panelForMoviesList.setLayout(layout);
+			
+			
+			JPanel labelPanel = new JPanel();
+			
+			
+			
+			JLabel allMoviesLabel = new JLabel("VIDEOS");
 
-			JLabel orderedMoviesLabel = new JLabel("ORDERED MOVIES");
-			JLabel allMoviesLabel = new JLabel("ALL MOVIES");
-
-			orderedMoviesLabel.setFont(new Font("Times New Roman", Font.BOLD
-					| Font.ITALIC, 14));
-
-			allMoviesLabel.setFont(new Font("Times New Roman", Font.BOLD
-					| Font.ITALIC, 14));
-
-			// orderedMoviesList = new JList();
-			// orderedMoviesList.setAutoscrolls(true);
-			// orderedMoviesList.setName("Ordered movies");
-
-			// orderedMoviesList.setToolTipText("Ordered movies");
-
-			// JScrollPane orderedScroller = new JScrollPane(orderedMoviesList);
-			// orderedScroller.setPreferredSize(new Dimension(listWidth - 30,
-			// listSize));
-			// orderedScroller.setMinimumSize(new Dimension(listWidth - 30,
-			// listSize));
+			allMoviesLabel.setFont(new Font("Times New Roman", Font.BOLD, 14));
+			allMoviesLabel.setBorder(new EmptyBorder(10,30,0,0));
+			labelPanel.add(allMoviesLabel);
 
 			allMoviesList = new JList();
 			allMoviesList.setAutoscrolls(true);
@@ -160,11 +154,8 @@ public class MoviesTab extends JPanel {
 			orderedMoviesList
 					.setPreferredSize(new Dimension(listWidth - 10, 30));
 
-			// panelForMoviesList.add(orderedMoviesLabel);
-			// panelForMoviesList.add(orderedScroller);
-
-			panelForMoviesList.add(allMoviesLabel);
-			panelForMoviesList.add(allScroller);
+			panelForMoviesList.add(labelPanel, BorderLayout.NORTH);
+			panelForMoviesList.add(allScroller, BorderLayout.CENTER);
 
 		}
 
