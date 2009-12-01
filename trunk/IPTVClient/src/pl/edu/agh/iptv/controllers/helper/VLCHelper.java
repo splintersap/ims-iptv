@@ -30,7 +30,7 @@ public class VLCHelper {
 	static java.awt.GridBagConstraints gridBagConstraints;
 	static JVLC jvlc;
 	static Video video;
-	static MediaPlayer mp;
+	public static MediaPlayer mp;
 	static MediaDescriptor ds;
 	static Canvas jvcanvas;
 	static JPanel jvcc;
@@ -38,6 +38,8 @@ public class VLCHelper {
 	private MoviesTab moviesTab;
 	private String playMovieCommand;
 
+	public static boolean isPlayingMovie = false;
+	
 	public VLCHelper(MoviesTab moviesTab, String playMovieCommand) {
 		this.moviesTab = moviesTab;
 		this.playMovieCommand = playMovieCommand;
@@ -81,8 +83,8 @@ public class VLCHelper {
 					}
 
 					public void componentResized(ComponentEvent arg0) {
-						// TODO Auto-generated method stub
-						mp.pause();
+						//System.out.println("Mamy resize !!");
+						//mp.stop();
 					}
 
 					public void componentShown(ComponentEvent arg0) {
@@ -122,7 +124,9 @@ public class VLCHelper {
 
 				jvlc.setVideoOutput(jvcanvas); // second way
 
+				isPlayingMovie = true;
 				mp.play();
+				
 			}
 
 		});
