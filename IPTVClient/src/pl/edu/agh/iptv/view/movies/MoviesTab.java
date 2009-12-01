@@ -54,6 +54,8 @@ public class MoviesTab extends JPanel {
 
 	private MainView parent = null;
 
+	private List<MenuListItem> movieList = null;
+
 	public MoviesTab(MainView parent) {
 		this.parent = parent;
 		ResizableGridLayout moviesGridLayout = new ResizableGridLayout(1, 2, 2,
@@ -188,7 +190,7 @@ public class MoviesTab extends JPanel {
 	 */
 	public void setListOfMovies(String[] moviesArray) {
 
-		List<MenuListItem> movieList = new ArrayList<MenuListItem>();
+		movieList = new ArrayList<MenuListItem>();
 
 		for (String movieLine : moviesArray) {
 			String[] movieInformations = movieLine.split("\\|");
@@ -247,8 +249,8 @@ public class MoviesTab extends JPanel {
 		return this.recommendedMoviesList;
 	}
 
-	public List getAllMovies() {
-		return new ArrayList<String>();
+	public List<MenuListItem> getAllMovies() {
+		return this.movieList;
 	}
 
 }

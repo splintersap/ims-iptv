@@ -5,22 +5,21 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import pl.edu.agh.iptv.view.components.MenuListItem;
+import pl.edu.agh.iptv.view.components.MyCalendar;
+import pl.edu.agh.iptv.view.components.ViewWithCalendar;
+
 import com.toedter.calendar.JCalendar;
 
-public class RecordMovieView extends JDialog implements ActionListener {
-
-	private Date startDate;
-	private Date endDate;
+public class RecordMovieView extends ViewWithCalendar {
 
 	private JTextField dayS = new JTextField(2);
 	private JTextField monthS = new JTextField(2);
@@ -46,7 +45,7 @@ public class RecordMovieView extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
 
 	public RecordMovieView(ActionListener listener, JFrame parent,
-			String movieTitle) {
+			MenuListItem movieItem) {
 		super(parent);
 		this.setTitle("Recording settings");
 
@@ -126,10 +125,10 @@ public class RecordMovieView extends JDialog implements ActionListener {
 		// TODO Auto-generated method stub
 		if (((JButton) e.getSource()).getName().compareTo("START") == 0) {
 			isStart = true;
-			myCalendar = new MyCalendar();
+			myCalendar = new MyCalendar(calendar, this);
 		} else if (((JButton) e.getSource()).getName().compareTo("END") == 0) {
 			isStart = false;
-			myCalendar = new MyCalendar();
+			myCalendar = new MyCalendar(calendar, this);
 		} else if (((JButton) e.getSource()).getName().compareTo("CALENDAR_OK") == 0) {
 			if (isStart) {
 
@@ -205,35 +204,5 @@ public class RecordMovieView extends JDialog implements ActionListener {
 		return minuteE.getText();
 	}
 
-	private class MyCalendar extends JDialog {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		public MyCalendar() {
-			super(RecordMovieView.this);
-
-			this.add(calendar, BorderLayout.CENTER);
-			JPanel buttonsP = new JPanel();
-			buttonsP.setLayout(new FlowLayout());
-			buttonsP.add(new JLabel());
-			JButton ok = new JButton("OK");
-			ok.setName("CALENDAR_OK");
-			ok.addActionListener(RecordMovieView.this);
-			buttonsP.add(ok);
-			buttonsP.add(new JLabel());
-			JButton cancel = new JButton("CANCEL");
-			cancel.setName("CALENDAR_CANCEL");
-			cancel.addActionListener(RecordMovieView.this);
-			buttonsP.add(cancel);
-			this.add(buttonsP, BorderLayout.SOUTH);
-			this.pack();
-			this.setVisible(true);
-
-		}
-
-	}
-
+	
 }
