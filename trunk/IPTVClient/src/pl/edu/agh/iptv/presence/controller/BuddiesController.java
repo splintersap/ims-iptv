@@ -220,10 +220,10 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 					} else {
 						String selected = new String();
 						for (Object element : contactsPanel.getContactsList()
-								.getSelectedValues()) {							
-								selected += (((ListItem) element).getValue());
+								.getSelectedValues()) {
+							selected += (((ListItem) element).getValue());
 						}
-						
+
 						new CommonWatchingView(this.mainView.getMainFrame(),
 								this.mainView.getMoviesTab(), selected);
 					}
