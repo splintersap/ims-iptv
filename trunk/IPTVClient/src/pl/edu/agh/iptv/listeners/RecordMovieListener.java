@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.view.RecordMovieView;
+import pl.edu.agh.iptv.view.components.MenuListItem;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class RecordMovieListener implements ActionListener {
@@ -34,8 +35,9 @@ public class RecordMovieListener implements ActionListener {
 		if (e.getSource() instanceof JButton) {
 
 			if (((JButton) e.getSource()).getName().compareTo("RECORD") == 0) {
-				recM = new RecordMovieView(this, parent, (String) moviesTab
-						.getAllMoviesList().getSelectedValue());
+				recM = new RecordMovieView(this, parent,
+						(MenuListItem) moviesTab.getAllMoviesList()
+								.getSelectedValue());
 			} else if (((JButton) e.getSource()).getName().compareTo("OK") == 0) {
 				Date startDate = new Date(new Integer(recM.getYearS()),
 						new Integer(recM.getMonthS()), new Integer(recM
@@ -46,10 +48,10 @@ public class RecordMovieListener implements ActionListener {
 								.getDayE()), new Integer(recM.getHourE()),
 						new Integer(recM.getMinuteE()));
 
-				String movieTitle = (String) moviesTab.getAllMoviesList()
-						.getSelectedValue();
+				MenuListItem movie = (MenuListItem) moviesTab
+						.getAllMoviesList().getSelectedValue();
 
-				iptvClient.recordMovie(startDate, endDate, movieTitle);
+				iptvClient.recordMovie(startDate, endDate, movie.getTitle());
 
 				recM.dispose();
 

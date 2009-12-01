@@ -23,7 +23,7 @@ import pl.edu.agh.iptv.view.components.ListItem;
 import pl.edu.agh.iptv.view.components.MyCellRenderer;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
-public class ContactsPanel extends JPanel implements ActionListener {
+public class ContactsPanel extends JPanel {
 
 	/**
 	 * 
@@ -78,7 +78,6 @@ public class ContactsPanel extends JPanel implements ActionListener {
 
 			inviteM = new JButton(new ImageIcon("images/chat/remove_buddy.gif"));
 			inviteM.setName("INVITE");
-			inviteM.addActionListener(this);
 			inviteM.setEnabled(true);
 
 			toolBar.add(newContactB);
@@ -117,6 +116,10 @@ public class ContactsPanel extends JPanel implements ActionListener {
 		return removeContactB;
 	}
 
+	public JButton getInviteMB() {
+		return this.inviteM;
+	}
+
 	public void changeStatus(String dispName, boolean isAvailable) {
 
 		for (int i = 0; i < this.listModel.getSize(); i++) {
@@ -133,52 +136,4 @@ public class ContactsPanel extends JPanel implements ActionListener {
 
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		if (contactsList.getSelectedIndex() == -1) {
-			EventQueue.invokeLater(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					JOptionPane.showMessageDialog(mainFrame,
-							"Select at least one buddy", "Wrong input",
-							JOptionPane.ERROR_MESSAGE);
-				}
-
-			});
-			return;
-		} else {
-			String unavailable = new String();
-			for (Object element : contactsList.getSelectedValues()) {
-				if (!((ListItem) element).isAvailable()) {
-					unavailable += (((ListItem) element).getValue());
-				}
-			}
-			final String unav = unavailable;
-			if (unavailable.length() > 0) {
-				EventQueue.invokeLater(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						JOptionPane
-								.showMessageDialog(
-										mainFrame,
-										"You selected upsent user: "
-												+ unav
-												+ "\n You need to select only available users.",
-										"Wrong input",
-										JOptionPane.ERROR_MESSAGE);
-					}
-
-				});
-				return;
-			} else {
-				new CommonWatchingView(mainFrame, moviesTab);
-			}
-		}
-
-	}
 }

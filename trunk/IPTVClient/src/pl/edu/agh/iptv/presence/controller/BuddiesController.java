@@ -14,6 +14,7 @@ import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.iptv.presence.PresenceNotifier;
 import pl.edu.agh.iptv.presence.data.Buddy;
+import pl.edu.agh.iptv.view.CommonWatchingView;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.chat.AddUserFrame;
 import pl.edu.agh.iptv.view.chat.ContactsPanel;
@@ -68,6 +69,7 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 		this.contactsPanel.getNewContactB().addActionListener(this);
 		this.contactsPanel.getRemoveContactB().addActionListener(this);
 		this.contactsPanel.getContactsList().addListSelectionListener(this);
+		this.contactsPanel.getInviteMB().addActionListener(this);
 
 	}
 
@@ -126,7 +128,8 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 
 	public void removeBuddies(Object[] buddiesToRemove, int[] selectedInd) {
 		for (int i = 0; i < buddiesToRemove.length; i++) {
-			Buddy buddy = this.buddies.get(((ListItem)buddiesToRemove[i]).getValue());
+			Buddy buddy = this.buddies.get(((ListItem) buddiesToRemove[i])
+					.getValue());
 			removeBuddy(buddy);
 			this.contactsPanel.removeElementAt(selectedInd[i]);
 		}
@@ -169,6 +172,61 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 						}
 
 					});
+				}
+			} else if (((JButton) e.getSource()).getName().compareTo("INVITE") == 0) {
+				if (this.contactsPanel.getContactsList().getSelectedIndex() == -1) {
+					EventQueue.invokeLater(new Runnable() {
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							JOptionPane.showMessageDialog(
+									BuddiesController.this.mainView
+											.getMainFrame(),
+									"Select at least one buddy", "Wrong input",
+									JOptionPane.ERROR_MESSAGE);
+						}
+
+					});
+					return;
+				} else {
+					String unavailable = new String();
+					for (Object element : contactsPanel.getContactsList()
+							.getSelectedValues()) {
+						if (!((ListItem) element).isAvailable()) {
+							unavailable += (((ListItem) element).getValue());
+						}
+					}
+					final String unav = unavailable;
+					if (unavailable.length() == 0) {
+						EventQueue.invokeLater(new Runnable() {
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								JOptionPane
+										.showMessageDialog(
+												BuddiesController.this.mainView
+														.getMainFrame(),
+												"You selected upsent user: "
+														+ unav
+														+ "\n You need to select only available users.",
+												"Wrong input",
+												JOptionPane.ERROR_MESSAGE);
+							}
+
+						});
+						return;
+					} else {
+						String selected = new String();
+						for (Object element : contactsPanel.getContactsList()
+								.getSelectedValues()) {							
+								selected += (((ListItem) element).getValue());
+						}
+						
+						new CommonWatchingView(this.mainView.getMainFrame(),
+								this.mainView.getMoviesTab(), selected);
+					}
 				}
 			}
 		}
