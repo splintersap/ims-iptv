@@ -37,13 +37,17 @@ public class MainView {
 
 	private JLabel bandwidthLabel;
 
+	public static ImageIcon playIcon = new ImageIcon("images/play.gif");
+	
+	public static ImageIcon pauseIcon = new ImageIcon("images/pause.gif");
+	
 	/*
 	 * Menu buttons.
 	 */
 	private JButton play;
 	private JButton stop;
-	private JButton rew;
-	private JButton forward;
+	//private JButton rew;
+	//private JButton forward;
 	private JButton refresh;
 	private JButton record;
 
@@ -210,18 +214,18 @@ public class MainView {
 		stop = new JButton(new ImageIcon("images/stop.gif"));
 		stop.setEnabled(false);
 
-		rew = new JButton(new ImageIcon("images/rew.gif"));
-		rew.setEnabled(false);
+		//rew = new JButton(new ImageIcon("images/rew.gif"));
+		//rew.setEnabled(false);
 
-		play = new JButton(new ImageIcon("images/play.gif"));
+		play = new JButton(playIcon);
 		play.setEnabled(false);
 
 		orderButton = new JButton(new ImageIcon("images/cart.gif"));
 		orderButton.setName("ORDER");
 		orderButton.setEnabled(false);
 
-		forward = new JButton(new ImageIcon("images/forward.gif"));
-		forward.setEnabled(false);
+		//forward = new JButton(new ImageIcon("images/forward.gif"));
+		//forward.setEnabled(false);
 
 		record = new JButton(new ImageIcon("images/record.gif"));
 		record.setName("RECORD");
@@ -229,9 +233,9 @@ public class MainView {
 		toolBar.add(refresh);
 		toolBar.addSeparator();
 		toolBar.add(stop);
-		toolBar.add(rew);
+		//toolBar.add(rew);
 		toolBar.add(play);
-		toolBar.add(forward);
+		//toolBar.add(forward);
 		toolBar.addSeparator();
 		toolBar.add(record);
 		toolBar.addSeparator();
@@ -242,6 +246,10 @@ public class MainView {
 
 	public JButton getPlayButton() {
 		return this.play;
+	}
+	
+	public JButton getStopButton() {
+		return this.stop;
 	}
 
 	public JButton getRefreshButton() {
@@ -282,8 +290,8 @@ public class MainView {
 	public void setButtonsEnabelment(boolean ordered) {
 		play.setEnabled(ordered);
 		stop.setEnabled(ordered);
-		rew.setEnabled(ordered);
-		forward.setEnabled(ordered);
+		//rew.setEnabled(ordered);
+		//forward.setEnabled(ordered);
 		orderButton.setEnabled(!ordered);
 	}
 

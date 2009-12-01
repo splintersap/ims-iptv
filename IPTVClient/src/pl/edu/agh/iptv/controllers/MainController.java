@@ -1,11 +1,15 @@
 package pl.edu.agh.iptv.controllers;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import pl.edu.agh.iptv.IPTVClient;
+import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.listeners.DescriptionListener;
 import pl.edu.agh.iptv.listeners.OrderMovieListener;
 import pl.edu.agh.iptv.listeners.PlayListener;
@@ -51,14 +55,24 @@ public class MainController {
 				/*
 				 * Adding listener to the list with movies.
 				 */
-				//moviesTab.getOrderedMoviesList().addListSelectionListener(
-				//		new DescriptionListener(iptvClient));
-
+				// moviesTab.getOrderedMoviesList().addListSelectionListener(
+				// new DescriptionListener(iptvClient));
 				moviesTab.getAllMoviesList().addListSelectionListener(
 						new DescriptionListener(iptvClient));
 
 				mainView.getPlayButton().addActionListener(
 						new PlayListener(iptvClient, moviesTab));
+
+				mainView.getStopButton().addActionListener(
+						new ActionListener() {
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								if (VLCHelper.mp != null) {
+									VLCHelper.mp.stop();
+								}
+							}
+						});
 
 				mainView.getRefreshButton().addActionListener(iptvClient);
 
