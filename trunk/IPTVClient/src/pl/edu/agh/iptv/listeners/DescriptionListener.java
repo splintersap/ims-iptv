@@ -36,16 +36,16 @@ public class DescriptionListener implements ListSelectionListener {
 
 	public void valueChanged(ListSelectionEvent selection) {
 
-		if (selection.getValueIsAdjusting() == true) {
+		if (selection.getValueIsAdjusting() == true ) {
 			return;
 		}
 
 		JList list = (JList) selection.getSource();
 		MenuListItem itemList = (MenuListItem) list.getSelectedValue();
-		String item = itemList.getTitle();
-		if (item == null) {
+		if (itemList  == null) {
 			return;
 		}
+		String item = itemList.getTitle();
 		selectedMovie = item;
 
 		this.iptvClient.getMovieInformations(item);

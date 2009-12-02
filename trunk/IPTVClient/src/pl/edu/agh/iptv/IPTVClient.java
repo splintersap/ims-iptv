@@ -45,17 +45,21 @@ public class IPTVClient implements ActionListener {
 	/**
 	 * The current game IMS session.
 	 */
-	private ISession session;
+	private static ISession session;
 
 	private MoviesController moviesController;
 
-	IProfile profile;
+	private static IProfile profile;
 
 	String[] movies;
 
 	private MoviesTab moviesTab = null;
 
 	private MainView mainView = null;
+
+	private static String infoType = null;
+
+	private static String infoContent = null;
 
 	/*
 	 * This is in order to pass the reference of IPTVClient class to the
@@ -130,6 +134,7 @@ public class IPTVClient implements ActionListener {
 						/*
 						 * Displaying received description about selected movie.
 						 */
+						System.out.println("We got movie informations");
 						Runnable sh = new DescriptionThread(new MessageHelper()
 								.parseMovieSDPMessage(aMessage), moviesTab,
 								client);
@@ -143,7 +148,7 @@ public class IPTVClient implements ActionListener {
 						/*
 						 * This is in order to open the stream.
 						 */
-						VLCHelper helper = new VLCHelper(moviesTab, vlcCommand);
+						new VLCHelper(moviesTab, vlcCommand, IPTVClient.this);
 
 					} else {
 						System.out.println("Unrecognized message");
@@ -167,13 +172,13 @@ public class IPTVClient implements ActionListener {
 	 *            title of the movie user wants to watch
 	 */
 	public void showChosenMovie(String movieTitle) {
-		try {
-			session.sendMessage("movies/choice", movieTitle.getBytes(),
-					movieTitle.length());
-
-		} catch (Exception e) {
-			showError("Sending message", e);
-		}
+		sendMovieInformation("movies/choice", movieTitle);
+		/*
+		 * try { session.sendInformation("movies/choice", movieTitle.getBytes(),
+		 * movieTitle.length());
+		 * 
+		 * } catch (Exception e) { showError("Sending message", e); }
+		 */
 	}
 
 	/**
@@ -242,35 +247,51 @@ public class IPTVClient implements ActionListener {
 	}
 
 	public void setUserRating(int rating, String title) {
-		System.out.println("I am setting user rating to "
-				+ String.valueOf(rating));
-		String ratingString = String.valueOf(rating);
-		try {
-			session.sendInformation("rating/" + title, ratingString.getBytes(),
-					ratingString.length());
-		} catch (Exception e) {
-			showError("Error while sending INFO about user rating.", e);
-			e.printStackTrace();
 
-		}
+		String ratingString = String.valueOf(rating);
+		sendMovieInformation("rating/" + title, ratingString);
+		/*
+		 * try { session.sendInformation("rating/" + title,
+		 * ratingString.getBytes(), ratingString.length()); } catch (Exception
+		 * e) { showError("Error while sending INFO about user rating.", e);
+		 * e.printStackTrace(); }
+		 */
 	}
 
 	public void getMovieInformations(String item) {
-		try {
-			session.sendInformation("text/title-info", item.getBytes(), item
-					.length());
-		} catch (Exception e) {
-			showError("Error while sending INFO about movie movie.", e);
-			e.printStackTrace();
-		}
+		sendMovieInformation("text/title-info", item);
+		/*
+		 * try { session.sendInformation("text/title-info", item.getBytes(),
+		 * item .length()); System.out.println("Wysylam info"); } catch
+		 * (Exception e) {
+		 * showError("Error while sending INFO about movie movie.", e);
+		 * e.printStackTrace(); }
+		 */
 	}
 
 	public void purchaseMovie(String movieTitle, String quality) {
+		sendMovieInformation("purchase/" + movieTitle, quality);
+		/*
+		 * try {
+		 * 
+		 * session.sendInformation("purchase/" + movieTitle, quality
+		 * .getBytes(), quality.length()); } catch (Exception e) {
+		 * showError("Error while sending INFO about purchaseing movie.", e);
+		 * e.printStackTrace(); }
+		 */
+	}
+
+	public void sendMovieInformation(String type, String content) {
 		try {
-			session.sendInformation("purchase/" + movieTitle, quality
-					.getBytes(), quality.length());
+			infoContent = content;
+			infoType = type;
+			if (!session.isValid()) {
+				System.out.println("Session is not valid - starting new one");
+				triggerMoviesRequest();
+			}
+			session.sendInformation(type, content.getBytes(), content.length());
 		} catch (Exception e) {
-			showError("Error while sending INFO about purchaseing movie.", e);
+			showError("Error while sending INFO", e);
 			e.printStackTrace();
 		}
 	}
@@ -289,6 +310,11 @@ public class IPTVClient implements ActionListener {
 		}
 
 		public void run() {
+			if (VLCHelper.mp != null) {
+				VLCHelper.mp.stop();
+				VLCHelper.isPlayingMovie = false;
+				MainView.getPlayButton().setIcon(MainView.playIcon);
+			}
 			DescriptionPanel descriptionPanel = new DescriptionPanel(movie);
 			MovieComments movieComments = descriptionPanel.getMovieComments();
 			movieComments.getCommentButton().addActionListener(
@@ -330,16 +356,24 @@ public class IPTVClient implements ActionListener {
 		}
 	}
 
-	public IProfile getProfile() {
-		return this.profile;
+	public static IProfile getProfile() {
+		return profile;
 	}
 
 	public IService getService() {
 		return this.service;
 	}
 
-	public ISession getSession() {
-		return this.session;
+	public static ISession getSession() {
+		return session;
+	}
+
+	public static String getInfoType() {
+		return infoType;
+	}
+
+	public static String getInfoContent() {
+		return infoContent;
 	}
 
 }

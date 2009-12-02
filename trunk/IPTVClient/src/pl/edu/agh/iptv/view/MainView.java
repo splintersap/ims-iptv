@@ -44,7 +44,7 @@ public class MainView {
 	/*
 	 * Menu buttons.
 	 */
-	private JButton play;
+	private static JButton play;
 	private JButton stop;
 	// private JButton rew;
 	// private JButton forward;
@@ -60,7 +60,7 @@ public class MainView {
 		// getMainFrame().pack();
 		getMainFrame().setVisible(true);
 	}
-
+	
 	/**
 	 * This method initializes MainFrame
 	 * 
@@ -246,8 +246,8 @@ public class MainView {
 		return toolBar;
 	}
 
-	public JButton getPlayButton() {
-		return this.play;
+	public static JButton getPlayButton() {
+		return play;
 	}
 
 	public JButton getStopButton() {
