@@ -18,6 +18,7 @@ import com.ericsson.icp.ISessionListener;
 import com.ericsson.icp.util.ErrorReason;
 import com.ericsson.icp.util.ISessionDescription;
 import com.ericsson.icp.util.MIMEContainer;
+import com.ericsson.icp.util.SdpFactory;
 
 public class SessionAdapter implements ISessionListener
 {
@@ -32,6 +33,7 @@ public class SessionAdapter implements ISessionListener
 
     public void processSessionEnded()
     {   
+    	System.out.println("processSessionEnded");
     }
 
     public void processSessionInformation(String arg0, byte[] arg1, int arg2)
@@ -41,6 +43,15 @@ public class SessionAdapter implements ISessionListener
 
     public void processSessionInformationFailed(ErrorReason arg0, long arg1)
     {   
+    	System.out.println("processSessionInformationFailed");
+    	try {
+			//IPTVClient.getSession().start("sip:video@ericsson.com", null,
+				//	IPTVClient.getProfile().getIdentity(), SdpFactory.createMIMEContainer());
+			//IPTVClient.getSession().sendInformation(IPTVClient.getInfoType(), IPTVClient.getInfoContent().getBytes(), IPTVClient.getInfoContent().length());
+			//IPTVClient.getSession().
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     public void processSessionInformationSuccessful(String arg0, byte[] arg1, int arg2)
@@ -168,6 +179,7 @@ public class SessionAdapter implements ISessionListener
 
     public void processError(ErrorReason arg0)
     {   
+    	System.out.println("processError");
     }
 
 }

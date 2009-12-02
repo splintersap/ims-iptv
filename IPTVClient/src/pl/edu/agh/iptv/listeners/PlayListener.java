@@ -31,7 +31,7 @@ public class PlayListener implements ActionListener {
 		Object value = list.getSelectedValue();
 		if (value != null) {
 			
-			if(isPlayButton)
+			if(MainView.getPlayButton().getIcon().equals(MainView.playIcon))
 			{				
 				if(VLCHelper.isPlayingMovie) {
 					VLCHelper.mp.pause();

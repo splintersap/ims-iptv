@@ -17,6 +17,7 @@ import pl.edu.agh.iptv.listeners.RecordMovieListener;
 import pl.edu.agh.iptv.performance.client.PerformanceLauncher;
 import pl.edu.agh.iptv.presence.controller.PresenceController;
 import pl.edu.agh.iptv.view.MainView;
+import pl.edu.agh.iptv.view.components.MenuListItem;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class MainController {
@@ -50,7 +51,7 @@ public class MainController {
 				 * Creating instance of a class responsible for communication
 				 * with servlet.
 				 */
-				IPTVClient iptvClient = new IPTVClient(mainView);
+				final IPTVClient iptvClient = new IPTVClient(mainView);
 
 				/*
 				 * Adding listener to the list with movies.
@@ -60,7 +61,7 @@ public class MainController {
 				moviesTab.getAllMoviesList().addListSelectionListener(
 						new DescriptionListener(iptvClient));
 
-				mainView.getPlayButton().addActionListener(
+				MainView.getPlayButton().addActionListener(
 						new PlayListener(iptvClient, moviesTab));
 
 				mainView.getStopButton().addActionListener(
@@ -68,9 +69,32 @@ public class MainController {
 
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								if (VLCHelper.mp != null) {
+								
+								/*if(VLCHelper.video != null) {
+									VLCHelper.video.destroyVideo(VLCHelper.mp);
+								}*/
+								
+								if(VLCHelper.mp != null) {
 									VLCHelper.mp.stop();
+									//VLCHelper.jvlc.release();
+									//VLCHelper.ds.release();
 								}
+								
+								/*if (VLCHelper.mp != null) {
+									VLCHelper.mp.stop();
+									
+								}
+								
+								if(VLCHelper.ds != null) {
+									VLCHelper.ds.release();
+								}*/
+								
+								
+								
+								VLCHelper.isPlayingMovie = false;
+								MainView.getPlayButton().setIcon(MainView.playIcon);
+								MenuListItem item = (MenuListItem)moviesTab.getAllMoviesList().getSelectedValue();
+								iptvClient.getMovieInformations(item.getTitle());
 							}
 						});
 
@@ -87,7 +111,7 @@ public class MainController {
 				/*
 				 * Functionality responsible for chat.
 				 */
-				new PresenceController(iptvClient.getProfile(), mainView);
+				new PresenceController(IPTVClient.getProfile(), mainView);
 
 				// IPTVPerformanceClient performance = new
 				// IPTVPerformanceClient(

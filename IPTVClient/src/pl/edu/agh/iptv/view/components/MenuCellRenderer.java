@@ -3,31 +3,18 @@ package pl.edu.agh.iptv.view.components;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Insets;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.ColorUIResource;
-import javax.swing.plaf.ListUI;
 
-import org.jvnet.lafwidget.animation.FadeKind;
-import org.jvnet.substance.SubstanceListUI;
 import org.jvnet.substance.SubstanceLookAndFeel;
-import org.jvnet.substance.api.ColorSchemeAssociationKind;
-import org.jvnet.substance.api.ComponentState;
-import org.jvnet.substance.api.SubstanceColorScheme;
-import org.jvnet.substance.utils.SubstanceColorSchemeUtilities;
-import org.jvnet.substance.utils.SubstanceColorUtilities;
-import org.jvnet.substance.utils.SubstanceSizeUtils;
 import org.jvnet.substance.utils.SubstanceStripingUtils;
-
-import com.sun.xml.internal.bind.v2.runtime.reflect.Accessor.SetterOnlyReflection;
 
 public class MenuCellRenderer extends JPanel implements ListCellRenderer {
 
