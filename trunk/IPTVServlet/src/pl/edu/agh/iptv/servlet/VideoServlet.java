@@ -37,6 +37,7 @@ public class VideoServlet extends SipServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		helper = new MessageCreator(em, utx);
+		RandomDatabaseData.fillDatabase(em, utx);
 	}
 
 	/**
@@ -44,15 +45,7 @@ public class VideoServlet extends SipServlet {
 	 */
 	protected void doMessage(SipServletRequest sipServletRequest)
 			throws ServletException, IOException {
-		log("inside doMessage method - sending streaming URL");
-		sipServletRequest.createResponse(200).send();
-		String movieTitle = new String(sipServletRequest.getRawContent());
-		Movie movie = helper.getMovieFromTitle(movieTitle);
-
-		SipSession session = sipServletRequest.getSession(true);
-		SipServletRequest info = session.createRequest("INFO");
-		info.setContent(movie.getMovieUrl(), "vlc/uri");
-		info.send();
+		log("WARNING : Message " + sipServletRequest);		
 	}
 
 	@Override
@@ -116,24 +109,29 @@ public class VideoServlet extends SipServlet {
 				AbstractTelnetWorker telnet = new RecordingTelnetClient(movie
 						.getMoviePath(), startDate, endDate);
 				telnet.start();
-				helper.createRecordedMovie(telnet.getUuid(), movieTitle, req.getFrom().getURI().toString());
+				helper.createRecordedMovie(telnet.getUuid(), movieTitle, req
+						.getFrom().getURI().toString());
 				try {
 					telnet.join();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
-				
-				
+
 				log("Recording movie " + movieTitle + " from: " + startDate
 						+ " to: " + endDate);
-			} else {
-				log("Wrong recording format " + req);
 			}
+			} else if ("movies/choice".equals(contentType)) {
+				String movieTitle = new String(req.getRawContent());
+				Movie movie = helper.getMovieFromTitle(movieTitle);
 
-		} else {
-			log("Unrecognized INFO message " + req);
-		}
+				SipSession session = req.getSession(true);
+				SipServletRequest info = session.createRequest("INFO");
+				info.setContent(movie.getMovieUrl(), "vlc/uri");
+				info.send();
+				log("sending streaming URL of " + movie.getTitle());
+			} else {
+				log("Unrecognized INFO message " + req);
+			}
 	}
 
 	/**
@@ -153,7 +151,8 @@ public class VideoServlet extends SipServlet {
 			String movieList = helper.createMovieList(sip);
 			info.setContent(movieList, "text/movie-list");
 			info.send();
-			log("Movie list with " + movieList.replaceAll("\n", ", ") + " movies");
+			log("Movie list with " + movieList.replaceAll("\n", ", ")
+					+ " movies");
 		}
 	}
 
@@ -173,7 +172,7 @@ public class VideoServlet extends SipServlet {
 			throws ServletException, IOException {
 
 		log("inside doInvite method - sending response 200 to start session");
-		RandomDatabaseData.fillDatabase(em, utx);
+
 		SipServletResponse response = sipServletRequest.createResponse(200);
 		response.send();
 	}

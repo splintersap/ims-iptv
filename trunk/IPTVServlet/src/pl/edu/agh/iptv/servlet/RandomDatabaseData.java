@@ -227,6 +227,9 @@ public class RandomDatabaseData {
 		aljazera.addMoviePayment(700, Quality.HIGH);
 		aljazera.setDirector("director");
 		aljazera.setMediaType(MediaType.BROADCAST);
+		aljazera.addMoviePayment(400, Quality.LOW);
+		aljazera.addMoviePayment(600, Quality.MEDIUM);
+		aljazera.addMoviePayment(700, Quality.HIGH);
 		addBroadcastToTelnet(aljazera);
 		
 		try {
@@ -243,6 +246,7 @@ public class RandomDatabaseData {
 			em.persist(avatar);
 			em.persist(aliceInWonderland);
 			em.persist(xman);
+			em.persist(aljazera);
 
 			coco.addOrderedMovie(movie2012, Quality.LOW);
 			coco.addOrderedMovie(up, Quality.MEDIUM);
