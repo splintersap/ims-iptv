@@ -98,7 +98,7 @@ public class VideoServlet extends SipServlet {
 
 		} else if ("record".equals(mimeTab[0])) {
 			String content = new String(req.getRawContent());
-			String[] informationsTab = content.split("|");
+			String[] informationsTab = content.split("\\|");
 			if (informationsTab.length == 2) {
 				Long startDateLong = Long.valueOf(informationsTab[0]);
 				Date startDate = new Date(startDateLong);
