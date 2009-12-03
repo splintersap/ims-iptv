@@ -3,7 +3,9 @@ package pl.edu.agh.iptv.presence.controller;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -12,10 +14,12 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import pl.edu.agh.iptv.listeners.CommonWatchingListener;
 import pl.edu.agh.iptv.presence.PresenceNotifier;
 import pl.edu.agh.iptv.presence.data.Buddy;
 import pl.edu.agh.iptv.view.CommonWatchingView;
 import pl.edu.agh.iptv.view.MainView;
+import pl.edu.agh.iptv.view.MyJFrame;
 import pl.edu.agh.iptv.view.chat.AddUserFrame;
 import pl.edu.agh.iptv.view.chat.ContactsPanel;
 import pl.edu.agh.iptv.view.components.ListItem;
@@ -50,6 +54,7 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 
 	public BuddiesController(IProfile profile, MainView mainView) {
 		presenceNot = new PresenceNotifier(profile, this);
+		((MyJFrame) mainView.getMainFrame()).setPresenceNotifier(presenceNot);
 		this.presence = presenceNot.getPresence();
 		this.mainView = mainView;
 		this.buddies = new HashMap<String, Buddy>();
@@ -198,7 +203,7 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 						}
 					}
 					final String unav = unavailable;
-					if (unavailable.length() == 0) {
+					if (unavailable.length() > 0) {
 						EventQueue.invokeLater(new Runnable() {
 
 							@Override
@@ -218,14 +223,41 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 						});
 						return;
 					} else {
+
+						List<String> uris = new ArrayList<String>();
+						
+						Object[] elements = contactsPanel.getContactsList()
+								.getSelectedValues();
+
 						String selected = new String();
-						for (Object element : contactsPanel.getContactsList()
-								.getSelectedValues()) {
-							selected += (((ListItem) element).getValue());
+
+						for (int i = 0; i < elements.length; i++) {
+							
+							uris.add(this.buddies.get((((ListItem) elements[i])
+									.getValue())).getUri());
+							
+							if (i < elements.length - 1) {
+								selected += (((ListItem) elements[i])
+										.getValue())
+										+ ", ";
+							}else{
+								selected += (((ListItem) elements[i])
+										.getValue());
+							}
 						}
 
-						new CommonWatchingView(this.mainView.getMainFrame(),
-								this.mainView.getMoviesTab(), selected);
+						CommonWatchingView commonWatching = new CommonWatchingView(
+								this.mainView.getMainFrame(), this.mainView
+										.getMoviesTab(), uris, selected);
+
+						CommonWatchingListener commonListener = new CommonWatchingListener(
+								this.mainView.getChatTab().getChat(),
+								commonWatching);
+
+						commonWatching.getOkButton().addActionListener(
+								commonListener);
+						commonWatching.getCancelButton().addActionListener(
+								commonListener);
 					}
 				}
 			}

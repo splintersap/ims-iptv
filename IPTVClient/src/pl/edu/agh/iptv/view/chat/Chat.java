@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -120,6 +121,8 @@ public class Chat {
 	 * Button that allows the user to send the file.
 	 */
 	private JButton sendFileButton;
+	
+	private final String commonWatching = "##COMMON_WATCH##";
 
 	/**
 	 * This is the main Panel.
@@ -301,7 +304,7 @@ public class Chat {
 				}
 			});
 
-			initPacketMedia(panel);
+			initPacketMedia(panel, session);
 			IMediaDescription localMediaDescription = SdpFactory
 					.createMediaDescription();
 			IMediaDescription remoteMediaDescription = SdpFactory
@@ -313,6 +316,49 @@ public class Chat {
 			session.start(uriField.getText(), localSdp, profile.getIdentity(),
 					SdpFactory.createMIMEContainer());
 			setTalking(true);
+		} catch (Exception e) {
+			logMessage("Error calling", e);
+		}
+	}
+
+	public void callGroup(List<String> contacts) {
+		try {
+
+			for (String contact : contacts) {
+				final ISessionDescription localSdp = createLocalSdp();
+				final ISession localSession = service.createSession();
+				localSession.addListener(new ChatSessionAdapter(messageArea) {
+					public void processSessionStarted(
+							ISessionDescription aSdpBody) {
+						super.processSessionStarted(aSdpBody);
+						try {
+							log("activating packet media");
+							ISessionDescription remoteSdp = (ISessionDescription) aSdpBody
+									.duplicate();
+							packetMedia.setConfiguration(localSdp
+									.getMediaDescription(0), remoteSdp
+									.getMediaDescription(0));
+							packetMedia.activate();
+							sendMessage(commonWatching, localSession);
+						} catch (Exception e) {
+							log("Could not activate packet media", e);
+						}
+					}
+				});
+
+				initPacketMedia(this.mainPanel, localSession);
+				IMediaDescription localMediaDescription = SdpFactory
+						.createMediaDescription();
+				IMediaDescription remoteMediaDescription = SdpFactory
+						.createMediaDescription();
+				packetMedia.getConfiguration(localMediaDescription,
+						remoteMediaDescription);
+				localSdp.addMediaDescription(localMediaDescription);
+
+				localSession.start(contact, localSdp, profile.getIdentity(),
+						SdpFactory.createMIMEContainer());
+				setTalking(true);
+			}
 		} catch (Exception e) {
 			logMessage("Error calling", e);
 		}
@@ -334,6 +380,21 @@ public class Chat {
 	private void sendMessage() {
 		try {
 			String message = messageField.getText();
+			byte[] messageBytes = message.getBytes("UTF-8");
+			session
+					.sendMessage("text/plain", messageBytes,
+							messageBytes.length);
+			logMessage("You: " + message);
+		} catch (Exception e) {
+			logMessage("Error sending message", e);
+		}
+	}
+	
+	/**
+	 * Sends a message in the chat session
+	 */
+	private void sendMessage(String message, ISession session) {
+		try {			
 			byte[] messageBytes = message.getBytes("UTF-8");
 			session
 					.sendMessage("text/plain", messageBytes,
@@ -389,7 +450,7 @@ public class Chat {
 											ISessionDescription remoteSdp = (ISessionDescription) aSdpBody
 													.duplicate();
 											ISessionDescription localSdp = createLocalSdp();
-											initPacketMedia(panel);
+											initPacketMedia(panel, session);
 
 											IMediaDescription localDesc = SdpFactory
 													.createMediaDescription();
@@ -419,7 +480,13 @@ public class Chat {
 															// method stub
 
 															try {
-																if (JOptionPane
+																
+																log("Accept invite");
+																session
+																		.acceptInvitation(myLocalSdp);
+																setTalking(true);
+																
+																/*if (JOptionPane
 																		.showConfirmDialog(
 																				frame,
 																				"Accept incoming chat?") == JOptionPane.YES_OPTION) {
@@ -432,7 +499,7 @@ public class Chat {
 																	session
 																			.rejectInvitation();
 																	setTalking(false);
-																}
+																}*/
 															} catch (Exception e) {
 																log("Could not establish chat session");
 															}
@@ -521,10 +588,21 @@ public class Chat {
 	 * @param isInSession
 	 */
 	private void setTalking(boolean isInSession) {
-		inviteButton.setEnabled(!isInSession);
-		hangupButton.setEnabled(isInSession);
-		sendMessageButton.setEnabled(isInSession);
-		sendFileButton.setEnabled(isInSession);
+
+		final boolean is = isInSession;
+
+		EventQueue.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				inviteButton.setEnabled(!is);
+				hangupButton.setEnabled(is);
+				sendMessageButton.setEnabled(is);
+				sendFileButton.setEnabled(is);
+			}
+
+		});
 	}
 
 	/**
@@ -578,7 +656,7 @@ public class Chat {
 	 * @param icpController
 	 *            The icpController to interact with
 	 */
-	private void initPacketMedia(final JPanel panel) {
+	private void initPacketMedia(final JPanel panel, ISession session) {
 		try {
 			logMessage("creating packet media");
 			// Create the packet media and add a listener on it
@@ -720,7 +798,18 @@ public class Chat {
 				int aLength) {
 			String message;
 			try {
-				message = "Remote: " + new String(aMessage, "UTF-8");
+				message = new String(aMessage, "UTF-8");
+				if(message.compareTo(commonWatching) == 0){
+					EventQueue.invokeLater(new Runnable(){
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							JOptionPane.showConfirmDialog(mainFrame, "Do you want to watch movie with others ?");
+						}
+						
+					});					
+				}				
 			} catch (UnsupportedEncodingException e) {
 				message = "Cannot decode message!";
 			}
@@ -735,8 +824,9 @@ public class Chat {
 	public void setURI(String uri) {
 		this.uriField.setText(uri);
 	}
-	
-	public IProfile getProfile(){
+
+	public IProfile getProfile() {
 		return this.profile;
 	}
+
 }

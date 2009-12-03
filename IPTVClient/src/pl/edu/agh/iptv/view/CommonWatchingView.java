@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,18 +34,21 @@ public class CommonWatchingView extends ViewWithCalendar {
 	private JTextField yearS = new JTextField(4);
 	private JTextField hourS = new JTextField(2);
 	private JTextField minuteS = new JTextField(2);
-	
+
 	private JButton okButton = new JButton("OK");
 	private JButton cancelButton = new JButton("CANCEL");
-	
+
 	private MyCalendar myCalendar;
+	
+	private List<String> uris = null;	
 
 	JCalendar calendar = new JCalendar();
 
-	public CommonWatchingView(JFrame mainFrame, MoviesTab moviesTab,
+	public CommonWatchingView(JFrame mainFrame, MoviesTab moviesTab, List<String> uris,
 			String selected) {
 		super(mainFrame);
 		this.setTitle("Common watching");
+		this.uris = uris;
 		JList moviesList = new JList(moviesTab.getAllMovies().toArray());
 		moviesList.setCellRenderer(new MenuCellRenderer());
 		JScrollPane moviesSC = new JScrollPane(moviesList);
@@ -53,7 +57,7 @@ public class CommonWatchingView extends ViewWithCalendar {
 		descPane.setLayout(new BorderLayout());
 
 		JPanel sDesc = new JPanel(new BorderLayout());
-		sDesc.setPreferredSize(new Dimension(100, 70));		
+		sDesc.setPreferredSize(new Dimension(100, 70));
 		sDesc.add(new JLabel("Users to invite: " + selected),
 				BorderLayout.CENTER);
 
@@ -92,10 +96,10 @@ public class CommonWatchingView extends ViewWithCalendar {
 		cancelButton.setName("COMMON_CANCEL");
 		buttonsP.add(okButton);
 		buttonsP.add(cancelButton);
-		
+
 		descPane.add(sDesc, BorderLayout.NORTH);
 		descPane.add(datePanel, BorderLayout.CENTER);
-		descPane.add(buttonsP, BorderLayout.SOUTH);			
+		descPane.add(buttonsP, BorderLayout.SOUTH);
 
 		this.add(moviesSC, BorderLayout.WEST);
 		this.add(descPane, BorderLayout.EAST);
@@ -112,22 +116,34 @@ public class CommonWatchingView extends ViewWithCalendar {
 			myCalendar = new MyCalendar(calendar, this);
 		} else if (((JButton) e.getSource()).getName().compareTo("CALENDAR_OK") == 0) {
 
-				Integer day = new Integer(calendar.getDayChooser().getDay());
-				this.dayS.setText(day.toString());
+			Integer day = new Integer(calendar.getDayChooser().getDay());
+			this.dayS.setText(day.toString());
 
-				Integer month = new Integer(calendar.getMonthChooser()
-						.getMonth() + 1);
-				this.monthS.setText(month.toString());
+			Integer month = new Integer(
+					calendar.getMonthChooser().getMonth() + 1);
+			this.monthS.setText(month.toString());
 
-				Integer year = new Integer(calendar.getYearChooser().getYear());
-				this.yearS.setText(year.toString());
+			Integer year = new Integer(calendar.getYearChooser().getYear());
+			this.yearS.setText(year.toString());
 
-				myCalendar.dispose();
+			myCalendar.dispose();
 
 		} else if (((JButton) e.getSource()).getName().compareTo(
 				"CALENDAR_CANCEL") == 0) {
 			myCalendar.dispose();
 		}
+	}
+
+	public JButton getOkButton() {
+		return this.okButton;
+	}
+
+	public JButton getCancelButton() {
+		return this.cancelButton;
+	}
+	
+	public List<String> getUris(){
+		return this.uris;
 	}
 
 }

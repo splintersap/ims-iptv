@@ -28,7 +28,7 @@ public class MainView {
 
 	private final int menuBarHeight = 100;
 
-	private JFrame mainFrame = null; // @jve:decl-index=0:visual-constraint="12,8"
+	private MyJFrame mainFrame = null; // @jve:decl-index=0:visual-constraint="12,8"
 	private JPanel jContentPane = null;
 	private JTabbedPane mainTabs = null;
 	private JScrollPane statisticsTab = null;
@@ -68,7 +68,7 @@ public class MainView {
 	 */
 	public JFrame getMainFrame() {
 		if (mainFrame == null) {
-			mainFrame = new JFrame();
+			mainFrame = new MyJFrame();
 			mainFrame.setSize(new Dimension(704, 445));
 			mainFrame.setContentPane(getJContentPane());
 			mainFrame.setTitle("Watcher");
@@ -77,8 +77,7 @@ public class MainView {
 
 			mainTabs.addTab("Chat", chatTab = new ChatTab(mainFrame,
 					getMoviesTab()));
-
-			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
 			mainFrame.pack();
 		}
 		return mainFrame;
