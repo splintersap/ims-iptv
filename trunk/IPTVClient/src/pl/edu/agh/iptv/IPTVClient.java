@@ -148,7 +148,7 @@ public class IPTVClient implements ActionListener {
 						/*
 						 * This is in order to open the stream.
 						 */
-						new VLCHelper(moviesTab, vlcCommand, IPTVClient.this);
+						new VLCHelper(mainView, vlcCommand, IPTVClient.this);
 
 					} else {
 						System.out.println("Unrecognized message");

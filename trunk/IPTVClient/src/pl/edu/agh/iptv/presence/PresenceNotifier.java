@@ -12,6 +12,7 @@ import com.ericsson.icp.util.IIterator;
 import com.ericsson.icp.util.IPresentity;
 import com.ericsson.icp.util.ITuple;
 import com.ericsson.icp.util.IWatcher;
+import com.ericsson.icp.util.ITuple.Basic;
 
 public class PresenceNotifier {
 
@@ -28,6 +29,8 @@ public class PresenceNotifier {
 
 	private IBuddy buddy;
 
+	private String identity = null;
+
 	/**
 	 * Offline
 	 */
@@ -41,6 +44,12 @@ public class PresenceNotifier {
 	public PresenceNotifier(IProfile profile, BuddiesController buddiesC) {
 		this.profile = profile;
 		this.buddiesC = buddiesC;
+		try {
+			identity = profile.getIdentity();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		initializePresence();
 	}
 
@@ -52,7 +61,13 @@ public class PresenceNotifier {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		publish(ONLINE_STATUS);
+//		publish(ONLINE_STATUS);
+		try {
+			publishPresence(true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -174,6 +189,38 @@ public class PresenceNotifier {
 		} catch (Exception e) {
 			System.out.println("Could not publish presence information");
 		}
+	}
+
+	/**
+	 * Publish the presence of the ICP user
+	 */
+	public void publishPresence(boolean present) throws Exception {
+		// Create our own presentity
+		IPresentity presentity = presence.getPresentity();
+
+		ITuple tuple = null;
+		IIterator itr = presentity.getTupleIterator();
+		boolean hasTuple = itr.hasNext();
+		if (hasTuple) {
+			itr.next();
+			tuple = (ITuple) itr.getElement();
+		} else {
+			tuple = PGMFactory.createTuple();
+			tuple.setContact("High", identity);
+		}
+		// Update the tuple
+		int basic = present ? Basic.Open : Basic.Close;
+		tuple.setBasic(basic);
+
+		if (hasTuple) {
+			// Add the tuple to the presentity
+			presentity.modifyTuple(tuple);
+		} else {
+			presentity.addTuple(tuple);
+		}
+
+		// Update the presentity on the presence server
+		presence.updatePresentity(presentity);
 	}
 
 	public IPresence getPresence() {

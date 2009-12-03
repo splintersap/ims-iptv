@@ -7,6 +7,8 @@ import java.awt.EventQueue;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.management.timer.Timer;
 import javax.swing.JPanel;
@@ -28,27 +30,30 @@ import pl.edu.agh.iptv.view.movies.MoviesTab;
  * @author Wozniak
  * 
  */
-public class VLCHelper {
+public class VLCHelper implements ComponentListener {
 
 	static java.awt.GridBagConstraints gridBagConstraints;
-	public static JVLC jvlc;
-	public static Video video;
+	static JVLC jvlc;
+	static Video video;
 	public static MediaPlayer mp;
-	public static MediaDescriptor ds;
+	static MediaDescriptor ds;
 	static Canvas jvcanvas;
 	static JPanel jvcc;
 
+	private MainView mainView;
 	private MoviesTab moviesTab;
 	private String playMovieCommand;
 	private IPTVClient client;
 
 	public static boolean isPlayingMovie = false;
-	
-	public VLCHelper(MoviesTab moviesTab, String playMovieCommand, IPTVClient client) {
-		this.moviesTab = moviesTab;
+
+	public VLCHelper(MainView mainView, String playMovieCommand, IPTVClient client) {
+		this.mainView = mainView;
+		this.mainView.getMainFrame().addComponentListener(this);
+		this.moviesTab = mainView.getMoviesTab();
+		this.client = client;
 		this.playMovieCommand = playMovieCommand;
 		this.playMovie();
-		this.client = client;
 	}
 
 	private void playMovie() {
@@ -75,7 +80,7 @@ public class VLCHelper {
 				jvcanvas = new java.awt.Canvas(graphicConf);
 				jvcanvas.setBackground(Color.black);
 				jvcanvas.setSize(800, 600);
-				/*jvcanvas.addComponentListener(new ComponentListener() {
+				jvcanvas.addComponentListener(new ComponentListener() {
 
 					public void componentHidden(ComponentEvent arg0) {
 						// TODO Auto-generated method stub
@@ -88,8 +93,8 @@ public class VLCHelper {
 					}
 
 					public void componentResized(ComponentEvent arg0) {
-						//System.out.println("Mamy resize !!");
-						//mp.stop();
+						// System.out.println("Mamy resize !!");
+						// mp.stop();
 					}
 
 					public void componentShown(ComponentEvent arg0) {
@@ -97,12 +102,13 @@ public class VLCHelper {
 
 					}
 
-				});*/
+				});
 				jvcanvas.invalidate();
 				jvcanvas.setVisible(true);
 				jvcanvas.setSize(new Dimension(moviesTab.getMoviesDescPane()
 						.getWidth() - 20, moviesTab.getMoviesDescPane()
 						.getHeight() - 20));
+				// jvcanvas.setSize(new Dimension(100, 100));
 
 				// Panel
 				gridBagConstraints = new java.awt.GridBagConstraints();
@@ -131,7 +137,7 @@ public class VLCHelper {
 
 				isPlayingMovie = true;
 				mp.play();
-				mp.addListener(new MediaPlayerListener(){
+mp.addListener(new MediaPlayerListener(){
 
 					@Override
 					public void endReached(MediaPlayer arg0) {
@@ -185,5 +191,31 @@ public class VLCHelper {
 			}
 
 		});
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		this.jvcanvas.setSize(new Dimension(moviesTab.getMoviesDescPane()
+				.getWidth() - 20,
+				moviesTab.getMoviesDescPane().getHeight() - 20));
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 }
