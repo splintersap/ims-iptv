@@ -24,6 +24,7 @@ public class CommonWatchingListener implements ActionListener {
 
 		if (((JButton) e.getSource()).getName().compareTo("COMMON_OK") == 0) {
 			chat.callGroup(commonView.getUris());
+			commonView.dispose();
 		} else if (((JButton) e.getSource()).getName().compareTo(
 				"COMMON_CANCEL") == 0) {
 			commonView.dispose();
