@@ -76,6 +76,9 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 		this.contactsPanel.getContactsList().addListSelectionListener(this);
 		this.contactsPanel.getInviteMB().addActionListener(this);
 
+		this.mainView.getChatTab().getChat().setBuddyUriToName(
+				this.buddyUriToName);
+
 	}
 
 	public void addBuddy(String buddyName, Buddy buddy, boolean isAvailable) {
@@ -224,23 +227,30 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 						return;
 					} else {
 
+						Map<String, String> urisToUsers = new HashMap<String, String>();
 						List<String> uris = new ArrayList<String>();
-						
+
 						Object[] elements = contactsPanel.getContactsList()
 								.getSelectedValues();
 
 						String selected = new String();
 
 						for (int i = 0; i < elements.length; i++) {
-							
-							uris.add(this.buddies.get((((ListItem) elements[i])
-									.getValue())).getUri());
-							
+
+							uris.add(this.buddies.get(
+									(((ListItem) elements[i]).getValue()))
+									.getUri());
+
+							urisToUsers.put(this.buddies.get(
+									(((ListItem) elements[i]).getValue()))
+									.getUri(), (((ListItem) elements[i])
+									.getValue()));
+
 							if (i < elements.length - 1) {
 								selected += (((ListItem) elements[i])
 										.getValue())
 										+ ", ";
-							}else{
+							} else {
 								selected += (((ListItem) elements[i])
 										.getValue());
 							}
@@ -248,9 +258,9 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 
 						CommonWatchingView commonWatching = new CommonWatchingView(
 								this.mainView.getMainFrame(), this.mainView
-										.getMoviesTab(), uris, selected);
+										.getMoviesTab(), urisToUsers, selected);
 
-						CommonWatchingListener commonListener = new CommonWatchingListener(
+						CommonWatchingListener commonListener = new CommonWatchingListener(this.mainView.getMainFrame(),
 								this.mainView.getChatTab().getChat(),
 								commonWatching);
 

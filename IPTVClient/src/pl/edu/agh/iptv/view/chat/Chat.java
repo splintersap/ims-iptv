@@ -25,7 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -34,6 +34,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import pl.edu.agh.iptv.view.CommonWatchingWaiting;
 
 import com.ericsson.icp.IBase;
 import com.ericsson.icp.ICPFactory;
@@ -121,8 +123,16 @@ public class Chat {
 	 * Button that allows the user to send the file.
 	 */
 	private JButton sendFileButton;
-	
+
+	private CommonWatchingWaiting watchingWaiting;
+
+	private Map<String, String> buddyUriToName = null;
+
 	private final String commonWatching = "##COMMON_WATCH##";
+
+	private final String commonWatchingOk = "##COMMON_WATCH_OK##";
+
+	private final String commonWatchingDeny = "##COMMON_WATCH_DENY##";
 
 	/**
 	 * This is the main Panel.
@@ -246,7 +256,7 @@ public class Chat {
 						logMessage("file sending started...", null);
 					}
 				} catch (Exception ex) {
-					logMessage("Could not send file", ex);
+					logMessage("Could not send file");
 				}
 			}
 		});
@@ -291,7 +301,7 @@ public class Chat {
 				public void processSessionStarted(ISessionDescription aSdpBody) {
 					super.processSessionStarted(aSdpBody);
 					try {
-						log("activating packet media");
+						// log("activating packet media");
 						ISessionDescription remoteSdp = (ISessionDescription) aSdpBody
 								.duplicate();
 						packetMedia.setConfiguration(localSdp
@@ -299,7 +309,7 @@ public class Chat {
 								.getMediaDescription(0));
 						packetMedia.activate();
 					} catch (Exception e) {
-						log("Could not activate packet media", e);
+						log("Couldn't start chat session");
 					}
 				}
 			});
@@ -317,14 +327,28 @@ public class Chat {
 					SdpFactory.createMIMEContainer());
 			setTalking(true);
 		} catch (Exception e) {
-			logMessage("Error calling", e);
+			logMessage("Error calling");
 		}
 	}
 
-	public void callGroup(List<String> contacts) {
+	public void callGroup(Map<String, String> contacts,
+			final String movieToWatch, String date) {
 		try {
 
-			for (String contact : contacts) {
+			for (String contact : contacts.keySet()) {
+
+				String msg = new String("USERS=");
+
+				for (String con : contacts.keySet()) {
+					msg.concat(con + "|");
+				}
+
+				msg += profile.getIdentity() + "|";
+
+				final String users = msg;
+				final String movieTitle = "MOVIE=" + movieToWatch;
+				final String watchingDate = "DATE=" + date;
+
 				final ISessionDescription localSdp = createLocalSdp();
 				final ISession localSession = service.createSession();
 				localSession.addListener(new ChatSessionAdapter(messageArea) {
@@ -339,9 +363,11 @@ public class Chat {
 									.getMediaDescription(0), remoteSdp
 									.getMediaDescription(0));
 							packetMedia.activate();
-							sendMessage(commonWatching, localSession);
+							sendMessage(commonWatching + users + ";"
+									+ movieTitle + ";" + watchingDate + ";",
+									localSession);
 						} catch (Exception e) {
-							log("Could not activate packet media", e);
+							log("Could not activate packet media");
 						}
 					}
 				});
@@ -360,7 +386,7 @@ public class Chat {
 				setTalking(true);
 			}
 		} catch (Exception e) {
-			logMessage("Error calling", e);
+			logMessage("Error calling");
 		}
 	}
 
@@ -386,22 +412,22 @@ public class Chat {
 							messageBytes.length);
 			logMessage("You: " + message);
 		} catch (Exception e) {
-			logMessage("Error sending message", e);
+			logMessage("Error sending message");
 		}
 	}
-	
+
 	/**
 	 * Sends a message in the chat session
 	 */
 	private void sendMessage(String message, ISession session) {
-		try {			
+		try {
 			byte[] messageBytes = message.getBytes("UTF-8");
 			session
 					.sendMessage("text/plain", messageBytes,
 							messageBytes.length);
 			logMessage("You: " + message);
 		} catch (Exception e) {
-			logMessage("Error sending message", e);
+			logMessage("Error sending message");
 		}
 	}
 
@@ -480,26 +506,36 @@ public class Chat {
 															// method stub
 
 															try {
-																
+
 																log("Accept invite");
 																session
 																		.acceptInvitation(myLocalSdp);
 																setTalking(true);
-																
-																/*if (JOptionPane
-																		.showConfirmDialog(
-																				frame,
-																				"Accept incoming chat?") == JOptionPane.YES_OPTION) {
-																	log("Accept invite");
-																	session
-																			.acceptInvitation(myLocalSdp);
-																	setTalking(true);
-																} else {
-																	log("Reject invite");
-																	session
-																			.rejectInvitation();
-																	setTalking(false);
-																}*/
+																/*
+																 * if
+																 * (JOptionPane
+																 * .
+																 * showConfirmDialog
+																 * ( frame,
+																 * "Accept incoming chat?"
+																 * ) ==
+																 * JOptionPane
+																 * .YES_OPTION)
+																 * {log(
+																 * "Accept invite"
+																 * ); session
+																 * .acceptInvitation
+																 * (myLocalSdp);
+																 * setTalking
+																 * (true); }
+																 * else {log(
+																 * "Reject invite"
+																 * ); session
+																 * .rejectInvitation
+																 * ();
+																 * setTalking
+																 * (false); }
+																 */
 															} catch (Exception e) {
 																log("Could not establish chat session");
 															}
@@ -508,22 +544,20 @@ public class Chat {
 													});
 
 										} catch (Exception e) {
-											log(
-													"Could not establish chat session",
-													e);
+											log("Could not establish chat session");
 										}
 									}
 
 								});
 
 					} catch (Exception e) {
-						log("Error handling chat", e);
+						log("Error handling chat");
 					}
 				}
 
 			});
 		} catch (Exception e) {
-			logMessage("Could not init ICP", e);
+			logMessage("Could not init ICP");
 		}
 	}
 
@@ -622,7 +656,7 @@ public class Chat {
 			session = null;
 			setTalking(false);
 		} catch (Exception e) {
-			logMessage("Error cleaning", e);
+			logMessage("Error cleaning");
 		}
 
 	}
@@ -645,7 +679,7 @@ public class Chat {
 			timeDescription.setSessionActiveTime("0 0");
 			localSdp.addTimeDescription(timeDescription);
 		} catch (Exception e) {
-			logMessage("Could not create the SDP", e);
+			logMessage("Could not create the SDP");
 		}
 		return localSdp;
 	}
@@ -708,7 +742,7 @@ public class Chat {
 
 						output = new FileOutputStream(currentReceivedFile);
 					} catch (IOException e) {
-						log("Could not create new file", e);
+						log("Could not create new file");
 					}
 				}
 
@@ -746,7 +780,7 @@ public class Chat {
 			packetMedia.setDirection(Direction.SendRecv);
 			packetMedia.setSupportedMIME(MIME_TYPE);
 		} catch (Exception e) {
-			logMessage("Error intializing the packet media", e);
+			logMessage("Error intializing the packet media");
 		}
 	}
 
@@ -776,7 +810,7 @@ public class Chat {
 			try {
 				clean();
 			} catch (Exception e) {
-				log("Could release not packet media", e);
+				log("Could release not packet media");
 			}
 		}
 
@@ -787,7 +821,7 @@ public class Chat {
 				// clean();
 				setTalking(false);
 			} catch (Exception e) {
-				log("Could release packet media", e);
+				log("Could release packet media");
 			}
 		}
 
@@ -799,21 +833,53 @@ public class Chat {
 			String message;
 			try {
 				message = new String(aMessage, "UTF-8");
-				if(message.compareTo(commonWatching) == 0){
-					EventQueue.invokeLater(new Runnable(){
+				if (message.contains(commonWatching)) {
+					final String users = parseContactsForSharedWatching(message);
+					final String movie = parseMovieTitle(message);
+					final String date = parseDate(message);
+					EventQueue.invokeLater(new Runnable() {
 
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
-							JOptionPane.showConfirmDialog(mainFrame, "Do you want to watch movie with others ?");
+							if (JOptionPane
+									.showConfirmDialog(mainFrame,
+											"Do you want to watch movie "
+													+ movie + " with: " + users
+													+ " at " + date) == JOptionPane.YES_OPTION) {
+								try {
+									sendMessage(commonWatchingOk + "CONTACT="
+											+ profile.getIdentity() + ";",
+											session);
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							} else {
+								try {
+									sendMessage(commonWatchingDeny + "CONTACT="
+											+ profile.getIdentity() + ";",
+											session);
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
 						}
-						
-					});					
-				}				
+
+					});
+				} else if (message.contains(commonWatchingOk)) {
+					Chat.this.getCommonWatchingWaiting().setAgreement(
+							Chat.this.parseUri(message), true);
+				} else if (message.contains(commonWatchingDeny)) {
+					Chat.this.getCommonWatchingWaiting().setAgreement(
+							Chat.this.parseUri(message), false);
+				} else {
+					log("Buddy: " + message);
+				}
 			} catch (UnsupportedEncodingException e) {
 				message = "Cannot decode message!";
 			}
-			log("processSessionMessage " + message);
 		}
 	}
 
@@ -827,6 +893,108 @@ public class Chat {
 
 	public IProfile getProfile() {
 		return this.profile;
+	}
+
+	public void setBuddyUriToName(Map<String, String> uriName) {
+		this.buddyUriToName = uriName;
+	}
+
+	public String contactsForCommonWatching2(String inputStr) {
+		String contacts = new String();
+		String temp = inputStr;
+		boolean cont = true;
+		while (cont) {
+			String cur = new String();
+
+			if (temp.indexOf("/") + 1 < temp.length() && temp.contains("/")
+					&& temp.substring(temp.indexOf("/") + 1).contains("/")) {
+
+				cur = temp.substring(temp.indexOf("/") + 1, temp.indexOf("/",
+						temp.indexOf("/") + 1));
+
+				if (this.buddyUriToName.containsKey(cur))
+					contacts += this.buddyUriToName.get(cur) + ", ";
+				else
+					contacts += cur + ", ";
+
+				temp = temp.substring(temp.indexOf("/", temp.indexOf("/") + 1));
+			} else {
+				cont = false;
+			}
+
+		}
+
+		return contacts;
+	}
+
+	public String parseContactsForSharedWatching(String inputStr) {
+
+		String contacts = new String();
+
+		String temp = inputStr.substring(inputStr.indexOf("USERS="), inputStr
+				.indexOf(";", inputStr.indexOf("USERS=")) + 1);
+		temp = temp.substring(temp.indexOf("=") + 1, temp.indexOf(";") + 1);
+
+		String cur = null;
+
+		while (true) {
+
+			if (!temp.contains("|")) {
+				break;
+			}
+
+			cur = temp.substring(0, temp.indexOf("|"));
+
+			if (this.buddyUriToName.containsKey(cur))
+				contacts += this.buddyUriToName.get(cur) + ", ";
+			else
+				contacts += cur + ", ";
+
+			temp = temp.substring(temp.indexOf("|") + 1, temp.indexOf(";") + 1);
+
+		}
+
+		return contacts;
+	}
+
+	public String parseMovieTitle(String movie) {
+
+		String title = movie.substring(movie.indexOf("MOVIE="), movie.indexOf(
+				";", movie.indexOf("MOVIE=")) + 1);
+
+		title = title.substring(title.indexOf("=") + 1, title.indexOf(";"));
+
+		return title;
+	}
+
+	public String parseDate(String date) {
+
+		String watchingDate = date.substring(date.indexOf("DATE="), date
+				.indexOf(";", date.indexOf("DATE=")) + 1);
+
+		watchingDate = watchingDate.substring(watchingDate.indexOf("=") + 1,
+				watchingDate.indexOf(";"));
+
+		return watchingDate;
+	}
+
+	public String parseUri(String uri) {
+		String result = uri.substring(uri.indexOf("CONTACT="), uri.indexOf(";",
+				uri.indexOf("CONTACT=")) + 1);
+		result = result.substring(result.indexOf("=") + 1, result.indexOf(";"));
+		return result;
+	}
+
+	public void setCommonWaiting(CommonWatchingWaiting watchingWaiting) {
+		this.watchingWaiting = watchingWaiting;
+	}
+
+	public CommonWatchingWaiting getCommonWatchingWaiting() {
+		return this.watchingWaiting;
+	}
+
+	public Map<String, String> getBuddyUriToName() {
+		return this.buddyUriToName;
 	}
 
 }

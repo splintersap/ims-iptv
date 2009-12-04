@@ -40,28 +40,22 @@ public class RecordMovieListener implements ActionListener {
 						(MenuListItem) moviesTab.getAllMoviesList()
 								.getSelectedValue());
 			} else if (((JButton) e.getSource()).getName().compareTo("OK") == 0) {
-				
-				Calendar startCalendar = new GregorianCalendar(new Integer(recM.getYearS()), new Integer(recM.getMonthS()) - 1, new Integer(recM
-						.getDayS()), new Integer(recM.getHourS()), new Integer(recM.getMinuteS()));
-				
-				Calendar endCalendar = new GregorianCalendar(new Integer(recM.getYearE()),
-						new Integer(recM.getMonthE()) - 1, new Integer(recM
-								.getDayE()), new Integer(recM.getHourE()),
-						new Integer(recM.getMinuteE()));
-				
-//				Date startDate = new Date(new Integer(recM.getYearS()),
-//						new Integer(recM.getMonthS()), new Integer(recM
-//								.getDayS()), new Integer(recM.getHourS()),
-//						new Integer(recM.getMinuteS()));
-//				Date endDate = new Date(new Integer(recM.getYearE()),
-//						new Integer(recM.getMonthE()), new Integer(recM
-//								.getDayE()), new Integer(recM.getHourE()),
-//						new Integer(recM.getMinuteE()));
+
+				Calendar startCalendar = new GregorianCalendar(new Integer(recM
+						.getYearS()), new Integer(recM.getMonthS()) - 1,
+						new Integer(recM.getDayS()), new Integer(recM
+								.getHourS()), new Integer(recM.getMinuteS()));
+
+				Calendar endCalendar = new GregorianCalendar(new Integer(recM
+						.getYearE()), new Integer(recM.getMonthE()) - 1,
+						new Integer(recM.getDayE()), new Integer(recM
+								.getHourE()), new Integer(recM.getMinuteE()));
 
 				MenuListItem movie = (MenuListItem) moviesTab
 						.getAllMoviesList().getSelectedValue();
 
-				iptvClient.recordMovie(startCalendar.getTime(), endCalendar.getTime(), movie.getTitle());
+				iptvClient.recordMovie(startCalendar.getTime(), endCalendar
+						.getTime(), movie.getTitle());
 
 				recM.dispose();
 
