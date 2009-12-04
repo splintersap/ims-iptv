@@ -4,7 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,15 +17,19 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.iptv.view.components.MenuCellRenderer;
+import pl.edu.agh.iptv.view.components.MenuListItem;
 import pl.edu.agh.iptv.view.components.MyCalendar;
 import pl.edu.agh.iptv.view.components.ViewWithCalendar;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 import com.toedter.calendar.JCalendar;
 
-public class CommonWatchingView extends ViewWithCalendar {
+public class CommonWatchingView extends ViewWithCalendar implements
+		ListSelectionListener {
 
 	/**
 	 * 
@@ -39,27 +46,40 @@ public class CommonWatchingView extends ViewWithCalendar {
 	private JButton cancelButton = new JButton("CANCEL");
 
 	private MyCalendar myCalendar;
-	
-	private List<String> uris = null;	
+
+	private Calendar startDate;
+
+	private Map<String, String> urisToUsers = null;
 
 	JCalendar calendar = new JCalendar();
 
-	public CommonWatchingView(JFrame mainFrame, MoviesTab moviesTab, List<String> uris,
-			String selected) {
+	private String movieToWatch = null;
+
+	private String date;
+
+	private JLabel movieToWatchLabel = new JLabel(
+			"Movie to watch: choose the movie");
+
+	public CommonWatchingView(JFrame mainFrame, MoviesTab moviesTab,
+			Map<String, String> urisToUsers, String selected) {
 		super(mainFrame);
 		this.setTitle("Common watching");
-		this.uris = uris;
+		this.urisToUsers = urisToUsers;
 		JList moviesList = new JList(moviesTab.getAllMovies().toArray());
 		moviesList.setCellRenderer(new MenuCellRenderer());
+		moviesList.addListSelectionListener(this);
 		JScrollPane moviesSC = new JScrollPane(moviesList);
 
 		JPanel descPane = new JPanel();
 		descPane.setLayout(new BorderLayout());
+		descPane.setMinimumSize(new Dimension(200, 100));
 
 		JPanel sDesc = new JPanel(new BorderLayout());
-		sDesc.setPreferredSize(new Dimension(100, 70));
+		// sDesc.setPreferredSize(new Dimension(100, 70));
 		sDesc.add(new JLabel("Users to invite: " + selected),
 				BorderLayout.CENTER);
+
+		sDesc.add(movieToWatchLabel, BorderLayout.SOUTH);
 
 		JPanel datePanel = new JPanel(new BorderLayout());
 
@@ -101,8 +121,10 @@ public class CommonWatchingView extends ViewWithCalendar {
 		descPane.add(datePanel, BorderLayout.CENTER);
 		descPane.add(buttonsP, BorderLayout.SOUTH);
 
+		JScrollPane descScrollPane = new JScrollPane(descPane);
+
 		this.add(moviesSC, BorderLayout.WEST);
-		this.add(descPane, BorderLayout.EAST);
+		this.add(descScrollPane, BorderLayout.CENTER);
 
 		this.pack();
 		this.setVisible(true);
@@ -126,6 +148,10 @@ public class CommonWatchingView extends ViewWithCalendar {
 			Integer year = new Integer(calendar.getYearChooser().getYear());
 			this.yearS.setText(year.toString());
 
+			startDate = new GregorianCalendar(year, month, day);
+
+			date = day + "." + month + "." + year + " - ";
+
 			myCalendar.dispose();
 
 		} else if (((JButton) e.getSource()).getName().compareTo(
@@ -141,9 +167,41 @@ public class CommonWatchingView extends ViewWithCalendar {
 	public JButton getCancelButton() {
 		return this.cancelButton;
 	}
-	
-	public List<String> getUris(){
-		return this.uris;
+
+	public Map<String, String> getUrisToUsers() {
+		return this.urisToUsers;
+	}
+
+	public String getMovieToWatch() {
+		return this.movieToWatch;
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getValueIsAdjusting() == true) {
+			return;
+		}
+
+		this.movieToWatch = ((MenuListItem) ((JList) e.getSource())
+				.getSelectedValue()).getTitle();
+		this.movieToWatchLabel.setText("Movie to watch: " + this.movieToWatch);
+	}
+
+	public Date getDate() {
+		return this.startDate.getTime();
+	}
+
+	public String getStartDate() {
+		return this.date;
+	}
+
+	public Integer getHour() {
+		return new Integer(hourS.getText());
+	}
+
+	public Integer getMinute() {
+		return new Integer(minuteS.getText());
 	}
 
 }
