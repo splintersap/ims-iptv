@@ -111,7 +111,7 @@ public class MainController {
 				/*
 				 * Functionality responsible for chat.
 				 */
-				new PresenceController(IPTVClient.getProfile(), mainView);
+				new PresenceController(iptvClient, IPTVClient.getProfile(), mainView);
 
 				// IPTVPerformanceClient performance = new
 				// IPTVPerformanceClient(

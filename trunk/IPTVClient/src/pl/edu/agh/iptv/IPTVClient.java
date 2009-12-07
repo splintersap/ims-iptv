@@ -345,6 +345,17 @@ public class IPTVClient implements ActionListener {
 		}
 	}
 
+	public void setCommonWatching(String text, String movieTitle) {
+		try {
+			session.sendInformation("shared/" + movieTitle, text.getBytes(), text
+					.length());
+		} catch (Exception e) {
+			showError("Error while sending request for common movie watching.",
+					e);
+			e.printStackTrace();
+		}
+	}
+
 	public void recordMovie(Date startDate, Date endDate, String movieTitle) {
 		String text = startDate.getTime() + "|" + endDate.getTime();
 		try {
