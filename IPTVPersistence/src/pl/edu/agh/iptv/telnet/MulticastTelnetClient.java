@@ -21,6 +21,7 @@ public class MulticastTelnetClient extends AbstractTelnetWorker {
 		writeCommand("setup " + uuid + " input " + source);
 		writeCommand("setup " + uuid + " output #rtp{mux=ts,dst=" + multicastIp
 				+ "}");
+		writeCommand("control "+ uuid + " play");
 	}
 
 	
