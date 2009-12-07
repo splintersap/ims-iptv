@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.listeners.CommonWatchingListener;
 import pl.edu.agh.iptv.presence.PresenceNotifier;
 import pl.edu.agh.iptv.presence.data.Buddy;
@@ -34,6 +35,8 @@ import com.ericsson.icp.util.IIterator;
 
 public class BuddiesController implements ActionListener, ListSelectionListener {
 
+	private IPTVClient iptvClient = null;
+
 	private Map<String, Buddy> buddies = null;
 
 	private Map<String, String> buddyUriToName = null;
@@ -52,7 +55,9 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 
 	IPresence presence;
 
-	public BuddiesController(IProfile profile, MainView mainView) {
+	public BuddiesController(IPTVClient iptvClient, IProfile profile,
+			MainView mainView) {
+		this.iptvClient = iptvClient;
 		presenceNot = new PresenceNotifier(profile, this);
 		((MyJFrame) mainView.getMainFrame()).setPresenceNotifier(presenceNot);
 		this.presence = presenceNot.getPresence();
@@ -260,7 +265,8 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 								this.mainView.getMainFrame(), this.mainView
 										.getMoviesTab(), urisToUsers, selected);
 
-						CommonWatchingListener commonListener = new CommonWatchingListener(this.mainView.getMainFrame(),
+						CommonWatchingListener commonListener = new CommonWatchingListener(
+								iptvClient, this.mainView.getMainFrame(),
 								this.mainView.getChatTab().getChat(),
 								commonWatching);
 
