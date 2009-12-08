@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.videolan.jvlc.VLCException;
+
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.listeners.DescriptionListener;
@@ -59,7 +61,8 @@ public class MainController {
 				// moviesTab.getOrderedMoviesList().addListSelectionListener(
 				// new DescriptionListener(iptvClient));
 				moviesTab.getAllMoviesList().addListSelectionListener(
-						new DescriptionListener(iptvClient));
+						new DescriptionListener(iptvClient, MainController.this));
+				
 
 				MainView.getPlayButton().addActionListener(
 						new PlayListener(iptvClient, moviesTab));
@@ -70,31 +73,7 @@ public class MainController {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								
-								/*if(VLCHelper.video != null) {
-									VLCHelper.video.destroyVideo(VLCHelper.mp);
-								}*/
-								
-								if(VLCHelper.mp != null) {
-									VLCHelper.mp.stop();
-									//VLCHelper.jvlc.release();
-									//VLCHelper.ds.release();
-								}
-								
-								/*if (VLCHelper.mp != null) {
-									VLCHelper.mp.stop();
-									
-								}
-								
-								if(VLCHelper.ds != null) {
-									VLCHelper.ds.release();
-								}*/
-								
-								
-								
-								VLCHelper.isPlayingMovie = false;
-								MainView.getPlayButton().setIcon(MainView.playIcon);
-								MenuListItem item = (MenuListItem)moviesTab.getAllMoviesList().getSelectedValue();
-								iptvClient.getMovieInformations(item.getTitle());
+								stopMovie(iptvClient);
 							}
 						});
 
@@ -127,6 +106,23 @@ public class MainController {
 			}
 		});
 
+	}
+
+	public void stopMovie(final IPTVClient iptvClient) {
+		if(VLCHelper.playlist != null) {
+			try {
+				VLCHelper.playlist.stop();
+			} catch (VLCException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			//VLCHelper.ds.release();
+		}
+		
+		VLCHelper.isPlayingMovie = false;
+		MainView.getPlayButton().setIcon(MainView.playIcon);
+		MenuListItem item = (MenuListItem)moviesTab.getAllMoviesList().getSelectedValue();
+		iptvClient.getMovieInformations(item.getTitle());
 	}
 
 }

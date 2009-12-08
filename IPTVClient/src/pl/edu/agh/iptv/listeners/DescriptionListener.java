@@ -5,6 +5,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.iptv.IPTVClient;
+import pl.edu.agh.iptv.controllers.MainController;
 import pl.edu.agh.iptv.view.components.MenuListItem;
 
 /**
@@ -20,6 +21,8 @@ public class DescriptionListener implements ListSelectionListener {
 	 * Necessary in order to get information about movies.
 	 */
 	private IPTVClient iptvClient = null;
+	
+	private MainController mainController;
 
 	/*
 	 * Title of selected movie.
@@ -30,8 +33,9 @@ public class DescriptionListener implements ListSelectionListener {
 		return selectedMovie;
 	}
 
-	public DescriptionListener(IPTVClient iptvClient) {
+	public DescriptionListener(IPTVClient iptvClient, MainController mainController) {
 		this.iptvClient = iptvClient;
+		this.mainController = mainController;
 	}
 
 	public void valueChanged(ListSelectionEvent selection) {
@@ -49,6 +53,7 @@ public class DescriptionListener implements ListSelectionListener {
 		selectedMovie = item;
 
 		this.iptvClient.getMovieInformations(item);
+		mainController.stopMovie(iptvClient);
 
 	}
 

@@ -45,10 +45,9 @@ public class SessionAdapter implements ISessionListener
     {   
     	System.out.println("processSessionInformationFailed");
     	try {
-			//IPTVClient.getSession().start("sip:video@ericsson.com", null,
-				//	IPTVClient.getProfile().getIdentity(), SdpFactory.createMIMEContainer());
-			//IPTVClient.getSession().sendInformation(IPTVClient.getInfoType(), IPTVClient.getInfoContent().getBytes(), IPTVClient.getInfoContent().length());
-			//IPTVClient.getSession().
+			/*IPTVClient.getSession().start("sip:video@ericsson.com", null,
+				IPTVClient.getProfile().getIdentity(), SdpFactory.createMIMEContainer());
+			IPTVClient.getSession().sendInformation(IPTVClient.getInfoType(), IPTVClient.getInfoContent().getBytes(), IPTVClient.getInfoContent().length());*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

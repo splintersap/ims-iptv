@@ -127,8 +127,17 @@ public class IPTVClient implements ActionListener {
 					if ("text/movie-list".equals(aContentType)) {
 
 						String movieString = new String(aMessage);
-						String[] movieList = movieString.split("\n");
-						moviesTab.setListOfMovies(movieList);
+						final String[] movieList = movieString.split("\n");
+
+						EventQueue.invokeLater(new Runnable() {
+
+							@Override
+							public void run() {
+								moviesTab.setListOfMovies(movieList);;
+							}
+
+						});
+						
 					} else if ("application/sdp".equals(aContentType)) {
 
 						/*
