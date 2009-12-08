@@ -1,10 +1,11 @@
 package pl.edu.agh.iptv.servlet;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 
 import javax.annotation.Resource;
-import javax.mail.util.SharedByteArrayInputStream;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletConfig;
@@ -18,6 +19,7 @@ import javax.transaction.UserTransaction;
 import net.sourceforge.jsdp.SessionDescription;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
+import pl.edu.agh.iptv.servlet.performance.PerformanceLauncher;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.RecordingTelnetClient;
 import pl.edu.agh.iptv.telnet.SharedMulticastTelnet;
@@ -38,6 +40,7 @@ public class VideoServlet extends SipServlet {
 
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
+		new Thread(new PerformanceLauncher(this)).start();
 		helper = new MessageCreator(em, utx);
 		RandomDatabaseData.fillDatabase(em, utx);
 	}
@@ -112,7 +115,7 @@ public class VideoServlet extends SipServlet {
 						.getMoviePath(), startDate, endDate);
 				telnet.start();
 				helper.createRecordedMovie(telnet.getUuid(), movieTitle, req
-						.getFrom().getURI().toString(),startDate, endDate);
+						.getFrom().getURI().toString(), startDate, endDate);
 				try {
 					telnet.join();
 				} catch (InterruptedException e) {
@@ -140,15 +143,23 @@ public class VideoServlet extends SipServlet {
 			Date date = new Date(dateLong);
 			Movie movie = helper.getMovieFromTitle(title);
 			String multicastAddr = "239.45.12.44";
-			AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie.getMoviePath(), multicastAddr,date);
+			AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie
+					.getMoviePath(), multicastAddr, date);
 			telnet.start();
-			helper.createSharedMulticast(title, users, date, telnet.getUuid(), multicastAddr);
+			helper.createSharedMulticast(title, users, date, telnet.getUuid(),
+					multicastAddr);
 			try {
 				telnet.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			log("Shared multicast " + title);
+		} else if ("info/ip_address".equals(contentType)) {
+			SipSession session = req.getSession();
+			SipServletRequest info = session.createRequest("INFO");
+			info.setContent(this.getIpAddress(), "info/ip_address");
+			info.send();
+			log("sending ip address ##############################");
 		} else {
 			log("Unrecognized INFO message " + req);
 		}
@@ -196,4 +207,15 @@ public class VideoServlet extends SipServlet {
 		SipServletResponse response = sipServletRequest.createResponse(200);
 		response.send();
 	}
+
+	private String getIpAddress() {
+		String address = null;
+		try {
+			InetAddress addr = InetAddress.getLocalHost();
+			address = addr.getHostAddress();
+		} catch (UnknownHostException e) {
+		}
+		return address;
+	}
+
 }
