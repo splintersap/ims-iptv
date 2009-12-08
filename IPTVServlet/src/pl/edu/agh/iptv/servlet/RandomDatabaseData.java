@@ -224,7 +224,6 @@ public class RandomDatabaseData {
 		
 		Movie aljazera = new Movie("Aljazera", "mms://stream.onet.pl/media.wsx?/live/aljazeera");
 		aljazera.setCategory(Category.Documentary);
-		aljazera.addMoviePayment(700, Quality.HIGH);
 		aljazera.setDirector("director");
 		aljazera.setMediaType(MediaType.BROADCAST);
 		aljazera.addMoviePayment(400, Quality.LOW);

@@ -45,7 +45,7 @@ public class VideoServlet extends SipServlet {
 	 */
 	protected void doMessage(SipServletRequest sipServletRequest)
 			throws ServletException, IOException {
-		log("WARNING : Message " + sipServletRequest);		
+		log("WARNING : Message " + sipServletRequest);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class VideoServlet extends SipServlet {
 						.getMoviePath(), startDate, endDate);
 				telnet.start();
 				helper.createRecordedMovie(telnet.getUuid(), movieTitle, req
-						.getFrom().getURI().toString());
+						.getFrom().getURI().toString(),startDate, endDate);
 				try {
 					telnet.join();
 				} catch (InterruptedException e) {
@@ -120,18 +120,22 @@ public class VideoServlet extends SipServlet {
 				log("Recording movie " + movieTitle + " from: " + startDate
 						+ " to: " + endDate);
 			}
-			} else if ("movies/choice".equals(contentType)) {
-				String movieTitle = new String(req.getRawContent());
-				Movie movie = helper.getMovieFromTitle(movieTitle);
+		} else if ("movies/choice".equals(contentType)) {
+			String movieTitle = new String(req.getRawContent());
+			Movie movie = helper.getMovieFromTitle(movieTitle);
 
-				SipSession session = req.getSession(true);
-				SipServletRequest info = session.createRequest("INFO");
-				info.setContent(movie.getMovieUrl(), "vlc/uri");
-				info.send();
-				log("sending streaming URL of " + movie.getTitle());
-			} else {
-				log("Unrecognized INFO message " + req);
-			}
+			SipSession session = req.getSession(true);
+			SipServletRequest info = session.createRequest("INFO");
+			info.setContent(movie.getMovieUrl(), "vlc/uri");
+			info.send();
+			log("sending streaming URL of " + movie.getTitle());
+		} else if ("shared".equals(mimeTab[0])) {
+			String title = mimeTab[1];
+			
+			log("Shared multicast " + title);
+		} else {
+			log("Unrecognized INFO message " + req);
+		}
 	}
 
 	/**
