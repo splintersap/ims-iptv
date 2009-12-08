@@ -36,6 +36,8 @@ public abstract class AbstractTelnetWorker extends Thread {
 	public static String newline = System.getProperty("line.separator");
 
 	private TelnetClient tc = null;
+	
+	private static final String PASSWORD = "videolan";
 
 	OutputStreamWriter writer;
 
@@ -96,8 +98,14 @@ public abstract class AbstractTelnetWorker extends Thread {
 
 			readFromStream();
 
+			//read "Password: "
+			//readFromStream(10);
+			
 			// writing password
-			writeCommand("videolan");
+			writeCommand(PASSWORD);
+			
+			// read command "Welcome, Master
+			//readFromStream(21);
 			
 			// firing abstract method 
 			doTelnetWork();
@@ -134,9 +142,22 @@ public abstract class AbstractTelnetWorker extends Thread {
 		return value;
 	}
 
+	private String readFromStream(final int number) throws IOException {
+		byte[] buff = new byte[1024];
+		int read_data = number;
+		do {
+			int ret_read = instr.read(buff);
+			read_data -= ret_read;
+		} while (read_data <= 0);
+		String value = new String(buff, 0, number);
+		//System.out.println("int = " + ret_read + ", " + value);
+		return value;
+	}
+	
 	protected void writeCommand(String command) throws IOException {
 		writer.write(command + newline);
 		writer.flush();
+		//readFromStream(2);
 		System.out.println(command);
 	}
 
