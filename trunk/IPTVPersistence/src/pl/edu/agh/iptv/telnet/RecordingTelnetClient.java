@@ -48,9 +48,8 @@ public class RecordingTelnetClient extends AbstractTelnetWorker {
 		
 		writeCommand("new " + recorederUuid + " broadcast enabled");
 		writeCommand("setup " + recorederUuid + " input " + source);
-		writeCommand("setup " + recorederUuid + " output file/avi:c:/Movies/" + uuid.toString() + ".avi");
 		//#transcode{vcodec=mp4v}:std{access=file,mux=mov,dst=c:\\output.mov}
-		writeCommand("setup " + recorederUuid + " output #transcode{vcodec=mp4v}:std{access=file,mux=mov,dst=c:/Movies/" + uuid.toString() + ".mov");
+		writeCommand("setup " + recorederUuid + " output #transcode{vcodec=mp4v,acodec=mp4a}:std{access=file,mux=mov,dst=c:/Movies/" + uuid.toString() + ".mov");
 		
 		writeCommand("new " + starterUuid + " schedule enabled");
 		writeCommand("setup " + starterUuid + " date " + startFormatedDate);
