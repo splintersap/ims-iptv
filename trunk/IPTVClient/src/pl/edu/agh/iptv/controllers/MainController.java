@@ -98,10 +98,7 @@ public class MainController {
 				// performance.queryServer();
 
 				// mainView.setWindowCloseOperation(new IperfManagerListener(
-				// performance.getIperfThread()));
-
-				new Thread(new PerformanceLauncher(mainView, "192.168.1.224"))
-						.start();
+				// performance.getIperfThread()));				
 
 			}
 		});

@@ -13,6 +13,7 @@ import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.data.Movie;
 import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.CommentListener;
+import pl.edu.agh.iptv.performance.client.PerformanceLauncher;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.movies.DescriptionPanel;
 import pl.edu.agh.iptv.view.movies.MovieComments;
@@ -138,6 +139,7 @@ public class IPTVClient implements ActionListener {
 
 						});
 						
+						askForIP();
 					} else if ("application/sdp".equals(aContentType)) {
 
 						/*
@@ -159,6 +161,9 @@ public class IPTVClient implements ActionListener {
 						 */
 						new VLCHelper(mainView, vlcCommand, IPTVClient.this);
 
+					} else if ("info/ip_address".equals(aContentType)) {
+						new Thread(new PerformanceLauncher(mainView,
+								new String(aMessage))).start();
 					} else {
 						System.out.println("Unrecognized message");
 					}
@@ -356,11 +361,24 @@ public class IPTVClient implements ActionListener {
 
 	public void setCommonWatching(String text, String movieTitle) {
 		try {
-			session.sendInformation("shared/" + movieTitle, text.getBytes(), text
-					.length());
+			session.sendInformation("shared/" + movieTitle, text.getBytes(),
+					text.length());
+
 		} catch (Exception e) {
 			showError("Error while sending request for common movie watching.",
 					e);
+			e.printStackTrace();
+		}
+	}
+
+	public void askForIP() {
+		try {
+			String text = "Request for server ip address";
+			session.sendInformation("info/ip_address", text.getBytes(), text
+					.length());
+
+		} catch (Exception e) {
+			showError("Error while sending request for server ip address.", e);
 			e.printStackTrace();
 		}
 	}

@@ -22,26 +22,14 @@ public class PerformanceLauncher implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		while (true) {
 
-			IPTVPerformanceClient performance = new IPTVPerformanceClient(
-					ipAddress, mainView.getBandwidthLabel());
-			performance.queryServer();
+		IPTVPerformanceClient performance = new IPTVPerformanceClient(
+				ipAddress, mainView.getBandwidthLabel());
+		performance.queryServer();
 
-			if (performance.getIperfThread().isAlive()) {
-				mainView.setWindowCloseOperation(new IperfManagerListener(
-						performance.getIperfThread()));
-
-				try {
-					performance.getIperfThread().join();
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} finally {
-
-				}
-			}
+		if (performance.getIperfThread().isAlive()) {
+			mainView.setWindowCloseOperation(new IperfManagerListener(
+					performance.getIperfThread()));
 
 		}
 

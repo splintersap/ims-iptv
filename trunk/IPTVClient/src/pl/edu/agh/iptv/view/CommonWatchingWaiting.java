@@ -54,6 +54,8 @@ public class CommonWatchingWaiting extends JDialog implements ActionListener {
 
 		this.movieTitle = movieTitle;
 
+		this.date = date;
+
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.setPreferredSize(new Dimension(200, 200));
 
@@ -89,19 +91,21 @@ public class CommonWatchingWaiting extends JDialog implements ActionListener {
 
 		for (int i = 0; i < listModel.size(); i++) {
 
-			String comp = (String) listModel.get(i);
-			comp = comp.substring(0, comp.indexOf("DIDN'T RESPOND"));
-			comp = comp.substring(0, comp.length() - 3);
+			if (this.urisToAgreed.get(uri) == NO_RESPONSE) {
+				String comp = (String) listModel.get(i);
+				comp = comp.substring(0, comp.indexOf("DIDN'T RESPOND"));
+				comp = comp.substring(0, comp.length() - 3);
 
-			if (this.urisToUsers.get(uri).compareTo(comp) == 0) {
-				if (response) {
-					listModel.set(i, new String(this.urisToUsers.get(uri)
-							+ " - AGREED"));
-					this.urisToAgreed.put(uri, AGREED);
-				} else {
-					listModel.set(i, new String(this.urisToUsers.get(uri)
-							+ " - DENIED"));
-					this.urisToAgreed.put(uri, DENIED);
+				if (this.urisToUsers.get(uri).compareTo(comp) == 0) {
+					if (response) {
+						listModel.set(i, new String(this.urisToUsers.get(uri)
+								+ " - AGREED"));
+						this.urisToAgreed.put(uri, AGREED);
+					} else {
+						listModel.set(i, new String(this.urisToUsers.get(uri)
+								+ " - DENIED"));
+						this.urisToAgreed.put(uri, DENIED);
+					}
 				}
 			}
 		}
@@ -120,13 +124,18 @@ public class CommonWatchingWaiting extends JDialog implements ActionListener {
 				}
 			}
 
-			if (msg.length() != 0) {
-				msg = msg.substring(0, msg.lastIndexOf("|"));
+			try {
+				msg += IPTVClient.getProfile().getIdentity();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 
 			msg += "\n" + date;
 
 			iptvClient.setCommonWatching(msg, this.movieTitle);
+
+			this.dispose();
 
 		} else if (((JButton) e.getSource()).getName().compareTo("CANCEL") == 0) {
 			this.dispose();

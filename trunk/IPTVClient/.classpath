@@ -16,6 +16,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/calendar.jar"/>
-	<classpathentry kind="lib" path="/JVLCExample/lib/jvlc-core.jar"/>
+	<classpathentry kind="lib" path="lib/jvlc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
