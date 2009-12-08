@@ -1,5 +1,7 @@
 package pl.edu.agh.iptv.servlet.facade;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -8,6 +10,10 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import net.sourceforge.jsdp.Attribute;
@@ -28,6 +34,8 @@ public class MessageCreator {
 	EntityManager em;
 
 	UserTransaction utx;
+
+	private static Format formatter = new SimpleDateFormat("dMMMyy-HH:mm");
 
 	public MessageCreator(EntityManager em, UserTransaction utx) {
 		this.em = em;
@@ -218,11 +226,14 @@ public class MessageCreator {
 						break;
 					}
 				}
-				
+
 				Date now = new Date();
 
-				if (movie.getRecordingUser() == null
-						|| (sip.equals(movie.getRecordingUser().getSip()) && (now.after(movie.getAvailableFrom())))) {
+				if ((movie.getRecordingUser() == null
+						&& ((!movie.getMediaType().equals(MediaType.SHARED))) || isOrdered)
+						|| (sip.equals(movie.getRecordingUser().getSip()) && (now
+								.after(movie.getAvailableFrom())))) {
+
 					stringBuilder.append(movie.getTitle() + "|" + isOrdered
 							+ "|" + movie.getOverallRating() + "|"
 							+ movie.getMediaType().name());
@@ -236,17 +247,16 @@ public class MessageCreator {
 		return stringBuilder.toString();
 	}
 
-	public void createRecordedMovie(String uuid, String movieTitle, String sip, Date startDate, Date endDate) {
-		
-		Format formatter = new SimpleDateFormat("dMMMyy-HH:mm");
-		
+	public void createRecordedMovie(String uuid, String movieTitle, String sip,
+			Date startDate, Date endDate) {
+
 		String startFormatedDate = formatter.format(startDate);
 		String endFormatedDate = formatter.format(endDate);
-		Calendar ca1 = Calendar.getInstance();
-		String title = movieTitle + " " + startFormatedDate + " " + endFormatedDate;
+		String title = movieTitle + " " + startFormatedDate + " "
+				+ endFormatedDate;
 		Movie movie = new Movie(title, "C:/Movies/" + uuid + ".mov");
 		movie.setMediaType(MediaType.RECORDING);
-		movie.setMovieUrl("rtsp://127.0.0.1:5554/" + uuid);
+		movie.setMovieUrl("rtsp://" + getIpAddress() + ":5554/" + uuid);
 		movie.setUuid(uuid);
 		movie.addMoviePayment(400, Quality.LOW);
 		movie.addMoviePayment(600, Quality.MEDIUM);
@@ -264,6 +274,48 @@ public class MessageCreator {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void createSharedMulticast(String title, String[] users, Date date,
+			String uuid, String multicastAddr) {
+
+		try {
+			utx.begin();
+			Movie movie = getMovieFromTitle(title);
+
+			String sharedTitle = title + " " + formatter.format(date);
+
+			// create new movie
+			Movie sharedMovie = new Movie(sharedTitle, movie.getMoviePath());
+			sharedMovie.setMediaType(MediaType.SHARED);
+			sharedMovie.addMoviePayment(400, Quality.LOW);
+			sharedMovie.addMoviePayment(600, Quality.MEDIUM);
+			sharedMovie.addMoviePayment(700, Quality.HIGH);
+			sharedMovie.setAvailableFrom(date);
+			sharedMovie.setUuid(uuid);
+			// rtp://@239.255.12.42:5004
+			sharedMovie.setMovieUrl("rtp://@" + multicastAddr + ":5004");
+
+			// let users purchase movie
+			for (String userSip : users) {
+				User user = getUserFromSip(userSip);
+				user.addOrderedMovie(sharedMovie, Quality.MEDIUM);
+			}
+
+			utx.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static String getIpAddress() {
+		String address = null;
+		try {
+			InetAddress addr = InetAddress.getLocalHost();
+			address = addr.getHostAddress();
+		} catch (UnknownHostException e) {
+		}
+		return address;
 	}
 
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import javax.annotation.Resource;
+import javax.mail.util.SharedByteArrayInputStream;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletConfig;
@@ -19,6 +20,7 @@ import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.RecordingTelnetClient;
+import pl.edu.agh.iptv.telnet.SharedMulticastTelnet;
 
 public class VideoServlet extends SipServlet {
 
@@ -131,7 +133,21 @@ public class VideoServlet extends SipServlet {
 			log("sending streaming URL of " + movie.getTitle());
 		} else if ("shared".equals(mimeTab[0])) {
 			String title = mimeTab[1];
-			
+			String messageContent = new String(req.getRawContent());
+			String[] messageInformations = messageContent.split("\n");
+			String[] users = messageInformations[0].split("\\|");
+			Long dateLong = Long.valueOf(messageInformations[1]);
+			Date date = new Date(dateLong);
+			Movie movie = helper.getMovieFromTitle(title);
+			String multicastAddr = "239.45.12.44";
+			AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie.getMoviePath(), multicastAddr,date);
+			telnet.start();
+			helper.createSharedMulticast(title, users, date, telnet.getUuid(), multicastAddr);
+			try {
+				telnet.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			log("Shared multicast " + title);
 		} else {
 			log("Unrecognized INFO message " + req);
