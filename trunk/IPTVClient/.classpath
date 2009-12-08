@@ -15,7 +15,7 @@
 			<attribute name="javadoc_location" value="file:/C:\Ericsson\SDS4.1FD1\extension\eclipse\plugins\com.ericsson.sds_4.1.1.v20090217/doc/icp_api"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jvlc.jar"/>
 	<classpathentry kind="lib" path="lib/calendar.jar"/>
+	<classpathentry kind="lib" path="/JVLCExample/lib/jvlc-core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
