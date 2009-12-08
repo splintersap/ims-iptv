@@ -1,5 +1,8 @@
 package pl.edu.agh.iptv.servlet.facade;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -87,7 +90,7 @@ public class MessageCreator {
 
 			addingMovieComments(sessionDescription, movie);
 			addingMoviePayments(sip, sessionDescription, movie);
-			
+
 			utx.commit();
 
 		} catch (Exception e) {
@@ -119,8 +122,7 @@ public class MessageCreator {
 			Movie movie) throws SDPException {
 		for (MovieComment comment : movie.getCommentsList()) {
 			String commentString = comment.getUser().getSip() + "|"
-					+ comment.getDate().getTime() + "|"
-					+ comment.getComment();
+					+ comment.getDate().getTime() + "|" + comment.getComment();
 			Attribute commentAtr = SDPFactory.createAttribute("comment",
 					commentString);
 			sessionDescription.addAttribute(commentAtr);
@@ -178,7 +180,7 @@ public class MessageCreator {
 			utx.begin();
 			Movie movie = getMovieFromTitle(title);
 			User user = getUserFromSip(sip);
-			
+
 			boolean wasModified = false;
 			for (MovieRating mRating : movie.getRating()) {
 				if (sip.equals(mRating.getUser().getSip())) {
@@ -216,9 +218,16 @@ public class MessageCreator {
 						break;
 					}
 				}
-				stringBuilder.append(movie.getTitle() + "|" + isOrdered + "|"
-						+ movie.getOverallRating()+"|"+movie.getMediaType().name());
-				stringBuilder.append("\n");
+				
+				Date now = new Date();
+
+				if (movie.getRecordingUser() == null
+						|| (sip.equals(movie.getRecordingUser().getSip()) && (now.after(movie.getAvailableFrom())))) {
+					stringBuilder.append(movie.getTitle() + "|" + isOrdered
+							+ "|" + movie.getOverallRating() + "|"
+							+ movie.getMediaType().name());
+					stringBuilder.append("\n");
+				}
 			}
 			utx.commit();
 		} catch (Exception e) {
@@ -227,25 +236,34 @@ public class MessageCreator {
 		return stringBuilder.toString();
 	}
 
-	public void createRecordedMovie(String uuid, String movieTitle,
-			String sip) {
-		String title = "Recorded : " + movieTitle;
-		Movie movie = new Movie(title, "C:/Movies/"+ uuid + ".avi");
+	public void createRecordedMovie(String uuid, String movieTitle, String sip, Date startDate, Date endDate) {
+		
+		Format formatter = new SimpleDateFormat("dMMMyy-HH:mm");
+		
+		String startFormatedDate = formatter.format(startDate);
+		String endFormatedDate = formatter.format(endDate);
+		Calendar ca1 = Calendar.getInstance();
+		String title = movieTitle + " " + startFormatedDate + " " + endFormatedDate;
+		Movie movie = new Movie(title, "C:/Movies/" + uuid + ".mov");
 		movie.setMediaType(MediaType.RECORDING);
 		movie.setMovieUrl("rtsp://127.0.0.1:5554/" + uuid);
 		movie.setUuid(uuid);
-		User user = getUserFromSip(sip);
-		movie.setRecordingUser(user);
+		movie.addMoviePayment(400, Quality.LOW);
+		movie.addMoviePayment(600, Quality.MEDIUM);
+		movie.addMoviePayment(700, Quality.HIGH);
+		movie.setAvailableFrom(endDate);
 
 		try {
 			utx.begin();
+			User user = getUserFromSip(sip);
+			movie.setRecordingUser(user);
 			em.persist(movie);
+			user.addOrderedMovie(movie, Quality.MEDIUM);
 			utx.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
+
 	}
 
 }
