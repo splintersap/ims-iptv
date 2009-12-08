@@ -156,19 +156,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource().equals(cancelButton)) {
-			//just for test
-			Date now = new Date();
-			Date startDate = new Date(now.getTime() + Timer.ONE_MINUTE);
-			Date endDate = new Date(now.getTime() + 3L * Timer.ONE_MINUTE);
-			AbstractTelnetWorker telnet = new RecordingTelnetClient(
-					"mms://stream.onet.pl/media.wsx?/live/aljazeera", startDate, endDate);
-			telnet.start();
-			try {
-				telnet.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			this.dispose();
+			
 		} else if (arg0.getSource().equals(saveButton)) {
 			Movie movie = new Movie(titleTextFiled.getText(),
 					moviePathTextField.getText());
