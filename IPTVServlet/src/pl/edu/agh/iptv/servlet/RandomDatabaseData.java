@@ -13,6 +13,7 @@ import pl.edu.agh.iptv.persistence.MediaType;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.persistence.User;
+import pl.edu.agh.iptv.servlet.facade.MessageCreator;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
 import pl.edu.agh.iptv.telnet.RemovingTelnetClient;
@@ -292,7 +293,7 @@ public class RandomDatabaseData {
 		AbstractTelnetWorker telnet = null;
 
 		telnet = new VodTelnetClient(movie.getMoviePath());
-		String address = getIpAddress();
+		String address = MessageCreator.getIpAddress();
 		movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
 				+ telnet.getUuid().toString());
 
@@ -306,14 +307,6 @@ public class RandomDatabaseData {
 		}
 	}
 
-	public static String getIpAddress() {
-		String address = null;
-		try {
-			InetAddress addr = InetAddress.getLocalHost();
-			address = addr.getHostAddress();
-		} catch (UnknownHostException e) {
-		}
-		return address;
-	}
+
 
 }
