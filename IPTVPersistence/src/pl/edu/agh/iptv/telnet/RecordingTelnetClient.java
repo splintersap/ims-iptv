@@ -46,23 +46,23 @@ public class RecordingTelnetClient extends AbstractTelnetWorker {
 		String starterUuid = UUID.randomUUID().toString();
 		String stoperUuid = UUID.randomUUID().toString();
 		
-		writeCommand("new " + recorederUuid + " broadcast enabled");
-		writeCommand("setup " + recorederUuid + " input " + source);
+		writeCommandAndRead("new " + recorederUuid + " broadcast enabled");
+		writeCommandAndRead("setup " + recorederUuid + " input " + source);
 		//#transcode{vcodec=mp4v}:std{access=file,mux=mov,dst=c:\\output.mov}
-		writeCommand("setup " + recorederUuid + " output #transcode{vcodec=mp4v,acodec=mp4a}:std{access=file,mux=mov,dst=c:/Movies/" + uuid.toString() + ".mov");
+		writeCommandAndRead("setup " + recorederUuid + " output #transcode{vcodec=mp4v,acodec=mp4a}:std{access=file,mux=mov,dst=c:/Movies/" + uuid.toString() + ".mov");
 		
-		writeCommand("new " + starterUuid + " schedule enabled");
-		writeCommand("setup " + starterUuid + " date " + startFormatedDate);
-		writeCommand("setup " + starterUuid +  " append control " + recorederUuid + " play");
+		writeCommandAndRead("new " + starterUuid + " schedule enabled");
+		writeCommandAndRead("setup " + starterUuid + " date " + startFormatedDate);
+		writeCommandAndRead("setup " + starterUuid +  " append control " + recorederUuid + " play");
 		
-		writeCommand("new " + stoperUuid + " schedule enabled");
-		writeCommand("setup " + stoperUuid + " date " + endFormatedDate);
-		writeCommand("setup " + stoperUuid + " append control");
-		writeCommand("setup " + stoperUuid + " append del " + recorederUuid);
-		writeCommand("setup " + stoperUuid + " append del " + starterUuid);
-		writeCommand("setup " + stoperUuid + " append new " + uuid.toString() + " vod enabled");
-		writeCommand("setup " + stoperUuid + " append setup " + uuid.toString() + " input c:/Movies/" + uuid.toString() +".mov");
-		writeCommand("setup " + stoperUuid + " append del " + stoperUuid);
+		writeCommandAndRead("new " + stoperUuid + " schedule enabled");
+		writeCommandAndRead("setup " + stoperUuid + " date " + endFormatedDate);
+		writeCommandAndRead("setup " + stoperUuid + " append control");
+		writeCommandAndRead("setup " + stoperUuid + " append del " + recorederUuid);
+		writeCommandAndRead("setup " + stoperUuid + " append del " + starterUuid);
+		writeCommandAndRead("setup " + stoperUuid + " append new " + uuid.toString() + " vod enabled");
+		writeCommandAndRead("setup " + stoperUuid + " append setup " + uuid.toString() + " input c:/Movies/" + uuid.toString() +".mov");
+		writeCommandAndRead("setup " + stoperUuid + " append del " + stoperUuid);
 		
 	}
 

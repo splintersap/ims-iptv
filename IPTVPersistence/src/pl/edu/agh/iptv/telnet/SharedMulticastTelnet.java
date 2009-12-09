@@ -33,16 +33,16 @@ public class SharedMulticastTelnet extends AbstractTelnetWorker {
 		Format formatter = new SimpleDateFormat("yyyy/M/d-HH:mm:ss");
 		String formatedDate = formatter.format(date);
 		
-		writeCommand("new " + uuid + " broadcast enabled");
-		writeCommand("setup " + uuid + " input " + source);
-		writeCommand("setup " + uuid + " output #rtp{mux=ts,dst=" + multicastIp	+ "}");
+		writeCommandAndRead("new " + uuid + " broadcast enabled");
+		writeCommandAndRead("setup " + uuid + " input " + source);
+		writeCommandAndRead("setup " + uuid + " output #rtp{mux=ts,dst=" + multicastIp	+ "}");
 		
 		String recorederUuid = UUID.randomUUID().toString();
 		
-		writeCommand("new " + recorederUuid + " schedule enabled");
-		writeCommand("setup " + recorederUuid + " date " + formatedDate);
-		writeCommand("setup " + recorederUuid + " append control " + uuid + " play");
-		writeCommand("setup " + recorederUuid + " append control del " + recorederUuid);
+		writeCommandAndRead("new " + recorederUuid + " schedule enabled");
+		writeCommandAndRead("setup " + recorederUuid + " date " + formatedDate);
+		writeCommandAndRead("setup " + recorederUuid + " append control " + uuid + " play");
+		writeCommandAndRead("setup " + recorederUuid + " append control del " + recorederUuid);
 	}
 
 }
