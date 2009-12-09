@@ -17,11 +17,11 @@ public class MulticastTelnetClient extends AbstractTelnetWorker {
 	
 	@Override
 	void doTelnetWork() throws IOException {
-		writeCommand("new " + uuid + " broadcast enabled");
-		writeCommand("setup " + uuid + " input " + source);
-		writeCommand("setup " + uuid + " output #rtp{mux=ts,dst=" + multicastIp
+		writeCommandAndRead("new " + uuid + " broadcast enabled");
+		writeCommandAndRead("setup " + uuid + " input " + source);
+		writeCommandAndRead("setup " + uuid + " output #rtp{mux=ts,dst=" + multicastIp
 				+ "}");
-		writeCommand("control "+ uuid + " play");
+		writeCommandAndRead("control "+ uuid + " play");
 	}
 
 	

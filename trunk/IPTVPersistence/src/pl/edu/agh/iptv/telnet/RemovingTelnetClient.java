@@ -13,7 +13,7 @@ public class RemovingTelnetClient extends AbstractTelnetWorker {
 	
 	@Override
 	void doTelnetWork() throws IOException {
-		writeCommand("del " + removingUuid);
+		writeCommandAndRead("del " + removingUuid);
 
 	}
 

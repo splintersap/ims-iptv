@@ -17,8 +17,8 @@ public class VodTelnetClient extends AbstractTelnetWorker {
 		// new MyMusic vod enabled
 		// setup MyMusic input
 		// C:\Users\michal\Downloads\WyznaniaGejszy.1.LekPL.avi
-		writeCommand("new " + uuid + " vod enabled");
-		writeCommand("setup " + uuid + " input " + source);
+		writeCommandAndRead("new " + uuid + " vod enabled");
+		writeCommandAndRead("setup " + uuid + " input " + source);
 	}
 
 }

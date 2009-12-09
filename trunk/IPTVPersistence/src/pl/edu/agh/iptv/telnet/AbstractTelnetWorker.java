@@ -96,21 +96,22 @@ public abstract class AbstractTelnetWorker extends Thread {
 
 		try {
 
-			readFromStream();
+			//readFromStream();
+			System.out.println("Startuje z telnetem");
 
 			//read "Password: "
-			//readFromStream(10);
+			readFromStream(10);
 			
 			// writing password
 			writeCommand(PASSWORD);
 			
 			// read command "Welcome, Master
-			//readFromStream(21);
+			readFromStream(21);
 			
 			// firing abstract method 
 			doTelnetWork();
 			
-			readFromStream();
+			//readFromStream();
 
 		} catch (Exception e) {
 			System.err.println("Exception while reading socket:"
@@ -148,17 +149,23 @@ public abstract class AbstractTelnetWorker extends Thread {
 		do {
 			int ret_read = instr.read(buff);
 			read_data -= ret_read;
-		} while (read_data <= 0);
+			System.out.println("Read = " + ret_read + " bytes, w sumie = " + read_data);
+		} while (read_data > 0);
 		String value = new String(buff, 0, number);
+		System.out.println("Read : " + value + ", number " + number);
 		//System.out.println("int = " + ret_read + ", " + value);
 		return value;
 	}
 	
-	protected void writeCommand(String command) throws IOException {
+	protected void writeCommandAndRead(String command) throws IOException {
+		writeCommand(command);
+		readFromStream(2);
+		System.out.println(command);
+	}
+
+	private void writeCommand(String command) throws IOException {
 		writer.write(command + newline);
 		writer.flush();
-		//readFromStream(2);
-		System.out.println(command);
 	}
 
 }
