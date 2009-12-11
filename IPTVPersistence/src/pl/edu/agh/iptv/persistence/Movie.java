@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -56,6 +57,7 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 	public Movie(String title, String moviePath) {
 		this.title = title;
 		this.moviePath = moviePath;
+		this.uuid = UUID.randomUUID().toString();
 	}
 
 	public String getTitle() {

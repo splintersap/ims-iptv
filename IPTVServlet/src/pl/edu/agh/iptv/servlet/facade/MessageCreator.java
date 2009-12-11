@@ -171,7 +171,14 @@ public class MessageCreator {
 			utx.begin();
 			User user = getUserFromSip(sip);
 			Movie movie = getMovieFromTitle(title);
-			user.addOrderedMovie(movie, Quality.valueOf(quality));
+			MoviePayment moviePayment = movie.getMoviePayments(Quality.valueOf(quality));
+			
+			long newCredit = user.getCredit() - moviePayment.getPirce();
+			if(newCredit > 0)
+			{
+				user.addOrderedMovie(movie, Quality.valueOf(quality));
+				user.setCredit(newCredit);
+			}
 			utx.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -252,7 +259,7 @@ public class MessageCreator {
 		Movie movie = new Movie(title, "C:/Movies/" + uuid + ".mov");
 		movie.setMediaType(MediaType.RECORDING);
 		movie.setMovieUrl("rtsp://" + getIpAddress() + ":5554/" + uuid);
-		movie.setUuid(uuid);
+		//movie.setUuid(uuid);
 		movie.addMoviePayment(400, Quality.LOW);
 		movie.addMoviePayment(600, Quality.MEDIUM);
 		movie.addMoviePayment(700, Quality.HIGH);
@@ -271,9 +278,8 @@ public class MessageCreator {
 
 	}
 
-	public void createSharedMulticast(String title, String[] users, Date date,
-			String uuid, String multicastAddr) {
-
+	public Movie createSharedMulticast(String title, String[] users, Date date, String multicastAddr) {
+		Movie sharedMovie = null;
 		try {
 			utx.begin();
 			Movie movie = getMovieFromTitle(title);
@@ -281,13 +287,13 @@ public class MessageCreator {
 			String sharedTitle = title + " " + formatter.format(date);
 
 			// create new movie
-			Movie sharedMovie = new Movie(sharedTitle, movie.getMoviePath());
+			sharedMovie = new Movie(sharedTitle, movie.getMoviePath());
 			sharedMovie.setMediaType(MediaType.SHARED);
 			sharedMovie.addMoviePayment(400, Quality.LOW);
 			sharedMovie.addMoviePayment(600, Quality.MEDIUM);
 			sharedMovie.addMoviePayment(700, Quality.HIGH);
 			sharedMovie.setAvailableFrom(date);
-			sharedMovie.setUuid(uuid);
+			//sharedMovie.setUuid(uuid);
 			// rtp://@239.255.12.42:5004
 			sharedMovie.setMovieUrl("rtp://@" + multicastAddr + ":5004");
 
@@ -301,6 +307,8 @@ public class MessageCreator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return sharedMovie;
 	}
 
 	public static String getIpAddress() {
