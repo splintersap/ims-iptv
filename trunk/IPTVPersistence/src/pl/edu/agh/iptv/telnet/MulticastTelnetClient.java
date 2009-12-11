@@ -8,11 +8,12 @@ public class MulticastTelnetClient extends AbstractTelnetWorker {
 	
 	private String multicastIp;
 	
-	public MulticastTelnetClient(String source, String multicastIp)
+	public MulticastTelnetClient(String source, String multicastIp, String uuid)
 	{
 		super();
 		this.source = source;
 		this.multicastIp = multicastIp;
+		this.uuid = uuid;
 	}
 	
 	@Override

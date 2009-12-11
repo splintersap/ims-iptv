@@ -12,11 +12,12 @@ public class SharedMulticastTelnet extends AbstractTelnetWorker {
 	private String multicastIp;
 	private Date date;
 
-	public SharedMulticastTelnet(String source, String multicastIp, Date date) {
+	public SharedMulticastTelnet(String source, String multicastIp, Date date, String uuid) {
 		super();
 		this.source = source;
 		this.multicastIp = multicastIp;
 		this.date = date;
+		this.uuid = uuid;
 	}
 
 	@Override

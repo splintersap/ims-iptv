@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.UUID;
 
 import javax.management.timer.Timer;
 
@@ -53,7 +52,6 @@ public abstract class AbstractTelnetWorker extends Thread {
 	public AbstractTelnetWorker() {
 
 		tc = new TelnetClient();
-		uuid = UUID.randomUUID().toString();
 		TerminalTypeOptionHandler ttopt = new TerminalTypeOptionHandler(
 				"VT100", false, false, true, false);
 		EchoOptionHandler echoopt = new EchoOptionHandler(true, false, true,
@@ -149,18 +147,14 @@ public abstract class AbstractTelnetWorker extends Thread {
 		do {
 			int ret_read = instr.read(buff);
 			read_data -= ret_read;
-			System.out.println("Read = " + ret_read + " bytes, w sumie = " + read_data);
 		} while (read_data > 0);
 		String value = new String(buff, 0, number);
-		System.out.println("Read : " + value + ", number " + number);
-		//System.out.println("int = " + ret_read + ", " + value);
 		return value;
 	}
 	
 	protected void writeCommandAndRead(String command) throws IOException {
 		writeCommand(command);
 		readFromStream(2);
-		System.out.println(command);
 	}
 
 	private void writeCommand(String command) throws IOException {

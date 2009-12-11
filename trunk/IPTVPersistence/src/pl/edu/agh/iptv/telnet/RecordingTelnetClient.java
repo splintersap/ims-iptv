@@ -12,10 +12,12 @@ public class RecordingTelnetClient extends AbstractTelnetWorker {
 	private Date startDate;
 	private Date endDate;
 	
-	public RecordingTelnetClient(String source, Date startDate, Date endDate) {
+	public RecordingTelnetClient(String source, Date startDate, Date endDate, String uuid) {
+		super();
 		this.source = source;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.uuid = uuid;
 	}
 	
 	@Override

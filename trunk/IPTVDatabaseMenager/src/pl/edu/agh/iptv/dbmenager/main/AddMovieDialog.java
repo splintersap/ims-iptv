@@ -174,19 +174,19 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 			AbstractTelnetWorker telnet = null;
 
 			if (VOD.equals(streaming)) {
-				telnet = new VodTelnetClient(moviePathTextField.getText());
+				telnet = new VodTelnetClient(moviePathTextField.getText(), movie.getUuid());
 				String address = getIpAddress();
 				movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
 						+ telnet.getUuid().toString());
 				movie.setMediaType(MediaType.VOD);
 			} else if (BROADCAST.equals(streaming)) {
 				telnet =  new MulticastTelnetClient(moviePathTextField
-						.getText(), "239.255.12.42");
+						.getText(), "239.255.12.42", movie.getUuid());
 				// getIpAddress();
 				movie.setMovieUrl("rtp://@239.255.12.42:5004");
 				movie.setMediaType(MediaType.BROADCAST);
 			}
-			movie.setUuid(telnet.getUuid().toString());
+			//movie.setUuid(telnet.getUuid().toString());
 			System.out.println("Starting telnet");
 			telnet.start();
 			try {

@@ -6,8 +6,9 @@ public class VodTelnetClient extends AbstractTelnetWorker {
 
 	String source;
 	
-	public VodTelnetClient(String source) {
+	public VodTelnetClient(String source, String uuid) {
 		super();
+		this.uuid = uuid;
 		this.source = source;
 	}
 	

@@ -43,6 +43,8 @@ public class VideoServlet extends SipServlet {
 		new Thread(new PerformanceLauncher(this)).start();
 		helper = new MessageCreator(em, utx);
 		RandomDatabaseData.fillDatabase(em, utx);
+		log("writing data to telnet");
+		RandomDatabaseData.addDBMoviesToTelnet(em, utx);
 	}
 
 	/**
@@ -112,7 +114,7 @@ public class VideoServlet extends SipServlet {
 				String movieTitle = mimeTab[1];
 				Movie movie = helper.getMovieFromTitle(movieTitle);
 				AbstractTelnetWorker telnet = new RecordingTelnetClient(movie
-						.getMoviePath(), startDate, endDate);
+						.getMoviePath(), startDate, endDate, movie.getUuid());
 				telnet.start();
 				helper.createRecordedMovie(telnet.getUuid(), movieTitle, req
 						.getFrom().getURI().toString(), startDate, endDate);
@@ -143,11 +145,10 @@ public class VideoServlet extends SipServlet {
 			Date date = new Date(dateLong);
 			Movie movie = helper.getMovieFromTitle(title);
 			String multicastAddr = "239.45.12.44";
+			helper.createSharedMulticast(title, users, date, multicastAddr);
 			AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie
-					.getMoviePath(), multicastAddr, date);
+					.getMoviePath(), multicastAddr, date, movie.getUuid());
 			telnet.start();
-			helper.createSharedMulticast(title, users, date, telnet.getUuid(),
-					multicastAddr);
 			try {
 				telnet.join();
 			} catch (InterruptedException e) {

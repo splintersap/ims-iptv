@@ -245,10 +245,23 @@ public class Starter extends JPanel {
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
+		JTabbedPane tabbedPane = new JTabbedPane();
+
+		
+		
+		
 		// Create and set up the content pane.
 		Starter newContentPane = new Starter();
 		newContentPane.setOpaque(true); // content panes must be opaque
-		frame.setContentPane(newContentPane);
+		
+		UsersTab usersTab = new UsersTab();
+		usersTab.setOpaque(true);
+
+		tabbedPane.addTab("Movies", newContentPane);
+		tabbedPane.addTab("Users", usersTab);
+		
+		frame.setContentPane(tabbedPane);
 
 		// Display the window.
 		frame.pack();
