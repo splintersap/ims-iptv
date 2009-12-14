@@ -1,13 +1,9 @@
 package pl.edu.agh.iptv.servlet;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import pl.edu.agh.iptv.persistence.Category;
@@ -226,8 +222,6 @@ public class RandomDatabaseData {
 		aljazera.setCategory(Category.Documentary);
 		aljazera.setDirector("director");
 		aljazera.setMediaType(MediaType.BROADCAST);
-//		aljazera.addMoviePayment(400, Quality.LOW);
-//		aljazera.addMoviePayment(600, Quality.MEDIUM);
 		aljazera.addMoviePayment(700, Quality.HIGH);
 
 		try {
@@ -269,7 +263,6 @@ public class RandomDatabaseData {
 		telnet = new MulticastTelnetClient(movie.getMoviePath(),
 				multicastIp, mp.getUuid());
 		mp.setMovieUrl("rtp://@" + multicastIp + ":5004");
-		//movie.setMovieUrl("rtp://@239.255.12.42:5004");
 
 		System.out.println("Starting telnet");
 		AbstractTelnetWorker.doTelnetWork(telnet);
@@ -295,16 +288,9 @@ public class RandomDatabaseData {
 			AbstractTelnetWorker.doTelnetWork(telnet);
 		}
 		
-		//telnet = new VodTelnetClient(movie.getMoviePath(), movie.getUuid());
-		
-//		movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
-//				+ movie.getUuid());
-
-//		movie.setUuid(telnet.getUuid().toString());
-//		System.out.println("Starting telnet");
-//		AbstractTelnetWorker.doTelnetWork(telnet);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void addDBMoviesToTelnet(EntityManager em, UserTransaction utx) {
 		
 		delAllMoviesFromTelnet();

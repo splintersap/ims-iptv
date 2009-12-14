@@ -1,6 +1,7 @@
 package pl.edu.agh.iptv.servlet;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -38,8 +39,6 @@ public class VideoServlet extends SipServlet {
 
 	private final String ACK_RECEIVED = "ackReceived";
 
-	private boolean iperfIsAvailable = true;
-
 	MessageCreator helper;
 
 	public void init(ServletConfig config) throws ServletException {
@@ -65,144 +64,141 @@ public class VideoServlet extends SipServlet {
 		req.createResponse(200).send();
 
 		String contentType = req.getContentType();
-		String[] mimeTab = contentType.split("/");
+		String[] mimes = contentType.split("/");
 
-		if (mimeTab.length != 2) {
+		String sip = req.getFrom().getURI().toString();
+		String reqContent = new String(req.getRawContent());
+
+		
+		if (mimes.length != 2) {
 			log("Wrong MIME type in info message.\n" + req);
 			return;
 		}
 
-		if ("rating".equals(mimeTab[0])) {
-			String title = mimeTab[1];
-			Integer rating = new Integer(new String(req.getRawContent()));
-			helper.setRatingToDatabase(title, rating, req.getFrom().getURI()
-					.toString());
-			log("Rating updated : title = " + title + ", rating = " + rating
-					+ ", sip=" + req.getFrom().getURI().toString());
+		if ("rating".equals(mimes[0])) {
+			updateRating(sip, mimes[1], reqContent);
 		} else if ("text/title-info".equals(contentType)) {
-			String title = new String(req.getRawContent());
+			sendSDPInfo(reqContent, req.getSession(),sip);
+		} else if ("comment".equals(mimes[0])) {
+			updateComment(reqContent, mimes[1], sip);
+		} else if ("purchase".equals(mimes[0])) {
+			updatePurchase(reqContent, mimes[1], sip);
+		} else if ("record".equals(mimes[0])) {
+			recordMovie(reqContent, mimes[1], sip);
+		} else if ("movies".equals(mimes[0])) {
+			sendUrl(req.getSession(), mimes[1], reqContent);
+		} else if ("shared".equals(mimes[0])) {	
+			createSharedMulticast(mimes[1], reqContent);
+		} else if ("info/ip_address".equals(contentType)) {
+			sendIpAddress(req.getSession());
+		} else {
+			log("Unrecognized INFO message " + req);
+		}
+	}
 
-			SessionDescription sessionDescription = helper.createSDPFromMovie(
-					title, req.getFrom().getURI().toString());
+	private void sendIpAddress(SipSession session)
+			throws UnsupportedEncodingException, IOException {
+		SipServletRequest info = session.createRequest("INFO");
+		info.setContent(this.getIpAddress(), "info/ip_address");
+		info.send();
+		log("sending ip address");
+	}
 
-			SipServletRequest info = req.getSession().createRequest("INFO");
-			info.setContent(sessionDescription.toString().getBytes(),
-					"application/sdp");
-			info.send();
+	private void recordMovie(String content, String movieTitle, String sip)
+			throws IOException {
+		String[] informationsTab = content.split("\\|");
 
-			log("Sending SDP with title = " + title + ", sip = "
-					+ req.getFrom().getURI().toString());
-		} else if ("comment".equals(mimeTab[0])) {
-			String title = mimeTab[1];
-			String comment = new String(req.getRawContent());
-			String sip = req.getFrom().getURI().toString();
-			helper.addComment(title, sip, comment);
-			log("Adding new comment " + title + ", " + comment + ", " + sip);
+		if (informationsTab.length != 2) {
+			log("Wrong format of recording information ");
+			return;
+		}
 
-		} else if ("purchase".equals(mimeTab[0])) {
-			String title = mimeTab[1];
-			String quality = new String(req.getRawContent());
-			String sip = req.getFrom().getURI().toString();
-			helper.purchaseMovie(title, sip, quality);
-			log("Purchase another movie " + title + ", quality = " + quality
-					+ ", sip = " + sip);
+		Long startDateLong = Long.valueOf(informationsTab[0]);
+		Date startDate = new Date(startDateLong);
+		Long endDateLong = Long.valueOf(informationsTab[1]);
+		Date endDate = new Date(endDateLong);
 
-		} else if ("record".equals(mimeTab[0])) {
-			//TODO recording with MoviePayments
-			/*String content = new String(req.getRawContent());
-			String[] informationsTab = content.split("\\|");
-			if (informationsTab.length == 2) {
-				Long startDateLong = Long.valueOf(informationsTab[0]);
-				Date startDate = new Date(startDateLong);
-				Long endDateLong = Long.valueOf(informationsTab[1]);
-				Date endDate = new Date(endDateLong);
-				String movieTitle = mimeTab[1];
-				Movie movie = helper.getMovieFromTitle(movieTitle);
-				AbstractTelnetWorker telnet = new RecordingTelnetClient(movie
-						.getMoviePath(), startDate, endDate, movie.getUuid());
-				telnet.start();
-				helper.createRecordedMovie(telnet.getUuid(), movieTitle, req
-						.getFrom().getURI().toString(), startDate, endDate);
-				try {
-					telnet.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+		Movie movie = helper.getMovieFromTitle(movieTitle);
+		MoviePayment moviePayment = helper.createRecordedMovie(movieTitle,
+				sip, startDate, endDate);
 
-				log("Recording movie " + movieTitle + " from: " + startDate
-						+ " to: " + endDate);
-			
-			}*/
-		} else if ("movies".equals(mimeTab[0])) {
-			//TODO chceck if movie is bought by user
-			String title = mimeTab[1];
-			String quality = new String(req.getRawContent());
-			
-			MoviePayment moviePayment = null;
-			Movie movie = null;
-			try {
+		AbstractTelnetWorker telnet = new RecordingTelnetClient(movie
+				.getMoviePath(), startDate, endDate, moviePayment.getUuid());
+		AbstractTelnetWorker.doTelnetWork(telnet);
+
+		log("Recording movie " + movieTitle + " from: " + startDate
+				+ " to: " + endDate);
+	}
+
+	private void createSharedMulticast(String title, String messageContent)
+			throws IOException {
+		String[] messageInformations = messageContent.split("\n");
+		String[] users = messageInformations[0].split("\\|");
+		Long dateLong = Long.valueOf(messageInformations[1]);
+		Date date = new Date(dateLong);
+		Movie movie = helper.getMovieFromTitle(title);
+		
+		String multicastAddr = "239.45.12.44";
+		MoviePayment moviePayment = helper.createSharedMulticast(title, users, date, multicastAddr);
+		AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie
+				.getMoviePath(), multicastAddr, date, moviePayment.getUuid());
+		AbstractTelnetWorker.doTelnetWork(telnet);
+		log("Shared multicast " + title);
+	}
+
+	private void sendUrl(SipSession session, String title, String quality)
+			throws IOException, UnsupportedEncodingException {
+
+		MoviePayment moviePayment = null;
+		Movie movie = null;
+		try {
 			utx.begin();
 			movie = helper.getMovieFromTitle(title);
 			moviePayment = movie.getMoviePayments(Quality.valueOf(quality));
 			utx.commit();
-			} catch(Exception ex) {
-				ex.printStackTrace();
-			}
-			SipSession session = req.getSession(true);
-			SipServletRequest info = session.createRequest("INFO");
-			info.setContent(moviePayment.getMovieUrl(), "vlc/uri");
-			info.send();
-			log("sending streaming URL of " + movie.getTitle());
-		} else if ("shared".equals(mimeTab[0])) {
-			//TODO shared with MoviePayments
-			/*String title = mimeTab[1];
-			String messageContent = new String(req.getRawContent());
-			String[] messageInformations = messageContent.split("\n");
-			String[] users = messageInformations[0].split("\\|");
-			Long dateLong = Long.valueOf(messageInformations[1]);
-			Date date = new Date(dateLong);
-			Movie movie = helper.getMovieFromTitle(title);
-			String multicastAddr = "239.45.12.44";
-			helper.createSharedMulticast(title, users, date, multicastAddr);
-			AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie
-					.getMoviePath(), multicastAddr, date, movie.getUuid());
-			telnet.start();
-			try {
-				telnet.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			log("Shared multicast " + title);*/
-		} else if ("info/ip_address".equals(contentType)) {
-			SipSession session = req.getSession();
-			SipServletRequest info = session.createRequest("INFO");
-			if (iperfIsAvailable) {
-				info.setContent(this.getIpAddress(), "info/ip_address");
-				iperfIsAvailable = false;
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						try {
-							Thread.sleep(50000);
-							iperfIsAvailable = true;
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-
-				}).start();
-				log("sending ip address ##############################");
-			} else {
-				info.setContent("WAIT", "info/ip_address");
-				log("sending WAIT &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-			}
-			info.send();			
-		} else {
-			log("Unrecognized INFO message " + req);
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+		SipServletRequest info = session.createRequest("INFO");
+		info.setContent(moviePayment.getMovieUrl(), "vlc/uri");
+		info.send();
+		log("sending streaming URL of " + movie.getTitle());
+	}
+
+	private void updatePurchase(String quality, String title,
+			String sip) throws IOException {
+		helper.purchaseMovie(title, sip, quality);
+		log("Purchase another movie " + title + ", quality = " + quality
+				+ ", sip = " + sip);
+	}
+
+	private void updateComment(String comment, String title,
+			String sip) throws IOException {
+		helper.addComment(title, sip, comment);
+		log("Adding new comment " + title + ", " + comment + ", " + sip);
+	}
+
+	private void sendSDPInfo(String title, SipSession session, String sip) throws IOException,
+			UnsupportedEncodingException {
+
+		SessionDescription sessionDescription = helper.createSDPFromMovie(
+				title, sip);
+
+		SipServletRequest info = session.createRequest("INFO");
+		info.setContent(sessionDescription.toString().getBytes(),
+				"application/sdp");
+		info.send();
+
+		log("Sending SDP with title = " + title + ", sip = "
+				+ sip);
+	}
+
+	private void updateRating(String sip, String title, String reqContent)
+			throws IOException {
+		Integer rating = new Integer(reqContent);
+		helper.setRatingToDatabase(title, rating, sip);
+		log("Rating updated : title = " + title + ", rating = " + rating
+				+ ", sip=" + sip);
 	}
 
 	/**
@@ -235,7 +231,8 @@ public class VideoServlet extends SipServlet {
 		log("inside doBye method");
 		sipServletRequest.getSession().invalidate();
 	}
-
+	
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -257,5 +254,4 @@ public class VideoServlet extends SipServlet {
 		}
 		return address;
 	}
-
 }
