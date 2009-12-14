@@ -17,5 +17,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/calendar.jar"/>
 	<classpathentry kind="lib" path="lib/jvlc.jar"/>
+	<classpathentry kind="lib" path="lib/org-openide-awt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

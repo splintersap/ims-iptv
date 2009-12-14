@@ -1,10 +1,14 @@
 package pl.edu.agh.iptv.view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,13 +18,17 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.data.Movie;
+import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.IperfManagerListener;
+import pl.edu.agh.iptv.listeners.PlayListener;
 import pl.edu.agh.iptv.view.chat.ChatTab;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
@@ -34,6 +42,10 @@ public class MainView {
 	private JScrollPane statisticsTab = null;
 	private JScrollPane paymentsTab = null;
 	private MoviesTab moviesTab = null;
+
+	private JPopupMenu playMenu = new JPopupMenu();
+
+	private PlayListener playListener;
 
 	private JLabel bandwidthLabel;
 
@@ -60,7 +72,7 @@ public class MainView {
 		// getMainFrame().pack();
 		getMainFrame().setVisible(true);
 	}
-	
+
 	/**
 	 * This method initializes MainFrame
 	 * 
@@ -77,7 +89,7 @@ public class MainView {
 
 			mainTabs.addTab("Chat", chatTab = new ChatTab(mainFrame,
 					getMoviesTab()));
-			
+
 			mainFrame.pack();
 		}
 		return mainFrame;
@@ -218,6 +230,7 @@ public class MainView {
 		// rew.setEnabled(false);
 
 		play = new JButton(playIcon);
+		play.addMouseListener(mouseListener);
 		play.setEnabled(false);
 
 		orderButton = new JButton(new ImageIcon("images/cart.gif"));
@@ -290,9 +303,52 @@ public class MainView {
 
 	public void setButtonsEnabelment(boolean ordered) {
 		play.setEnabled(ordered);
-		stop.setEnabled(!ordered);
+		adjustPlayMenu(moviesTab.getDescriptionPanel().getMovie());			
+		stop.setEnabled(ordered);
 		orderButton.setEnabled(!ordered);
 		record.setEnabled(ordered);
+	}
+
+
+	public void adjustPlayMenu(Movie movie) {
+		playMenu.removeAll();
+		for (MovieDescription desc : movie.getMovieDescriptionList()) {
+			playMenu.add(makeMenuItem(desc.getQuality(), desc.isOrdered()));
+		}
+	}
+
+	private JMenuItem makeMenuItem(String label, boolean ordered) {
+		JMenuItem item = new JMenuItem(label);
+		item.addActionListener(playListener);
+		item.setEnabled(ordered);
+		return item;
+	}
+
+	MouseListener mouseListener = new MouseAdapter() {
+		Component selectedComponent;
+
+		public void mousePressed(MouseEvent e) {
+			checkPopup(e);
+		}
+
+		public void mouseClicked(MouseEvent e) {
+			checkPopup(e);
+		}
+
+		public void mouseReleased(MouseEvent e) {
+			checkPopup(e);
+		}
+
+		private void checkPopup(MouseEvent e) {
+
+			selectedComponent = e.getComponent();
+			playMenu.show(e.getComponent(), play.getX() - 100, play.getY() + play.getHeight());
+
+		}
+	};
+
+	public void setPlayListner(PlayListener playListner) {
+		this.playListener = playListner;
 	}
 
 }

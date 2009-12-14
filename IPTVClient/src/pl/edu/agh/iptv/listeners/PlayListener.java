@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 import org.videolan.jvlc.VLCException;
 
@@ -21,6 +23,8 @@ public class PlayListener implements ActionListener {
 	private MainView mainView;
 	private boolean isPlayButton = true;
 
+	JPopupMenu menu = qualityChoice();
+
 	public PlayListener(IPTVClient client, MainView mainView) {
 		this.iptvClient = client;
 		this.moviesTab = mainView.getMoviesTab();
@@ -29,26 +33,28 @@ public class PlayListener implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 
-		JButton button = (JButton) e.getSource();
+		JMenuItem clickedItem = (JMenuItem) e.getSource();
 
 		JList list = moviesTab.getAllMoviesList();
 		Object value = list.getSelectedValue();
 		mainView.getStopButton().setEnabled(true);
+
 		if (value != null) {
 
 			if (mainView.getPlayButton().getIcon().equals(MainView.playIcon)) {
 				if (VLCHelper.isPlayingMovie) {
 					try {
-						VLCHelper.playlist.togglePause();						
+						VLCHelper.playlist.togglePause();
 					} catch (VLCException e1) {
 						e1.printStackTrace();
 					}
 				} else {
 					MenuListItem menuItem = (MenuListItem) value;
-					iptvClient.showChosenMovie(menuItem.getTitle());
+					iptvClient.showChosenMovie(menuItem.getTitle(), clickedItem
+							.getLabel());
 				}
 
-				button.setIcon(MainView.pauseIcon);
+				mainView.getPlayButton().setIcon(MainView.pauseIcon);
 				isPlayButton = false;
 
 			} else {
@@ -60,9 +66,30 @@ public class PlayListener implements ActionListener {
 				}
 
 				isPlayButton = true;
-				button.setIcon(MainView.playIcon);
+				mainView.getPlayButton().setIcon(MainView.playIcon);
 			}
 		}
+	}
+
+	private JPopupMenu qualityChoice() {
+
+		JPopupMenu popup = new JPopupMenu();
+
+		JMenuItem item;
+		popup.add(item = new JMenuItem("Left"));
+		item.setHorizontalTextPosition(JMenuItem.RIGHT);
+		popup.add(item = new JMenuItem("Center"));
+		item.setHorizontalTextPosition(JMenuItem.RIGHT);
+		popup.add(item = new JMenuItem("Right"));
+		item.setHorizontalTextPosition(JMenuItem.RIGHT);
+		popup.add(item = new JMenuItem("Full"));
+		item.setHorizontalTextPosition(JMenuItem.RIGHT);
+		popup.addSeparator();
+		popup.add(item = new JMenuItem("Settings . . ."));
+
+		popup.setLabel("Justification");
+
+		return popup;
 	}
 
 }
