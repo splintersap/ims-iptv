@@ -251,6 +251,7 @@ public class MessageCreator {
 
 	public void createRecordedMovie(String uuid, String movieTitle, String sip,
 			Date startDate, Date endDate) {
+		//TODO Change it to movie payments
 
 		String startFormatedDate = formatter.format(startDate);
 		String endFormatedDate = formatter.format(endDate);
@@ -258,7 +259,7 @@ public class MessageCreator {
 				+ endFormatedDate;
 		Movie movie = new Movie(title, "C:/Movies/" + uuid + ".mov");
 		movie.setMediaType(MediaType.RECORDING);
-		movie.setMovieUrl("rtsp://" + getIpAddress() + ":5554/" + uuid);
+		//movie.setMovieUrl("rtsp://" + getIpAddress() + ":5554/" + uuid);
 		//movie.setUuid(uuid);
 		movie.addMoviePayment(400, Quality.LOW);
 		movie.addMoviePayment(600, Quality.MEDIUM);
@@ -279,6 +280,7 @@ public class MessageCreator {
 	}
 
 	public Movie createSharedMulticast(String title, String[] users, Date date, String multicastAddr) {
+		//TODO change it to MoviePayments
 		Movie sharedMovie = null;
 		try {
 			utx.begin();
@@ -295,7 +297,7 @@ public class MessageCreator {
 			sharedMovie.setAvailableFrom(date);
 			//sharedMovie.setUuid(uuid);
 			// rtp://@239.255.12.42:5004
-			sharedMovie.setMovieUrl("rtp://@" + multicastAddr + ":5004");
+			//sharedMovie.setMovieUrl("rtp://@" + multicastAddr + ":5004");
 
 			// let users purchase movie
 			for (String userSip : users) {

@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 import pl.edu.agh.iptv.persistence.Category;
 import pl.edu.agh.iptv.persistence.MediaType;
 import pl.edu.agh.iptv.persistence.Movie;
+import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
@@ -163,37 +164,50 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 			movie.setCategory((Category) categoryComboBox.getSelectedItem());
 			movie.setDirector(directorTextFiled.getText());
 			movie.setDescription(descriptionTextArea.getText());
-			for (QualitySpinner spinner : spinners) {
-				movie.addMoviePayment(Double.valueOf(
-						spinner.getValue().toString()).longValue(), spinner
-						.getQuality());
-			}
+			
 
 			String streaming = (String) streamingComboBox.getSelectedItem();
 
 			AbstractTelnetWorker telnet = null;
 
 			if (VOD.equals(streaming)) {
-				telnet = new VodTelnetClient(moviePathTextField.getText(), movie.getUuid());
-				String address = getIpAddress();
-				movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
-						+ telnet.getUuid().toString());
 				movie.setMediaType(MediaType.VOD);
+				
+				for (QualitySpinner spinner : spinners) {
+					movie.addMoviePayment(Double.valueOf(
+							spinner.getValue().toString()).longValue(), spinner
+							.getQuality());
+				}
+				
+				String address = getIpAddress();
+				//movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
+				//		+ telnet.getUuid().toString());
+				for(MoviePayment moviePayment : movie.getMoviePayments()) {
+					moviePayment.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/" + moviePayment.getUuid());
+					telnet = new VodTelnetClient(moviePathTextField.getText(), moviePayment.getUuid(), moviePayment.getQuality());
+					AbstractTelnetWorker.doTelnetWork(telnet);
+				}
+				
+				
+				
 			} else if (BROADCAST.equals(streaming)) {
-				telnet =  new MulticastTelnetClient(moviePathTextField
-						.getText(), "239.255.12.42", movie.getUuid());
-				// getIpAddress();
-				movie.setMovieUrl("rtp://@239.255.12.42:5004");
+				
 				movie.setMediaType(MediaType.BROADCAST);
+				// getIpAddress();
+				//movie.setMovieUrl("rtp://@239.255.12.42:5004");
+				MoviePayment mp = movie.addMoviePayment(Double.valueOf(
+						spinners[2].getValue().toString()).longValue(), spinners[2].getQuality());
+				
+				String multicastIP = "239.255.12.42";
+				mp.setMovieUrl("rtp://@" + multicastIP + ":5004");
+				
+				telnet =  new MulticastTelnetClient(moviePathTextField
+						.getText(), multicastIP, mp.getUuid());
+				AbstractTelnetWorker.doTelnetWork(telnet);
 			}
 			//movie.setUuid(telnet.getUuid().toString());
 			System.out.println("Starting telnet");
-			telnet.start();
-			try {
-				telnet.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			
 
 			Starter.persistMovie(movie);
 

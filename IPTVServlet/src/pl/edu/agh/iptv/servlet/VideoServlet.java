@@ -18,6 +18,8 @@ import javax.transaction.UserTransaction;
 
 import net.sourceforge.jsdp.SessionDescription;
 import pl.edu.agh.iptv.persistence.Movie;
+import pl.edu.agh.iptv.persistence.MoviePayment;
+import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
 import pl.edu.agh.iptv.servlet.performance.PerformanceLauncher;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
@@ -104,7 +106,8 @@ public class VideoServlet extends SipServlet {
 					+ ", sip = " + sip);
 
 		} else if ("record".equals(mimeTab[0])) {
-			String content = new String(req.getRawContent());
+			//TODO recording with MoviePayments
+			/*String content = new String(req.getRawContent());
 			String[] informationsTab = content.split("\\|");
 			if (informationsTab.length == 2) {
 				Long startDateLong = Long.valueOf(informationsTab[0]);
@@ -126,18 +129,31 @@ public class VideoServlet extends SipServlet {
 
 				log("Recording movie " + movieTitle + " from: " + startDate
 						+ " to: " + endDate);
+			
+			}*/
+		} else if ("movies".equals(mimeTab[0])) {
+			//TODO chceck if movie is bought by user
+			String title = mimeTab[1];
+			String quality = new String(req.getRawContent());
+			
+			MoviePayment moviePayment = null;
+			Movie movie = null;
+			try {
+			utx.begin();
+			movie = helper.getMovieFromTitle(title);
+			moviePayment = movie.getMoviePayments(Quality.valueOf(quality));
+			utx.commit();
+			} catch(Exception ex) {
+				ex.printStackTrace();
 			}
-		} else if ("movies/choice".equals(contentType)) {
-			String movieTitle = new String(req.getRawContent());
-			Movie movie = helper.getMovieFromTitle(movieTitle);
-
 			SipSession session = req.getSession(true);
 			SipServletRequest info = session.createRequest("INFO");
-			info.setContent(movie.getMovieUrl(), "vlc/uri");
+			info.setContent(moviePayment.getMovieUrl(), "vlc/uri");
 			info.send();
 			log("sending streaming URL of " + movie.getTitle());
 		} else if ("shared".equals(mimeTab[0])) {
-			String title = mimeTab[1];
+			//TODO shared with MoviePayments
+			/*String title = mimeTab[1];
 			String messageContent = new String(req.getRawContent());
 			String[] messageInformations = messageContent.split("\n");
 			String[] users = messageInformations[0].split("\\|");
@@ -154,7 +170,7 @@ public class VideoServlet extends SipServlet {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			log("Shared multicast " + title);
+			log("Shared multicast " + title);*/
 		} else if ("info/ip_address".equals(contentType)) {
 			SipSession session = req.getSession();
 			SipServletRequest info = session.createRequest("INFO");
