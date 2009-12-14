@@ -245,7 +245,7 @@ public class MainView {
 		return toolBar;
 	}
 
-	public static JButton getPlayButton() {
+	public JButton getPlayButton() {
 		return play;
 	}
 
@@ -290,7 +290,7 @@ public class MainView {
 
 	public void setButtonsEnabelment(boolean ordered) {
 		play.setEnabled(ordered);
-		stop.setEnabled(ordered);
+		stop.setEnabled(!ordered);
 		orderButton.setEnabled(!ordered);
 		record.setEnabled(ordered);
 	}

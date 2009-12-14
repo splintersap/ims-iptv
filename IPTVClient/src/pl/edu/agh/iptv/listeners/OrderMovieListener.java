@@ -39,7 +39,7 @@ public class OrderMovieListener implements ActionListener {
 				view.dispose();
 			} else if (((JButton) e.getSource()).getName() == "ORDER") {
 				MenuListItem menuItem = (MenuListItem) moviesTab.getAllMoviesList().getSelectedValue();
-				view = new OrderMovieView(menuItem.getTitle() , this, parent);
+				view = new OrderMovieView(menuItem.getTitle() , this, parent, this.moviesTab);
 
 			}
 		}
