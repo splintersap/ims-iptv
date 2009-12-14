@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,6 +22,9 @@ public class MoviePayment extends pl.edu.agh.iptv.persistence.Entity {
 	private Movie movie;
 	private long pirce;
 	private Quality quality;
+	@Column(nullable = false)
+	private String url;
+	private String uuid;
 	private List<OrderedMovie> orderedMovieList = new ArrayList<OrderedMovie>();
 
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Movie.class)
@@ -78,6 +83,24 @@ public class MoviePayment extends pl.edu.agh.iptv.persistence.Entity {
 		this.movie = movie;
 		this.pirce = pirce;
 		this.quality = quality;
+		this.uuid = UUID.randomUUID().toString();
+	}
+	
+	public String getMovieUrl() {
+		return url;
+	}
+
+	public void setMovieUrl(String moviePath) {
+		this.url = moviePath;
+	}
+	
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 	@Override

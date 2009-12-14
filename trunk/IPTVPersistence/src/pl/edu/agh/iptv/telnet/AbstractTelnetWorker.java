@@ -161,5 +161,14 @@ public abstract class AbstractTelnetWorker extends Thread {
 		writer.write(command + newline);
 		writer.flush();
 	}
+	
+	public static void doTelnetWork(AbstractTelnetWorker telnet) {
+		telnet.start();
+		try {
+			telnet.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

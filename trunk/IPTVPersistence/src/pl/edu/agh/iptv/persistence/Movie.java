@@ -36,11 +36,6 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 	@Column(nullable = false)
 	private String description;
 
-	@Column(nullable = false)
-	private String url;
-
-	private String uuid;
-
 	private String moviePath;
 	
 	private User recordingUser;
@@ -57,7 +52,6 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 	public Movie(String title, String moviePath) {
 		this.title = title;
 		this.moviePath = moviePath;
-		this.uuid = UUID.randomUUID().toString();
 	}
 
 	public String getTitle() {
@@ -93,13 +87,6 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 		this.description = description;
 	}
 
-	public String getMovieUrl() {
-		return url;
-	}
-
-	public void setMovieUrl(String moviePath) {
-		this.url = moviePath;
-	}
 
 	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = MovieRating.class)
 	public List<MovieRating> getRating() {
@@ -128,9 +115,10 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 		this.commentsList = commentsList;
 	}
 
-	public void addMoviePayment(long price, Quality quality) {
+	public MoviePayment addMoviePayment(long price, Quality quality) {
 		MoviePayment mp = new MoviePayment(this, price, quality);
 		paymentsList.add(mp);
+		return mp;
 	}
 
 	public void addMovieComment(String comment, User user) {
@@ -143,13 +131,6 @@ public class Movie extends pl.edu.agh.iptv.persistence.Entity {
 		ratingList.add(mr);
 	}
 
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
 
 	public MediaType getMediaType() {
 		return mediaType;

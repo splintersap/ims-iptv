@@ -13,6 +13,7 @@ import javax.transaction.UserTransaction;
 import pl.edu.agh.iptv.persistence.Category;
 import pl.edu.agh.iptv.persistence.MediaType;
 import pl.edu.agh.iptv.persistence.Movie;
+import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.persistence.User;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
@@ -225,8 +226,8 @@ public class RandomDatabaseData {
 		aljazera.setCategory(Category.Documentary);
 		aljazera.setDirector("director");
 		aljazera.setMediaType(MediaType.BROADCAST);
-		aljazera.addMoviePayment(400, Quality.LOW);
-		aljazera.addMoviePayment(600, Quality.MEDIUM);
+//		aljazera.addMoviePayment(400, Quality.LOW);
+//		aljazera.addMoviePayment(600, Quality.MEDIUM);
 		aljazera.addMoviePayment(700, Quality.HIGH);
 
 		try {
@@ -261,48 +262,47 @@ public class RandomDatabaseData {
 	private static void addBroadcastToTelnet(Movie movie) {
 		AbstractTelnetWorker telnet = null;
 
+		String multicastIp = "239.255.12.42";
+		
+		MoviePayment mp = movie.getMoviePayments(Quality.HIGH);
+		
 		telnet = new MulticastTelnetClient(movie.getMoviePath(),
-				"239.255.12.42", movie.getUuid());
-		movie.setMovieUrl("rtp://@239.255.12.42:5004");
+				multicastIp, mp.getUuid());
+		mp.setMovieUrl("rtp://@" + multicastIp + ":5004");
+		//movie.setMovieUrl("rtp://@239.255.12.42:5004");
 
 		System.out.println("Starting telnet");
-		telnet.start();
-		try {
-			telnet.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		AbstractTelnetWorker.doTelnetWork(telnet);
 	}
 
 	private static void delAllMoviesFromTelnet() {
 		AbstractTelnetWorker telnet = null;
 
 		telnet = new RemovingTelnetClient("all");
-		telnet.start();
-		try {
-			telnet.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		AbstractTelnetWorker.doTelnetWork(telnet);
 
 	}
 
 	private static void addVodMovieToTelnet(Movie movie) {
-		AbstractTelnetWorker telnet = null;
-
-		telnet = new VodTelnetClient(movie.getMoviePath(), movie.getUuid());
+		
 		String address = MessageCreator.getIpAddress();
-		movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
-				+ movie.getUuid());
 
-		movie.setUuid(telnet.getUuid().toString());
-		System.out.println("Starting telnet");
-		telnet.start();
-		try {
-			telnet.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		for(MoviePayment moviePayment : movie.getMoviePayments())
+		{
+			AbstractTelnetWorker telnet = new VodTelnetClient(movie.getMoviePath(), moviePayment.getUuid(), moviePayment.getQuality());
+			moviePayment.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
+					+ moviePayment.getUuid());
+			AbstractTelnetWorker.doTelnetWork(telnet);
 		}
+		
+		//telnet = new VodTelnetClient(movie.getMoviePath(), movie.getUuid());
+		
+//		movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
+//				+ movie.getUuid());
+
+//		movie.setUuid(telnet.getUuid().toString());
+//		System.out.println("Starting telnet");
+//		AbstractTelnetWorker.doTelnetWork(telnet);
 	}
 
 	public static void addDBMoviesToTelnet(EntityManager em, UserTransaction utx) {

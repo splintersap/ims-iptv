@@ -17,7 +17,7 @@ public class DBTableModel extends AbstractTableModel {
 	EntityManager em;
 
 	String[] columnNames = { "Id", "Title", "Category", "Director",
-			"Description", "Movie Url", "UUID", "Movie path", "Media type",
+			"Description", "Movie path", "Media type",
 			"Record by" };
 
 	DBTableModel(List<Movie> movieList, EntityManager em) {
@@ -53,7 +53,7 @@ public class DBTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return 10;
+		return 8;
 	}
 
 	@Override
@@ -83,18 +83,12 @@ public class DBTableModel extends AbstractTableModel {
 				value = movie.getDescription();
 				break;
 			case 5:
-				value = movie.getMovieUrl();
-				break;
-			case 6:
-				value = movie.getUuid();
-				break;
-			case 7:
 				value = movie.getMoviePath();
 				break;
-			case 8:
+			case 6:
 				value = movie.getMediaType().name();
 				break;
-			case 9:
+			case 7:
 				value = movie.getRecordingUser().getSip();
 				break;
 
@@ -135,9 +129,6 @@ public class DBTableModel extends AbstractTableModel {
 			movie.setDescription(strValue);
 			break;
 		case 5:
-			movie.setMovieUrl(strValue);
-			break;
-		case 7:
 			movie.setMoviePath(strValue);
 			break;
 		}
