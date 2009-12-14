@@ -58,6 +58,8 @@ public class IPTVClient implements ActionListener {
 
 	private MainView mainView = null;
 
+	private boolean iperfStarted = false;
+
 	private static String infoType = null;
 
 	private static String infoContent = null;
@@ -133,12 +135,17 @@ public class IPTVClient implements ActionListener {
 
 							@Override
 							public void run() {
-								moviesTab.setListOfMovies(movieList);;
+								moviesTab.setListOfMovies(movieList);
+								;
 							}
 
 						});
-						
-						askForIP();
+
+						if (!iperfStarted) {
+							iperfStarted = true;
+							askForIP();
+						}
+
 					} else if ("application/sdp".equals(aContentType)) {
 
 						/*
@@ -161,8 +168,26 @@ public class IPTVClient implements ActionListener {
 						new VLCHelper(mainView, vlcCommand, IPTVClient.this);
 
 					} else if ("info/ip_address".equals(aContentType)) {
-						new Thread(new PerformanceLauncher(mainView,
-								new String(aMessage))).start();
+						if (new String(aMessage).contains("WAIT")) {
+							new Thread(new Runnable() {
+
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									try {
+										Thread.sleep(30000);
+										askForIP();
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+
+							});
+						} else {
+							new Thread(new PerformanceLauncher(mainView,
+									new String(aMessage))).start();
+						}
 					} else {
 						System.out.println("Unrecognized message");
 					}
@@ -326,7 +351,7 @@ public class IPTVClient implements ActionListener {
 			if (VLCHelper.mp != null) {
 				VLCHelper.mp.stop();
 				VLCHelper.isPlayingMovie = false;
-				MainView.getPlayButton().setIcon(MainView.playIcon);
+				mainView.getPlayButton().setIcon(MainView.playIcon);
 			}
 			DescriptionPanel descriptionPanel = new DescriptionPanel(movie);
 			MovieComments movieComments = descriptionPanel.getMovieComments();

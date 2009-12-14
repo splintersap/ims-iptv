@@ -54,6 +54,8 @@ public class MoviesTab extends JPanel {
 
 	private MainView parent = null;
 
+	private DescriptionPanel descriptionPanel;
+
 	private List<MenuListItem> movieList = null;
 
 	public MoviesTab(MainView parent) {
@@ -120,22 +122,20 @@ public class MoviesTab extends JPanel {
 			int listWidth = this.moviesListPaneWidth - 50;
 
 			panelForMoviesList = new JPanel();
-			//ResizableGridLayout resizableLayout = new ResizableGridLayout(4, 1,
-			//		1, 0);
+			// ResizableGridLayout resizableLayout = new ResizableGridLayout(4,
+			// 1,
+			// 1, 0);
 
 			BorderLayout layout = new BorderLayout();
 			layout.setVgap(10);
 			panelForMoviesList.setLayout(layout);
-			
-			
+
 			JPanel labelPanel = new JPanel();
-			
-			
-			
+
 			JLabel allMoviesLabel = new JLabel("VIDEOS");
 
 			allMoviesLabel.setFont(new Font("Times New Roman", Font.BOLD, 14));
-			allMoviesLabel.setBorder(new EmptyBorder(10,30,0,0));
+			allMoviesLabel.setBorder(new EmptyBorder(10, 30, 0, 0));
 			labelPanel.add(allMoviesLabel);
 
 			allMoviesList = new JList();
@@ -175,10 +175,11 @@ public class MoviesTab extends JPanel {
 	 * @param descPanel
 	 *            panel which will appear on the right side of 'Watcher'
 	 */
-	public void setDescriptionPanel(JPanel descPanel) {
+	public void setDescriptionPanel(DescriptionPanel descPanel) {
 
 		this.moviesDescPane.getViewport().removeAll();
 		this.moviesDescPane.getViewport().add(descPanel);
+		this.descriptionPanel = descPanel;
 
 	}
 
@@ -251,6 +252,10 @@ public class MoviesTab extends JPanel {
 
 	public List<MenuListItem> getAllMovies() {
 		return this.movieList;
+	}
+
+	public DescriptionPanel getDescriptionPanel() {
+		return this.descriptionPanel;
 	}
 
 }

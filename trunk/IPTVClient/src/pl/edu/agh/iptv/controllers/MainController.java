@@ -16,7 +16,6 @@ import pl.edu.agh.iptv.listeners.DescriptionListener;
 import pl.edu.agh.iptv.listeners.OrderMovieListener;
 import pl.edu.agh.iptv.listeners.PlayListener;
 import pl.edu.agh.iptv.listeners.RecordMovieListener;
-import pl.edu.agh.iptv.performance.client.PerformanceLauncher;
 import pl.edu.agh.iptv.presence.controller.PresenceController;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.components.MenuListItem;
@@ -54,18 +53,13 @@ public class MainController {
 				 * with servlet.
 				 */
 				final IPTVClient iptvClient = new IPTVClient(mainView);
-
-				/*
-				 * Adding listener to the list with movies.
-				 */
-				// moviesTab.getOrderedMoviesList().addListSelectionListener(
-				// new DescriptionListener(iptvClient));
+				
 				moviesTab.getAllMoviesList().addListSelectionListener(
 						new DescriptionListener(iptvClient, MainController.this));
 				
 
-				MainView.getPlayButton().addActionListener(
-						new PlayListener(iptvClient, moviesTab));
+				mainView.getPlayButton().addActionListener(
+						new PlayListener(iptvClient, mainView));
 
 				mainView.getStopButton().addActionListener(
 						new ActionListener() {
@@ -74,6 +68,7 @@ public class MainController {
 							public void actionPerformed(ActionEvent e) {
 								
 								stopMovie(iptvClient);
+								mainView.getPlayButton().setEnabled(true);
 							}
 						});
 
@@ -117,7 +112,7 @@ public class MainController {
 		}
 		
 		VLCHelper.isPlayingMovie = false;
-		MainView.getPlayButton().setIcon(MainView.playIcon);
+		mainView.getPlayButton().setIcon(MainView.playIcon);
 		MenuListItem item = (MenuListItem)moviesTab.getAllMoviesList().getSelectedValue();
 		iptvClient.getMovieInformations(item.getTitle());
 	}

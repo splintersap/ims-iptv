@@ -76,7 +76,7 @@ public class ContactsPanel extends JPanel {
 			removeContactB.setName("Remove Contact");
 			removeContactB.setEnabled(true);
 
-			inviteM = new JButton(new ImageIcon("images/chat/remove_buddy.gif"));
+			inviteM = new JButton(new ImageIcon("images/chat/handshake.gif"));
 			inviteM.setName("INVITE");
 			inviteM.setEnabled(true);
 

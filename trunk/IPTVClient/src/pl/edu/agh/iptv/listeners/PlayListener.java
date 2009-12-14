@@ -18,45 +18,47 @@ public class PlayListener implements ActionListener {
 
 	private IPTVClient iptvClient;
 	private MoviesTab moviesTab;
-	private static boolean isPlayButton = true;
-	
-	public PlayListener(IPTVClient client, MoviesTab moviesTab) {
+	private MainView mainView;
+	private boolean isPlayButton = true;
+
+	public PlayListener(IPTVClient client, MainView mainView) {
 		this.iptvClient = client;
-		this.moviesTab = moviesTab;
+		this.moviesTab = mainView.getMoviesTab();
+		this.mainView = mainView;
 	}
 
 	public void actionPerformed(ActionEvent e) {
 
 		JButton button = (JButton) e.getSource();
-		
+
 		JList list = moviesTab.getAllMoviesList();
 		Object value = list.getSelectedValue();
+		mainView.getStopButton().setEnabled(true);
 		if (value != null) {
-			
-			if(MainView.getPlayButton().getIcon().equals(MainView.playIcon))
-			{				
-				if(VLCHelper.isPlayingMovie) {
+
+			if (mainView.getPlayButton().getIcon().equals(MainView.playIcon)) {
+				if (VLCHelper.isPlayingMovie) {
 					try {
-						VLCHelper.playlist.togglePause();
+						VLCHelper.playlist.togglePause();						
 					} catch (VLCException e1) {
 						e1.printStackTrace();
 					}
 				} else {
-					MenuListItem menuItem = (MenuListItem)value;
+					MenuListItem menuItem = (MenuListItem) value;
 					iptvClient.showChosenMovie(menuItem.getTitle());
 				}
-				
+
 				button.setIcon(MainView.pauseIcon);
 				isPlayButton = false;
-				
+
 			} else {
-				
+
 				try {
 					VLCHelper.playlist.togglePause();
 				} catch (VLCException e1) {
 					e1.printStackTrace();
 				}
-				
+
 				isPlayButton = true;
 				button.setIcon(MainView.playIcon);
 			}
