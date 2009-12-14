@@ -38,6 +38,8 @@ public class VideoServlet extends SipServlet {
 
 	private final String ACK_RECEIVED = "ackReceived";
 
+	private boolean iperfIsAvailable = true;
+
 	MessageCreator helper;
 
 	public void init(ServletConfig config) throws ServletException {
@@ -174,9 +176,30 @@ public class VideoServlet extends SipServlet {
 		} else if ("info/ip_address".equals(contentType)) {
 			SipSession session = req.getSession();
 			SipServletRequest info = session.createRequest("INFO");
-			info.setContent(this.getIpAddress(), "info/ip_address");
-			info.send();
-			log("sending ip address ##############################");
+			if (iperfIsAvailable) {
+				info.setContent(this.getIpAddress(), "info/ip_address");
+				iperfIsAvailable = false;
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						try {
+							Thread.sleep(50000);
+							iperfIsAvailable = true;
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+
+				}).start();
+				log("sending ip address ##############################");
+			} else {
+				info.setContent("WAIT", "info/ip_address");
+				log("sending WAIT &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+			}
+			info.send();			
 		} else {
 			log("Unrecognized INFO message " + req);
 		}
