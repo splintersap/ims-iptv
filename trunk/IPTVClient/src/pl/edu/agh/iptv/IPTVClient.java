@@ -79,7 +79,6 @@ public class IPTVClient implements ActionListener {
 
 			service = profile.createService("+g.videoclient.ericsson.com", "");
 			service.addListener(new ServiceAdapter());
-
 			this.mainView = mainView;
 			this.moviesTab = mainView.getMoviesTab();
 
@@ -186,7 +185,7 @@ public class IPTVClient implements ActionListener {
 	 *            title of the movie user wants to watch
 	 */
 	public void showChosenMovie(String movieTitle) {
-		sendMovieInformation("movies/choice", movieTitle);
+		sendMovieInformation("movies/"+ movieTitle, "MEDIUM");
 		/*
 		 * try { session.sendInformation("movies/choice", movieTitle.getBytes(),
 		 * movieTitle.length());
