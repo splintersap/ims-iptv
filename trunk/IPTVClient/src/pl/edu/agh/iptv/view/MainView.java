@@ -24,7 +24,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import org.videolan.jvlc.VLCException;
+
 import pl.edu.agh.iptv.components.ResizableGridLayout;
+import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.data.Movie;
 import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.IperfManagerListener;
@@ -328,7 +331,7 @@ public class MainView {
 		Component selectedComponent;
 
 		public void mousePressed(MouseEvent e) {
-			checkPopup(e);
+//			checkPopup(e);
 		}
 
 		public void mouseClicked(MouseEvent e) {
@@ -336,13 +339,24 @@ public class MainView {
 		}
 
 		public void mouseReleased(MouseEvent e) {
-			checkPopup(e);
+//			checkPopup(e);
 		}
 
 		private void checkPopup(MouseEvent e) {
-
+			if(play.getIcon().equals(MainView.playIcon)){
 			selectedComponent = e.getComponent();
 			playMenu.show(e.getComponent(), play.getX() - 100, play.getY() + play.getHeight());
+			}else{
+				if (VLCHelper.isPlayingMovie) {
+					try {
+						VLCHelper.playlist.togglePause();
+					} catch (VLCException e1) {
+						e1.printStackTrace();
+					}
+										
+					play.setIcon(MainView.playIcon);
+				}
+			}
 
 		}
 	};

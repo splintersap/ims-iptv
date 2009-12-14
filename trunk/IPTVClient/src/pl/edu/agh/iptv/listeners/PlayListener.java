@@ -43,7 +43,7 @@ public class PlayListener implements ActionListener {
 
 			if (mainView.getPlayButton().getIcon().equals(MainView.playIcon)) {
 				if (VLCHelper.isPlayingMovie) {
-					try {
+					try {						
 						VLCHelper.playlist.togglePause();
 					} catch (VLCException e1) {
 						e1.printStackTrace();
