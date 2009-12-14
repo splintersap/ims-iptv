@@ -249,7 +249,7 @@ public class MessageCreator {
 		return stringBuilder.toString();
 	}
 
-	public void createRecordedMovie(String uuid, String movieTitle, String sip,
+	public MoviePayment createRecordedMovie(String movieTitle, String sip,
 			Date startDate, Date endDate) {
 		//TODO Change it to movie payments
 
@@ -257,13 +257,14 @@ public class MessageCreator {
 		String endFormatedDate = formatter.format(endDate);
 		String title = movieTitle + " " + startFormatedDate + " "
 				+ endFormatedDate;
-		Movie movie = new Movie(title, "C:/Movies/" + uuid + ".mov");
+		Movie movie = new Movie();
+		movie.setTitle(title);
+		//Movie movie = new Movie(title, "C:/Movies/" + uuid + ".mov");
 		movie.setMediaType(MediaType.RECORDING);
-		//movie.setMovieUrl("rtsp://" + getIpAddress() + ":5554/" + uuid);
-		//movie.setUuid(uuid);
-		movie.addMoviePayment(400, Quality.LOW);
-		movie.addMoviePayment(600, Quality.MEDIUM);
-		movie.addMoviePayment(700, Quality.HIGH);
+		
+		MoviePayment moviePayment = movie.addMoviePayment(0, Quality.HIGH);
+		movie.setMoviePath("C:/Movies/" + moviePayment.getUuid() + ".mov");
+		moviePayment.setMovieUrl("rtsp://" + getIpAddress() + ":5554/" + moviePayment.getUuid());
 		movie.setAvailableFrom(endDate);
 
 		try {
@@ -271,17 +272,21 @@ public class MessageCreator {
 			User user = getUserFromSip(sip);
 			movie.setRecordingUser(user);
 			em.persist(movie);
-			user.addOrderedMovie(movie, Quality.MEDIUM);
+			em.persist(moviePayment);
+			user.addOrderedMovie(movie, Quality.HIGH);
 			utx.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		return moviePayment;
 
 	}
 
-	public Movie createSharedMulticast(String title, String[] users, Date date, String multicastAddr) {
+	public MoviePayment createSharedMulticast(String title, String[] users, Date date, String multicastAddr) {
 		//TODO change it to MoviePayments
 		Movie sharedMovie = null;
+		MoviePayment moviePayment = null;
 		try {
 			utx.begin();
 			Movie movie = getMovieFromTitle(title);
@@ -291,10 +296,15 @@ public class MessageCreator {
 			// create new movie
 			sharedMovie = new Movie(sharedTitle, movie.getMoviePath());
 			sharedMovie.setMediaType(MediaType.SHARED);
-			sharedMovie.addMoviePayment(400, Quality.LOW);
-			sharedMovie.addMoviePayment(600, Quality.MEDIUM);
-			sharedMovie.addMoviePayment(700, Quality.HIGH);
+			//sharedMovie.addMoviePayment(400, Quality.LOW);
+			//sharedMovie.addMoviePayment(600, Quality.MEDIUM);
 			sharedMovie.setAvailableFrom(date);
+			moviePayment = sharedMovie.addMoviePayment(0, Quality.HIGH);
+			moviePayment.setMovieUrl("rtp://@" + multicastAddr + ":5004");
+			
+			em.persist(sharedMovie);
+			em.persist(moviePayment);
+			
 			//sharedMovie.setUuid(uuid);
 			// rtp://@239.255.12.42:5004
 			//sharedMovie.setMovieUrl("rtp://@" + multicastAddr + ":5004");
@@ -302,7 +312,7 @@ public class MessageCreator {
 			// let users purchase movie
 			for (String userSip : users) {
 				User user = getUserFromSip(userSip);
-				user.addOrderedMovie(sharedMovie, Quality.MEDIUM);
+				user.addOrderedMovie(sharedMovie, Quality.HIGH);
 			}
 
 			utx.commit();
@@ -310,7 +320,7 @@ public class MessageCreator {
 			e.printStackTrace();
 		}
 		
-		return sharedMovie;
+		return moviePayment;
 	}
 
 	public static String getIpAddress() {
