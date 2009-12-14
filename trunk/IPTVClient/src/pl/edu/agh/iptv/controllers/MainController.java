@@ -53,20 +53,22 @@ public class MainController {
 				 * with servlet.
 				 */
 				final IPTVClient iptvClient = new IPTVClient(mainView);
-				
-				moviesTab.getAllMoviesList().addListSelectionListener(
-						new DescriptionListener(iptvClient, MainController.this));
-				
 
-				mainView.getPlayButton().addActionListener(
-						new PlayListener(iptvClient, mainView));
+				moviesTab.getAllMoviesList()
+						.addListSelectionListener(
+								new DescriptionListener(iptvClient,
+										MainController.this));
+
+				// mainView.getPlayButton().addActionListener(
+				// new PlayListener(iptvClient, mainView));
+				mainView.setPlayListner(new PlayListener(iptvClient, mainView));
 
 				mainView.getStopButton().addActionListener(
 						new ActionListener() {
 
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								
+
 								stopMovie(iptvClient);
 								mainView.getPlayButton().setEnabled(true);
 							}
@@ -85,7 +87,8 @@ public class MainController {
 				/*
 				 * Functionality responsible for chat.
 				 */
-				new PresenceController(iptvClient, IPTVClient.getProfile(), mainView);
+				new PresenceController(iptvClient, IPTVClient.getProfile(),
+						mainView);
 
 				// IPTVPerformanceClient performance = new
 				// IPTVPerformanceClient(
@@ -93,7 +96,7 @@ public class MainController {
 				// performance.queryServer();
 
 				// mainView.setWindowCloseOperation(new IperfManagerListener(
-				// performance.getIperfThread()));				
+				// performance.getIperfThread()));
 
 			}
 		});
@@ -101,19 +104,20 @@ public class MainController {
 	}
 
 	public void stopMovie(final IPTVClient iptvClient) {
-		if(VLCHelper.playlist != null) {
+		if (VLCHelper.playlist != null) {
 			try {
 				VLCHelper.playlist.stop();
 			} catch (VLCException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			//VLCHelper.ds.release();
+			// VLCHelper.ds.release();
 		}
-		
+
 		VLCHelper.isPlayingMovie = false;
 		mainView.getPlayButton().setIcon(MainView.playIcon);
-		MenuListItem item = (MenuListItem)moviesTab.getAllMoviesList().getSelectedValue();
+		MenuListItem item = (MenuListItem) moviesTab.getAllMoviesList()
+				.getSelectedValue();
 		iptvClient.getMovieInformations(item.getTitle());
 	}
 

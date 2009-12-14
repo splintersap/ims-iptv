@@ -2,23 +2,18 @@ package pl.edu.agh.iptv.view.chat;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.presence.data.Buddy;
-import pl.edu.agh.iptv.view.CommonWatchingView;
 import pl.edu.agh.iptv.view.components.ListItem;
 import pl.edu.agh.iptv.view.components.MyCellRenderer;
 import pl.edu.agh.iptv.view.movies.MoviesTab;

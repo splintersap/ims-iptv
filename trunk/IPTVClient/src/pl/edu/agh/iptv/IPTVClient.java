@@ -209,8 +209,8 @@ public class IPTVClient implements ActionListener {
 	 * @param movieTitle
 	 *            title of the movie user wants to watch
 	 */
-	public void showChosenMovie(String movieTitle) {
-		sendMovieInformation("movies/"+ movieTitle, "MEDIUM");
+	public void showChosenMovie(String movieTitle, String quality) {
+		sendMovieInformation("movies/"+ movieTitle, quality);
 		/*
 		 * try { session.sendInformation("movies/choice", movieTitle.getBytes(),
 		 * movieTitle.length());
