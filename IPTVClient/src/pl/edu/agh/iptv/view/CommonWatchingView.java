@@ -141,8 +141,7 @@ public class CommonWatchingView extends ViewWithCalendar implements
 			Integer day = new Integer(calendar.getDayChooser().getDay());
 			this.dayS.setText(day.toString());
 
-			Integer month = new Integer(
-					calendar.getMonthChooser().getMonth());
+			Integer month = new Integer(calendar.getMonthChooser().getMonth());
 			this.monthS.setText(month.toString());
 
 			Integer year = new Integer(calendar.getYearChooser().getYear());
@@ -194,6 +193,18 @@ public class CommonWatchingView extends ViewWithCalendar implements
 
 	public String getStartDate() {
 		return this.date;
+	}
+
+	public Integer getYear() {
+		return new Integer(yearS.getText());
+	}
+
+	public Integer getMonth() {
+		return new Integer(monthS.getText());
+	}
+
+	public Integer getDay() {
+		return new Integer(dayS.getText());
 	}
 
 	public Integer getHour() {

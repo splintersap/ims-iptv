@@ -3,6 +3,7 @@ package pl.edu.agh.iptv.listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
@@ -38,11 +39,13 @@ public class CommonWatchingListener implements ActionListener {
 					+ commonView.getHour() + ":" + commonView.getMinute());
 			commonView.dispose();
 
-			this.chat
-					.setCommonWaiting(new CommonWatchingWaiting(iptvClient,
-							this.mainFrame, commonView.getUrisToUsers(),
-							commonView.getMovieToWatch(), commonView.getDate()
-									.getTime()));
+			Calendar date = new GregorianCalendar(commonView.getYear(),
+					commonView.getMonth(), commonView.getDay(), commonView
+							.getHour(), commonView.getMinute());
+
+			this.chat.setCommonWaiting(new CommonWatchingWaiting(iptvClient,
+					this.mainFrame, commonView.getUrisToUsers(), commonView
+							.getMovieToWatch(), date.getTime().getTime()));
 		} else if (((JButton) e.getSource()).getName().compareTo(
 				"COMMON_CANCEL") == 0) {
 			commonView.dispose();
