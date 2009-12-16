@@ -60,14 +60,16 @@ public class OrderMovieView extends JDialog implements ActionListener {
 		mainPanel.add(new JLabel("Choose the quality of movie " + movieTitle));
 
 		for (MovieDescription description : movieDesc) {
-			JRadioButton button = new JRadioButton(description.getQuality()
-					+ " - " + description.getPrice() / 100 + "zl");
+			if (!description.isOrdered()) {
+				JRadioButton button = new JRadioButton(description.getQuality()
+						+ " - " + description.getPrice() / 100.0 + "zl");
 
-			button.setName(description.getQuality());
-			button.addActionListener(this);
-			radioButtons.add(button);
-			mainPanel.add(button);
-			group.add(button);
+				button.setName(description.getQuality());
+				button.addActionListener(this);
+				radioButtons.add(button);
+				mainPanel.add(button);
+				group.add(button);
+			}
 		}
 
 		JPanel buttonsPanel = new JPanel();

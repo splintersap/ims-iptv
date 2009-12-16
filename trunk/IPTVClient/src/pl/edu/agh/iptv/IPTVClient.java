@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -210,7 +211,7 @@ public class IPTVClient implements ActionListener {
 	 *            title of the movie user wants to watch
 	 */
 	public void showChosenMovie(String movieTitle, String quality) {
-		sendMovieInformation("movies/"+ movieTitle, quality);
+		sendMovieInformation("movies/" + movieTitle, quality);
 		/*
 		 * try { session.sendInformation("movies/choice", movieTitle.getBytes(),
 		 * movieTitle.length());
@@ -362,14 +363,22 @@ public class IPTVClient implements ActionListener {
 
 			this.moviesTab.setDescriptionPanel(descriptionPanel);
 
-			boolean isOrdered = false;
-			for (MovieDescription movieDesc : movie.getMovieDescriptionList()) {
-				if (movieDesc.isOrdered()) {
-					isOrdered = true;
-					break;
+			List<MovieDescription> descList = movie.getMovieDescriptionList();
+
+			if (descList.size() == 0) {
+				mainView.setButtonsEnabelment(false, false);
+			} else if (descList.get(descList.size() - 1).isOrdered()) {
+				mainView.setButtonsEnabelment(true, false);
+			} else {
+
+				for (MovieDescription movieDesc : descList) {
+					if (movieDesc.isOrdered()) {
+						mainView.setButtonsEnabelment(true, true);
+						return;
+					}
 				}
+				mainView.setButtonsEnabelment(false, true);
 			}
-			mainView.setButtonsEnabelment(isOrdered);
 		}
 	}
 

@@ -304,11 +304,11 @@ public class MainView {
 		getMainFrame().addWindowListener(iperfListener);
 	}
 
-	public void setButtonsEnabelment(boolean ordered) {
+	public void setButtonsEnabelment(boolean ordered, boolean moreToOrder) {
 		play.setEnabled(ordered);
 		adjustPlayMenu(moviesTab.getDescriptionPanel().getMovie());			
 		stop.setEnabled(ordered);
-		orderButton.setEnabled(!ordered);
+		orderButton.setEnabled(moreToOrder);
 		record.setEnabled(ordered);
 	}
 
