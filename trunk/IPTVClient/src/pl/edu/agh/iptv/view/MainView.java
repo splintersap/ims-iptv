@@ -94,6 +94,8 @@ public class MainView {
 					getMoviesTab()));
 
 			mainFrame.pack();
+			mainFrame.setLocationRelativeTo(null);
+
 		}
 		return mainFrame;
 	}
