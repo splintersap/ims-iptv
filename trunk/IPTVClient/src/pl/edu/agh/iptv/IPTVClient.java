@@ -65,6 +65,8 @@ public class IPTVClient implements ActionListener {
 
 	private static String infoContent = null;
 
+	private static boolean isInfoToSend = false;
+
 	/*
 	 * This is in order to pass the reference of IPTVClient class to the
 	 * aggregated class SessionAdapter responsible for querying the server.
@@ -103,15 +105,38 @@ public class IPTVClient implements ActionListener {
 			session = service.createSession();
 			session.addListener(new SessionAdapter() {
 
+				@Override
 				public void processSessionStartFailed(ErrorReason aError,
 						long retryAfter) {
 					showError("Could not start session", new Exception(aError
 							.getReasonString()));
+					IPTVClient.isInfoToSend = true;
+					
 				}
 
+				@Override
+				public void processSessionStarted(
+						com.ericsson.icp.util.ISessionDescription arg0) {
+					System.out.println("Session started");
+					if(IPTVClient.isInfoToSend) {
+						System.out.println("Sending INFO : " + IPTVClient.infoType + ", " + IPTVClient.infoContent);
+						IPTVClient.this.sendMovieInformation(IPTVClient.infoType, IPTVClient.infoContent);
+						isInfoToSend = false;
+					}
+				};
+
+				@Override
 				public void processError(ErrorReason aError) {
 					showError("Session Error", new Exception(aError
 							.getReasonString()));
+				}
+
+				@Override
+				public void processSessionInformationFailed(ErrorReason arg0,
+						long arg1) {
+					System.out.println("processSessionInformationFailed");
+					IPTVClient.this.actionPerformed(null);
+					IPTVClient.isInfoToSend = true;
 				}
 
 				@Override
@@ -210,6 +235,7 @@ public class IPTVClient implements ActionListener {
 	 * @param movieTitle
 	 *            title of the movie user wants to watch
 	 */
+
 	public void showChosenMovie(String movieTitle, String quality) {
 		sendMovieInformation("movies/" + movieTitle, quality);
 		/*
@@ -324,15 +350,12 @@ public class IPTVClient implements ActionListener {
 		try {
 			infoContent = content;
 			infoType = type;
-			if (!session.isValid()) {
-				System.out.println("Session is not valid - starting new one");
-				triggerMoviesRequest();
-			}
 			session.sendInformation(type, content.getBytes(), content.length());
 		} catch (Exception e) {
 			showError("Error while sending INFO", e);
 			e.printStackTrace();
 		}
+
 	}
 
 	private class DescriptionThread implements Runnable {

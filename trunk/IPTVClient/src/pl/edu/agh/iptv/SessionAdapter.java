@@ -23,7 +23,7 @@ import com.ericsson.icp.util.SdpFactory;
 public class SessionAdapter implements ISessionListener
 {
 
-    public void processSessionAlerting()
+	public void processSessionAlerting()
     {   
     }
 
@@ -42,15 +42,7 @@ public class SessionAdapter implements ISessionListener
     }
 
     public void processSessionInformationFailed(ErrorReason arg0, long arg1)
-    {   
-    	System.out.println("processSessionInformationFailed");
-    	try {
-			/*IPTVClient.getSession().start("sip:video@ericsson.com", null,
-				IPTVClient.getProfile().getIdentity(), SdpFactory.createMIMEContainer());
-			IPTVClient.getSession().sendInformation(IPTVClient.getInfoType(), IPTVClient.getInfoContent().getBytes(), IPTVClient.getInfoContent().length());*/
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    {  
     }
 
     public void processSessionInformationSuccessful(String arg0, byte[] arg1, int arg2)
