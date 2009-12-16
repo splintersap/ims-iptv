@@ -62,7 +62,7 @@ public class OrderMovieView extends JDialog implements ActionListener {
 		for (MovieDescription description : movieDesc) {
 			if (!description.isOrdered()) {
 				JRadioButton button = new JRadioButton(description.getQuality()
-						+ " - " + description.getPrice() / 100.0 + "zl");
+						+ " - " + description.getPrice() / 100.0 + " zl");
 
 				button.setName(description.getQuality());
 				button.addActionListener(this);
@@ -107,6 +107,7 @@ public class OrderMovieView extends JDialog implements ActionListener {
 		this.add(mainScPane);
 
 		this.pack();
+		this.setLocationRelativeTo(parent);
 		this.setVisible(true);
 
 	}

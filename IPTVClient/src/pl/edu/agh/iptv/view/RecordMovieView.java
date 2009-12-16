@@ -117,7 +117,9 @@ public class RecordMovieView extends ViewWithCalendar {
 		this.add(buttonsP, BorderLayout.SOUTH);
 
 		this.pack();
+		this.setLocationRelativeTo(parent);
 		this.setVisible(true);
+		
 	}
 
 	@Override
