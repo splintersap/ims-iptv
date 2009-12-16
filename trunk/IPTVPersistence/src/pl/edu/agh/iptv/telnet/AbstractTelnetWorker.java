@@ -85,10 +85,12 @@ public abstract class AbstractTelnetWorker extends Thread {
 			tc.connect(remoteip, remoteport);
 		} catch (Exception e) {
 			System.err.println("Error connecting to telnet: " + e.getMessage());
+			restartTelnet(remoteip, remoteport);
 		}
 
 		instr = tc.getInputStream();
 		OutputStream outstr = tc.getOutputStream();
+		
 
 		writer = new OutputStreamWriter(outstr);
 
@@ -122,6 +124,29 @@ public abstract class AbstractTelnetWorker extends Thread {
 		} catch (Exception e) {
 			System.err.println("Exception while closing telnet:"
 					+ e.getMessage());
+		}
+	}
+
+	private void restartTelnet(String remoteip, int remoteport) {
+		
+
+		try {
+			System.err.println("Restarting telnet");
+			Runtime.getRuntime().exec("vlc --ttl 12 -vvv -I telnet --telnet-password videolan --rtsp-host 0.0.0.0:5554");
+			int number = 30;
+			while(number > 0) {
+				
+				try {
+					Thread.sleep(2*Timer.ONE_SECOND);
+					tc.connect(remoteip, remoteport);
+					break;
+				} catch(Exception ex) {
+					
+				}
+				number--;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -64,12 +64,12 @@ public class MoviePayment extends pl.edu.agh.iptv.persistence.Entity {
 		this.orderedMovieList = orderedMovieList;
 	}
 
-	public Date getOrderByUser(String sip) {
+	public OrderedMovie getOrderByUser(String sip) {
 		Iterator<OrderedMovie> iterator = orderedMovieList.iterator();
 		while(iterator.hasNext()) {
 			OrderedMovie orderedMovie = iterator.next();
 			if(orderedMovie.getUser().getSip().equals(sip)) {
-				return orderedMovie.getDate();
+				return orderedMovie;
 			}
 		}
 		

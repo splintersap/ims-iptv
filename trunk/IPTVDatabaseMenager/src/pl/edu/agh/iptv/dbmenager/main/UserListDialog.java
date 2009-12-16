@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,6 +14,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 
 import pl.edu.agh.iptv.persistence.MoviePayment;
+import pl.edu.agh.iptv.persistence.OrderedMovie;
 import pl.edu.agh.iptv.persistence.User;
 
 public class UserListDialog extends JDialog implements ActionListener {
@@ -63,8 +63,8 @@ public class UserListDialog extends JDialog implements ActionListener {
 			//MoviePayment mp = em.find(MoviePayment.class, moviePayment.getId());
 
 			for (User user : userList) {
-				Date date = moviePayment.getOrderByUser(user.getSip());
-				if(date == null)
+				OrderedMovie orderedMovie = moviePayment.getOrderByUser(user.getSip());
+				if(orderedMovie == null)
 				{
 					finalUserList.add(user);
 				}
