@@ -22,6 +22,7 @@ import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.MovieComment;
 import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.MovieRating;
+import pl.edu.agh.iptv.persistence.OrderedMovie;
 import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.persistence.User;
 
@@ -108,7 +109,7 @@ public class MessageCreator {
 			SessionDescription sessionDescription, Movie movie)
 			throws SDPException {
 		for (MoviePayment moviePayment : movie.getMoviePayments()) {
-			Date date = moviePayment.getOrderByUser(sip);
+			Date date = moviePayment.getOrderByUser(sip).getDate();
 			String dateString = null;
 			if (date != null) {
 				dateString = String.valueOf(date.getTime());
@@ -166,17 +167,22 @@ public class MessageCreator {
 		return user;
 	}
 
-	public void purchaseMovie(String title, String sip, String quality) {
+	public void purchaseMovie(String title, String sip, String qualityString) {
 		try {
 			utx.begin();
 			User user = getUserFromSip(sip);
 			Movie movie = getMovieFromTitle(title);
-			MoviePayment moviePayment = movie.getMoviePayments(Quality.valueOf(quality));
+			MoviePayment moviePayment = movie.getMoviePayments(Quality.valueOf(qualityString));
 			
 			long newCredit = user.getCredit() - moviePayment.getPirce();
 			if(newCredit > 0)
 			{
-				user.addOrderedMovie(movie, Quality.valueOf(quality));
+				Quality quality = Quality.valueOf(qualityString);
+				for(Quality movieQualities : Quality.values()) {
+					if(quality.compareTo(movieQualities) >= 0) {
+						user.addOrderedMovie(movie, movieQualities);
+					}
+				}
 				user.setCredit(newCredit);
 			}
 			utx.commit();
@@ -222,8 +228,8 @@ public class MessageCreator {
 			for (Movie movie : movieList) {
 				boolean isOrdered = false;
 				for (MoviePayment moviePayment : movie.getMoviePayments()) {
-					Date date = moviePayment.getOrderByUser(sip);
-					if (date != null) {
+					OrderedMovie orderedMovie = moviePayment.getOrderByUser(sip);
+					if (orderedMovie != null) {
 						isOrdered = true;
 						break;
 					}

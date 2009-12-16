@@ -71,7 +71,9 @@ public class User extends pl.edu.agh.iptv.persistence.Entity {
 	public void setRecordedMovies(List<Movie> recordedMovies) {
 		this.recordedMovies = recordedMovies;
 	}
-
+	
+	
+	
 	public OrderedMovie addOrderedMovie(Movie movie, Quality quality) {
 		OrderedMovie orderedMovie = new OrderedMovie(this, movie.getMoviePayments(quality));
 		orderedMoviesList.add(orderedMovie);
