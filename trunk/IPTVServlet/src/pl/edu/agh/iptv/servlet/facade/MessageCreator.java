@@ -108,14 +108,20 @@ public class MessageCreator {
 	private void addingMoviePayments(String sip,
 			SessionDescription sessionDescription, Movie movie)
 			throws SDPException {
+		
+		long price = 0;
+		
 		for (MoviePayment moviePayment : movie.getMoviePayments()) {
-			Date date = moviePayment.getOrderByUser(sip).getDate();
+			OrderedMovie orderedMovie = moviePayment.getOrderByUser(sip);
+			//Date date = moviePayment.getOrderByUser(sip).getDate();
+			
 			String dateString = null;
-			if (date != null) {
-				dateString = String.valueOf(date.getTime());
+			if (orderedMovie != null) {
+				dateString = String.valueOf(orderedMovie.getDate().getTime());
+				price = moviePayment.getPirce();
 			}
 			String moviePaymentString = moviePayment.getQuality() + "|"
-					+ moviePayment.getPirce() + "|" + dateString;
+					+ (moviePayment.getPirce() - price) + "|" + dateString;
 			Attribute paymentAtr = SDPFactory.createAttribute("payment",
 					moviePaymentString);
 			sessionDescription.addAttribute(paymentAtr);
@@ -172,9 +178,17 @@ public class MessageCreator {
 			utx.begin();
 			User user = getUserFromSip(sip);
 			Movie movie = getMovieFromTitle(title);
+			long payed = 0;
+			for (MoviePayment moviePayment : movie.getMoviePayments()) {
+				OrderedMovie orderedMovie = user.getOrderedMovie(moviePayment);
+				if(orderedMovie != null && moviePayment.getPirce() > payed) {	
+					payed = moviePayment.getPirce();
+				}
+			}
+			
 			MoviePayment moviePayment = movie.getMoviePayments(Quality.valueOf(qualityString));
 			
-			long newCredit = user.getCredit() - moviePayment.getPirce();
+			long newCredit = user.getCredit() - (moviePayment.getPirce() - payed);
 			if(newCredit > 0)
 			{
 				Quality quality = Quality.valueOf(qualityString);

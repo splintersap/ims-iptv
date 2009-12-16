@@ -241,9 +241,20 @@ public class RandomDatabaseData {
 			em.persist(aljazera);
 
 			coco.addOrderedMovie(movie2012, Quality.LOW);
+			
+			coco.addOrderedMovie(up, Quality.LOW);
 			coco.addOrderedMovie(up, Quality.MEDIUM);
+			
+			coco.addOrderedMovie(xman, Quality.LOW);
 			coco.addOrderedMovie(xman, Quality.MEDIUM);
+			coco.addOrderedMovie(xman, Quality.HIGH);
+			
+			alice.addOrderedMovie(up, Quality.LOW);
+			alice.addOrderedMovie(up, Quality.MEDIUM);
 			alice.addOrderedMovie(up, Quality.HIGH);
+			
+			alice.addOrderedMovie(aliceInWonderland, Quality.LOW);
+			alice.addOrderedMovie(aliceInWonderland, Quality.MEDIUM);
 			alice.addOrderedMovie(aliceInWonderland, Quality.HIGH);
 
 			utx.commit();
