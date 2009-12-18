@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -51,15 +52,24 @@ public class OrderMovieView extends JDialog implements ActionListener {
 		this.setMaximumSize(new Dimension(300, 240));
 		this.setMinimumSize(new Dimension(300, 240));
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(5, 1));
-
+		//mainPanel.setLayout(new GridLayout(5, 1));
+		//mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		if (moviesTab.getDescriptionPanel() instanceof DescriptionPanel) {
 			movieDesc = ((DescriptionPanel) moviesTab.getDescriptionPanel())
 					.getMovie().getMovieDescriptionList();
 		} else {
 			return;
 		}
+		int count = 0;
+		
+		for (MovieDescription description : movieDesc) {
+			if (!description.isOrdered()) {
+				count++;
+			}
+		}
 
+		mainPanel.setLayout(new GridLayout(count + 2 , 1));
+		
 		group = new ButtonGroup();
 
 		mainPanel.add(new JLabel("Choose the quality of movie " + movieTitle));
