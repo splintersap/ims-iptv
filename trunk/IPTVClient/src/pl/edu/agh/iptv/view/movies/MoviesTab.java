@@ -54,7 +54,7 @@ public class MoviesTab extends JPanel {
 
 	private MainView parent = null;
 
-	private DescriptionPanel descriptionPanel;
+	private JPanel descriptionPanel;
 
 	private List<MenuListItem> movieList = null;
 
@@ -175,7 +175,7 @@ public class MoviesTab extends JPanel {
 	 * @param descPanel
 	 *            panel which will appear on the right side of 'Watcher'
 	 */
-	public void setDescriptionPanel(DescriptionPanel descPanel) {
+	public void setDescriptionPanel(JPanel descPanel) {
 
 		this.moviesDescPane.getViewport().removeAll();
 		this.moviesDescPane.getViewport().add(descPanel);
@@ -254,7 +254,7 @@ public class MoviesTab extends JPanel {
 		return this.movieList;
 	}
 
-	public DescriptionPanel getDescriptionPanel() {
+	public JPanel getDescriptionPanel() {
 		return this.descriptionPanel;
 	}
 

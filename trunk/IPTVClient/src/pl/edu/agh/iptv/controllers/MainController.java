@@ -57,7 +57,7 @@ public class MainController {
 				moviesTab.getAllMoviesList()
 						.addListSelectionListener(
 								new DescriptionListener(iptvClient,
-										MainController.this));
+										MainController.this, MainController.this.mainView.getMoviesTab()));
 
 				// mainView.getPlayButton().addActionListener(
 				// new PlayListener(iptvClient, mainView));

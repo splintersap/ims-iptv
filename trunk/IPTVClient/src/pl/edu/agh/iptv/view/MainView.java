@@ -33,6 +33,7 @@ import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.IperfManagerListener;
 import pl.edu.agh.iptv.listeners.PlayListener;
 import pl.edu.agh.iptv.view.chat.ChatTab;
+import pl.edu.agh.iptv.view.movies.DescriptionPanel;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class MainView {
@@ -308,12 +309,14 @@ public class MainView {
 
 	public void setButtonsEnabelment(boolean ordered, boolean moreToOrder) {
 		play.setEnabled(ordered);
-		adjustPlayMenu(moviesTab.getDescriptionPanel().getMovie());			
+		if (moviesTab.getDescriptionPanel() instanceof DescriptionPanel) {
+			adjustPlayMenu(((DescriptionPanel) moviesTab.getDescriptionPanel())
+					.getMovie());
+		}
 		stop.setEnabled(ordered);
 		orderButton.setEnabled(moreToOrder);
 		record.setEnabled(ordered);
 	}
-
 
 	public void adjustPlayMenu(Movie movie) {
 		playMenu.removeAll();
@@ -333,7 +336,7 @@ public class MainView {
 		Component selectedComponent;
 
 		public void mousePressed(MouseEvent e) {
-//			checkPopup(e);
+			// checkPopup(e);
 		}
 
 		public void mouseClicked(MouseEvent e) {
@@ -341,21 +344,22 @@ public class MainView {
 		}
 
 		public void mouseReleased(MouseEvent e) {
-//			checkPopup(e);
+			// checkPopup(e);
 		}
 
 		private void checkPopup(MouseEvent e) {
-			if(play.getIcon().equals(MainView.playIcon)){
-			selectedComponent = e.getComponent();
-			playMenu.show(e.getComponent(), play.getX() - 100, play.getY() + play.getHeight());
-			}else{
+			if (play.getIcon().equals(MainView.playIcon)) {
+				selectedComponent = e.getComponent();
+				playMenu.show(e.getComponent(), play.getX() - 100, play.getY()
+						+ play.getHeight());
+			} else {
 				if (VLCHelper.isPlayingMovie) {
 					try {
 						VLCHelper.playlist.togglePause();
 					} catch (VLCException e1) {
 						e1.printStackTrace();
 					}
-										
+
 					play.setIcon(MainView.playIcon);
 				}
 			}

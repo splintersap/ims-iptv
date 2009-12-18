@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import pl.edu.agh.iptv.components.ResizableGridLayout;
 import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.OrderMovieListener;
+import pl.edu.agh.iptv.view.movies.DescriptionPanel;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 public class OrderMovieView extends JDialog implements ActionListener {
@@ -52,8 +53,12 @@ public class OrderMovieView extends JDialog implements ActionListener {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(5, 1));
 
-		movieDesc = moviesTab.getDescriptionPanel().getMovie()
-				.getMovieDescriptionList();
+		if (moviesTab.getDescriptionPanel() instanceof DescriptionPanel) {
+			movieDesc = ((DescriptionPanel) moviesTab.getDescriptionPanel())
+					.getMovie().getMovieDescriptionList();
+		} else {
+			return;
+		}
 
 		group = new ButtonGroup();
 
