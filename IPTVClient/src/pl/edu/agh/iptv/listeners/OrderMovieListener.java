@@ -31,15 +31,19 @@ public class OrderMovieListener implements ActionListener {
 
 		if (e.getSource() instanceof JButton) {
 			if (((JButton) e.getSource()).getName() == "OK") {
-				iptvClient.purchaseMovie(view.getSelectedMovieTitle(), view
-						.getSelectedQuality());				
-				iptvClient.actionPerformed(null);
-				view.dispose();
+				if (view.getSelectedQuality() != null) {
+					iptvClient.purchaseMovie(view.getSelectedMovieTitle(), view
+							.getSelectedQuality());
+					iptvClient.actionPerformed(null);
+					view.dispose();
+				}
 			} else if (((JButton) e.getSource()).getName() == "CANCEL") {
 				view.dispose();
 			} else if (((JButton) e.getSource()).getName() == "ORDER") {
-				MenuListItem menuItem = (MenuListItem) moviesTab.getAllMoviesList().getSelectedValue();
-				view = new OrderMovieView(menuItem.getTitle() , this, parent, this.moviesTab);
+				MenuListItem menuItem = (MenuListItem) moviesTab
+						.getAllMoviesList().getSelectedValue();
+				view = new OrderMovieView(menuItem.getTitle(), this, parent,
+						this.moviesTab);
 
 			}
 		}

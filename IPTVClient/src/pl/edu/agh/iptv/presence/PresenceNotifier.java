@@ -25,21 +25,9 @@ public class PresenceNotifier {
 
 	private IPresence presence;
 
-	private ITuple tuple;
-
 	private IBuddy buddy;
 
 	private String identity = null;
-
-	/**
-	 * Offline
-	 */
-	final private int OFFLINE_STATUS = 1;
-
-	/**
-	 * Online
-	 */
-	final private int ONLINE_STATUS = 0;
 
 	public PresenceNotifier(IProfile profile, BuddiesController buddiesC) {
 		this.profile = profile;
@@ -61,7 +49,7 @@ public class PresenceNotifier {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		publish(ONLINE_STATUS);
+		// publish(ONLINE_STATUS);
 		try {
 			publishPresence(true);
 		} catch (Exception e) {
@@ -167,27 +155,6 @@ public class PresenceNotifier {
 		public void processBlockWatcherResult(boolean arg0) {
 			// TODO Auto-generated method stub
 
-		}
-	}
-
-	/**
-	 * Publishes presence information
-	 * 
-	 * @param int status, 0=online and 1=offline
-	 */
-	private void publish(int status) {
-		try {
-			IPresentity presentity = presence.getPresentity();
-			if (status == ONLINE_STATUS) {
-				tuple = PGMFactory.createTuple();
-				tuple.setBasic(status);
-				presentity.addTuple(tuple);
-			} else if (status == OFFLINE_STATUS) {
-				presentity.removeTuple(tuple);
-			}
-			presence.updatePresentity(presentity);
-		} catch (Exception e) {
-			System.out.println("Could not publish presence information");
 		}
 	}
 

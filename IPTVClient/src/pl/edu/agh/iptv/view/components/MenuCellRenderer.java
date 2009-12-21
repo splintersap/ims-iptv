@@ -19,13 +19,11 @@ import org.jvnet.substance.utils.SubstanceStripingUtils;
 public class MenuCellRenderer extends JPanel implements ListCellRenderer {
 
 	protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
-	private static final Border SAFE_NO_FOCUS_BORDER = new EmptyBorder(1, 1, 1, 1);
-
-
 
 	public MenuCellRenderer() {
 		super(new BorderLayout());
-		//this.putClientProperty(SubstanceLookAndFeel.COLORIZATION_FACTOR, 1.0);
+		// this.putClientProperty(SubstanceLookAndFeel.COLORIZATION_FACTOR,
+		// 1.0);
 		setOpaque(true);
 	}
 
@@ -48,9 +46,7 @@ public class MenuCellRenderer extends JPanel implements ListCellRenderer {
 			boolean hasFocus) // cell has focus?
 	{
 		this.removeAll();
-		
-		
-		
+
 		MenuListItem listItem = (MenuListItem) value;
 		JLabel starLabel = new JLabel(starIcon);
 		JLabel categoryLabel = null;
@@ -81,26 +77,23 @@ public class MenuCellRenderer extends JPanel implements ListCellRenderer {
 			starLabel.setEnabled(false);
 		}
 
-		
-		
 		ratingPanel.add(starLabel);
 
 		this.add(titlePanel, BorderLayout.WEST);
 		this.add(ratingPanel, BorderLayout.EAST);
 
 		if (isSelected) {
-			 ratingLabel.setForeground(new ColorUIResource(Color.BLACK));
-			 titleLabel.setForeground(new ColorUIResource(Color.BLACK));
-			 setBackground(list.getSelectionBackground());
-			 
-			 
+			ratingLabel.setForeground(new ColorUIResource(Color.BLACK));
+			titleLabel.setForeground(new ColorUIResource(Color.BLACK));
+			setBackground(list.getSelectionBackground());
+
 		} else {
 			if (SubstanceLookAndFeel.isCurrentLookAndFeel())
 				SubstanceStripingUtils
 						.applyStripedBackground(list, index, this);
-			 this.setForeground(list.getForeground());
+			this.setForeground(list.getForeground());
 		}
-		
+
 		return this;
 
 	}

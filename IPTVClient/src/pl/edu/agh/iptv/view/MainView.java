@@ -1,7 +1,6 @@
 package pl.edu.agh.iptv.view;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -232,9 +231,6 @@ public class MainView {
 		stop = new JButton(new ImageIcon("images/stop.gif"));
 		stop.setEnabled(false);
 
-		// rew = new JButton(new ImageIcon("images/rew.gif"));
-		// rew.setEnabled(false);
-
 		play = new JButton(playIcon);
 		play.addMouseListener(mouseListener);
 		play.setEnabled(false);
@@ -243,9 +239,6 @@ public class MainView {
 		orderButton.setName("ORDER");
 		orderButton.setEnabled(false);
 
-		// forward = new JButton(new ImageIcon("images/forward.gif"));
-		// forward.setEnabled(false);
-
 		record = new JButton(new ImageIcon("images/record.gif"));
 		record.setName("RECORD");
 		record.setEnabled(false);
@@ -253,9 +246,7 @@ public class MainView {
 		toolBar.add(refresh);
 		toolBar.addSeparator();
 		toolBar.add(stop);
-		// toolBar.add(rew);
 		toolBar.add(play);
-		// toolBar.add(forward);
 		toolBar.addSeparator();
 		toolBar.add(record);
 		toolBar.addSeparator();
@@ -333,7 +324,6 @@ public class MainView {
 	}
 
 	MouseListener mouseListener = new MouseAdapter() {
-		Component selectedComponent;
 
 		public void mousePressed(MouseEvent e) {
 			// checkPopup(e);
@@ -348,8 +338,8 @@ public class MainView {
 		}
 
 		private void checkPopup(MouseEvent e) {
+
 			if (play.getIcon().equals(MainView.playIcon)) {
-				selectedComponent = e.getComponent();
 				playMenu.show(e.getComponent(), play.getX() - 100, play.getY()
 						+ play.getHeight());
 			} else {
@@ -357,10 +347,14 @@ public class MainView {
 					try {
 						VLCHelper.playlist.togglePause();
 					} catch (VLCException e1) {
+						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-
 					play.setIcon(MainView.playIcon);
+				} else {
+					playMenu.show(e.getComponent(), play.getX() - 100, play
+							.getY()
+							+ play.getHeight());
 				}
 			}
 

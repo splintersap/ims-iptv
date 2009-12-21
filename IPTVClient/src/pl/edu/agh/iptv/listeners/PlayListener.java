@@ -3,7 +3,6 @@ package pl.edu.agh.iptv.listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -21,7 +20,11 @@ public class PlayListener implements ActionListener {
 	private IPTVClient iptvClient;
 	private MoviesTab moviesTab;
 	private MainView mainView;
-	private boolean isPlayButton = true;
+
+	private boolean isPaused = false;
+
+	private String playedMovie;
+	private String playedQuality;
 
 	JPopupMenu menu = qualityChoice();
 
@@ -43,29 +46,28 @@ public class PlayListener implements ActionListener {
 
 			if (mainView.getPlayButton().getIcon().equals(MainView.playIcon)) {
 				if (VLCHelper.isPlayingMovie) {
-					try {						
+					try {
 						VLCHelper.playlist.togglePause();
 					} catch (VLCException e1) {
 						e1.printStackTrace();
 					}
 				} else {
 					MenuListItem menuItem = (MenuListItem) value;
-					iptvClient.showChosenMovie(menuItem.getTitle(), clickedItem
-							.getLabel());
+
+					playedMovie = menuItem.getTitle();
+					playedQuality = clickedItem.getLabel();
+
+					iptvClient.showChosenMovie(playedMovie, playedQuality);
 				}
 
 				mainView.getPlayButton().setIcon(MainView.pauseIcon);
-				isPlayButton = false;
 
 			} else {
-
 				try {
 					VLCHelper.playlist.togglePause();
 				} catch (VLCException e1) {
 					e1.printStackTrace();
 				}
-
-				isPlayButton = true;
 				mainView.getPlayButton().setIcon(MainView.playIcon);
 			}
 		}
@@ -90,6 +92,18 @@ public class PlayListener implements ActionListener {
 		popup.setLabel("Justification");
 
 		return popup;
+	}
+
+	public void playBackAfterPause() {
+
+	}
+
+	public boolean isPaused() {
+		return isPaused;
+	}
+
+	public void setPaused(boolean isPaused) {
+		this.isPaused = isPaused;
 	}
 
 }

@@ -38,7 +38,7 @@ public class OrderMovieView extends JDialog implements ActionListener {
 
 	private ButtonGroup group;
 
-	private String quality = "LOW";
+	private String quality = null;
 
 	private List<MovieDescription> movieDesc;
 

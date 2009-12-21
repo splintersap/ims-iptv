@@ -70,7 +70,7 @@ public class MainController {
 							public void actionPerformed(ActionEvent e) {
 
 								stopMovie(iptvClient);
-								mainView.getPlayButton().setEnabled(true);
+//								mainView.getPlayButton().setEnabled(true);
 							}
 						});
 
