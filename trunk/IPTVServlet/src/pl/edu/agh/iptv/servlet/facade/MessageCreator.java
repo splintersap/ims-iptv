@@ -193,9 +193,12 @@ public class MessageCreator {
 			{
 				Quality quality = Quality.valueOf(qualityString);
 				for(Quality movieQualities : Quality.values()) {
-					if(quality.compareTo(movieQualities) >= 0) {
-						user.addOrderedMovie(movie, movieQualities);
+					if(movie.getMoviePayments(movieQualities) != null) {
+						if(quality.compareTo(movieQualities) >= 0) {
+							user.addOrderedMovie(movie, movieQualities);
+						}
 					}
+					
 				}
 				user.setCredit(newCredit);
 			}
