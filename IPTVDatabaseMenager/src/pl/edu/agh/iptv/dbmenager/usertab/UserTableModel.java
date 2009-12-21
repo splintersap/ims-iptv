@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.swing.table.AbstractTableModel;
 
-import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.User;
 
 public class UserTableModel extends AbstractTableModel {

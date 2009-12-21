@@ -51,6 +51,10 @@ public class MovieTab extends JPanel {
 	JButton removeButton;
 	
 	PricesPanel pricesPanel;
+	
+	CommentsPanel commentsPanel;
+	
+	RatingPanel ratingPanel;
 
 	public MovieTab() {
 		super(new GridLayout(2, 0));
@@ -122,6 +126,12 @@ public class MovieTab extends JPanel {
 
 		pricesPanel = new PricesPanel();
 		tabbedPane.addTab("Prices", pricesPanel);
+		
+		commentsPanel = new CommentsPanel();
+		tabbedPane.addTab("Comments", commentsPanel);
+		
+		ratingPanel = new RatingPanel();
+		tabbedPane.addTab("Rating", ratingPanel);
 
 		add(tabbedPane);
 	}
@@ -195,6 +205,9 @@ public class MovieTab extends JPanel {
 		this.movie = movie;
 		List<MoviePayment> moviePayments = movie.getMoviePayments();
 		pricesPanel.createNodes(moviePayments);
+		commentsPanel.showComments(movie);
+		ratingPanel.showRating(movie);
+		repaint();
 		Application.getEntityMenager().getTransaction().commit();
 
 		removeButton.setEnabled(true);

@@ -8,9 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Date;
 
-import javax.management.timer.Timer;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -29,7 +27,6 @@ import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
-import pl.edu.agh.iptv.telnet.RecordingTelnetClient;
 import pl.edu.agh.iptv.telnet.VodTelnetClient;
 
 public class AddMovieDialog extends JDialog implements ActionListener {
