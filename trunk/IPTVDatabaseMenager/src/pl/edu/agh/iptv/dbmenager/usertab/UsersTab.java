@@ -1,4 +1,4 @@
-package pl.edu.agh.iptv.dbmenager.main;
+package pl.edu.agh.iptv.dbmenager.usertab;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import pl.edu.agh.iptv.dbmenager.main.Application;
+import pl.edu.agh.iptv.dbmenager.movietab.MovieTab;
 import pl.edu.agh.iptv.persistence.User;
 
 public class UsersTab extends JPanel {
@@ -22,10 +24,10 @@ public class UsersTab extends JPanel {
 	public UsersTab() {
 		super(new BorderLayout());
 		
-		Query query = Starter.getEntityMenager().createQuery("FROM User");
+		Query query = Application.getEntityMenager().createQuery("FROM User");
 		List<User> movieList = query.getResultList();
 		
-		model = new UserTableModel(movieList, Starter.getEntityMenager());
+		model = new UserTableModel(movieList, Application.getEntityMenager());
 		table = new JTable(model);
 		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		table.setFillsViewportHeight(true);

@@ -1,4 +1,4 @@
-package pl.edu.agh.iptv.dbmenager.main;
+package pl.edu.agh.iptv.dbmenager.usertab;
 
 import java.util.List;
 

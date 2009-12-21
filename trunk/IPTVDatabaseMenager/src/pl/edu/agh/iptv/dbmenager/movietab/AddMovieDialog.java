@@ -1,4 +1,4 @@
-package pl.edu.agh.iptv.dbmenager.main;
+package pl.edu.agh.iptv.dbmenager.movietab;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -209,7 +209,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 			System.out.println("Starting telnet");
 			
 
-			Starter.persistMovie(movie);
+			MovieTab.persistMovie(movie);
 
 			this.dispose();
 		}

@@ -1,4 +1,4 @@
-package pl.edu.agh.iptv.dbmenager.main;
+package pl.edu.agh.iptv.dbmenager.movietab;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -13,6 +13,7 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
+import pl.edu.agh.iptv.dbmenager.main.Application;
 import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.OrderedMovie;
 import pl.edu.agh.iptv.persistence.User;
@@ -53,7 +54,7 @@ public class UserListDialog extends JDialog implements ActionListener {
 
 	private List<User> getUsersFromDB() {
 		List<User> finalUserList = new ArrayList<User>();
-		EntityManager em = Starter.getEntityMenager();
+		EntityManager em = Application.getEntityMenager();
 		em.getTransaction().begin();
 		Query query = em.createQuery("FROM User");
 		final List<User> userList = query.getResultList();
