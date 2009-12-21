@@ -267,7 +267,7 @@ public class RandomDatabaseData {
 	private static void addBroadcastToTelnet(Movie movie) {
 		AbstractTelnetWorker telnet = null;
 
-		String multicastIp = "239.255.12.42";
+		String multicastIp = MulticastSet.getMulticastIp();
 		
 		MoviePayment mp = movie.getMoviePayments(Quality.HIGH);
 		

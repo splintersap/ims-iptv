@@ -64,6 +64,7 @@ public class VideoServlet extends SipServlet {
 	protected void doInfo(SipServletRequest req) throws ServletException,
 			IOException {
 		req.createResponse(200).send();
+		//log("Multicast ip = " + MulticastSet.getMulticastIp()+ ", element nr. " + MulticastSet.multicastIpSet.size());
 
 		String contentType = req.getContentType();
 		String[] mimes = contentType.split("/");
@@ -159,7 +160,7 @@ public class VideoServlet extends SipServlet {
 		Date date = new Date(dateLong);
 		Movie movie = helper.getMovieFromTitle(title);
 
-		String multicastAddr = "239.45.12.44";
+		String multicastAddr = MulticastSet.getMulticastIp();
 		MoviePayment moviePayment = helper.createSharedMulticast(title, users,
 				date, multicastAddr);
 		AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie
