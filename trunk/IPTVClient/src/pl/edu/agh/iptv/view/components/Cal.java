@@ -25,6 +25,11 @@ import javax.swing.JPanel;
  * @version $Id: Cal.java,v 1.5 2004/02/09 03:33:45 ian Exp $
  */
 public class Cal extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** The currently-interesting year (not modulo 1900!) */
 	protected int yy;
 

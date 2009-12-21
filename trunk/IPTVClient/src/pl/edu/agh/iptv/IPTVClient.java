@@ -111,16 +111,19 @@ public class IPTVClient implements ActionListener {
 					showError("Could not start session", new Exception(aError
 							.getReasonString()));
 					IPTVClient.isInfoToSend = true;
-					
+
 				}
 
 				@Override
 				public void processSessionStarted(
 						com.ericsson.icp.util.ISessionDescription arg0) {
 					System.out.println("Session started");
-					if(IPTVClient.isInfoToSend) {
-						System.out.println("Sending INFO : " + IPTVClient.infoType + ", " + IPTVClient.infoContent);
-						IPTVClient.this.sendMovieInformation(IPTVClient.infoType, IPTVClient.infoContent);
+					if (IPTVClient.isInfoToSend) {
+						System.out.println("Sending INFO : "
+								+ IPTVClient.infoType + ", "
+								+ IPTVClient.infoContent);
+						IPTVClient.this.sendMovieInformation(
+								IPTVClient.infoType, IPTVClient.infoContent);
 						isInfoToSend = false;
 					}
 				};
@@ -303,6 +306,7 @@ public class IPTVClient implements ActionListener {
 
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
+		mainView.setButtonsEnabelment(false, false);
 		addingListener();
 		triggerMoviesRequest();
 	}

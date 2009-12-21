@@ -1,8 +1,5 @@
 package pl.edu.agh.iptv.view.components;
 
-import java.awt.Image;
-
-import javax.swing.ImageIcon;
 
 public class MenuListItem {
 	

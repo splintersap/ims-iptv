@@ -10,22 +10,16 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import javax.management.timer.Timer;
 import javax.swing.JPanel;
 
 import org.videolan.jvlc.JVLC;
 import org.videolan.jvlc.MediaDescriptor;
-import org.videolan.jvlc.MediaList;
-import org.videolan.jvlc.MediaListPlayer;
 import org.videolan.jvlc.MediaPlayer;
 import org.videolan.jvlc.Playlist;
 import org.videolan.jvlc.VLCException;
-import org.videolan.jvlc.Video;
-import org.videolan.jvlc.event.MediaPlayerListener;
 
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.view.MainView;
-import pl.edu.agh.iptv.view.components.MenuListItem;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
 
 /**
@@ -47,7 +41,6 @@ public class VLCHelper implements ComponentListener {
 	private MainView mainView;
 	private MoviesTab moviesTab;
 	private String playMovieCommand;
-	private IPTVClient client;
 	public static Playlist playlist;
 
 	public static boolean isPlayingMovie = false;
@@ -57,7 +50,6 @@ public class VLCHelper implements ComponentListener {
 		this.mainView = mainView;
 		this.mainView.getMainFrame().addComponentListener(this);
 		this.moviesTab = mainView.getMoviesTab();
-		this.client = client;
 		this.playMovieCommand = playMovieCommand;
 		this.playMovie();
 	}
@@ -72,60 +64,8 @@ public class VLCHelper implements ComponentListener {
 				String[] params = new String[] { "-vvv",
 						"--plugin-path=C:\\Program Files\\VideoLAN\\VLC\\plugins" };
 
-			    /*String[] arg = new String[4];
-			    arg[0] = "--intf=dummy";
-			    arg[1] = "--ignore-config";
-			    arg[2] = "--no-plugins-cache";
-			    arg[3] = "--plugin-path=C:\\Program Files\\VideoLAN\\VLC\\plugins";*/
-			    
 				jvlc = new JVLC(params);
 				playlist = new Playlist(jvlc);
-				
-				/*playlist.getMediaInstance().addListener(new MediaPlayerListener(){
-
-					@Override
-					public void endReached(MediaPlayer arg0) {
-					}
-
-					@Override
-					public void errorOccurred(MediaPlayer arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void paused(MediaPlayer arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void playing(MediaPlayer arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void positionChanged(MediaPlayer arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void stopped(MediaPlayer arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void timeChanged(MediaPlayer arg0, long arg1) {
-						// TODO Auto-generated method stub
-						
-					}});*/
-				//ds = new MediaDescriptor(jvlc, playMovieCommand);
-				//mp = ds.getMediaPlayer();
-				//mp.setJVLC(jvlc);
-				// video = new Video(jvlc);
 
 				// Canvas
 				GraphicsEnvironment graphEnv = GraphicsEnvironment
@@ -142,7 +82,6 @@ public class VLCHelper implements ComponentListener {
 				jvcanvas.setSize(new Dimension(moviesTab.getMoviesDescPane()
 						.getWidth() - 20, moviesTab.getMoviesDescPane()
 						.getHeight() - 20));
-				// jvcanvas.setSize(new Dimension(100, 100));
 
 				// Panel
 				gridBagConstraints = new java.awt.GridBagConstraints();
@@ -167,10 +106,6 @@ public class VLCHelper implements ComponentListener {
 				jvcanvas.requestFocus();
 				jvcanvas.createBufferStrategy(2);
 
-
-				
-				
-				
 				jvlc.setVideoOutput(jvcanvas); // second way
 
 				isPlayingMovie = true;
@@ -180,61 +115,7 @@ public class VLCHelper implements ComponentListener {
 				} catch (VLCException e1) {
 					e1.printStackTrace();
 				}
-				
-				//mp.play();
-				/*mp.addListener(new MediaPlayerListener() {
 
-					@Override
-					public void endReached(MediaPlayer arg0) {
-						isPlayingMovie = false;
-						MainView.getPlayButton().setIcon(MainView.playIcon);
-						MenuListItem item = (MenuListItem) moviesTab
-								.getAllMoviesList().getSelectedValue();
-						System.out.println("Film sie skonczyl");
-						System.out.println("Tytul = " + item.getTitle());
-						try {
-							Thread.sleep(Timer.ONE_SECOND);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						client.getMovieInformations(item.getTitle());
-					}
-
-					@Override
-					public void errorOccurred(MediaPlayer arg0) {
-						System.out.println("Error occurred");
-					}
-
-					@Override
-					public void paused(MediaPlayer arg0) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void playing(MediaPlayer arg0) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void positionChanged(MediaPlayer arg0) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void stopped(MediaPlayer arg0) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void timeChanged(MediaPlayer arg0, long arg1) {
-						// TODO Auto-generated method stub
-
-					}
-				});*/
 			}
 
 		});

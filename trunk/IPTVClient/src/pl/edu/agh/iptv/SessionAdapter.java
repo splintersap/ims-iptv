@@ -18,7 +18,6 @@ import com.ericsson.icp.ISessionListener;
 import com.ericsson.icp.util.ErrorReason;
 import com.ericsson.icp.util.ISessionDescription;
 import com.ericsson.icp.util.MIMEContainer;
-import com.ericsson.icp.util.SdpFactory;
 
 public class SessionAdapter implements ISessionListener
 {

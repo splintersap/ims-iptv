@@ -494,7 +494,6 @@ public class Chat {
 											localSdp
 													.addMediaDescription(localDesc);
 
-											final JFrame frame = mainFrame;
 											final ISessionDescription myLocalSdp = localSdp;
 											EventQueue
 													.invokeLater(new Runnable() {

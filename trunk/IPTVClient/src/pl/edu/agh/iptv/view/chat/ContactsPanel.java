@@ -25,9 +25,6 @@ public class ContactsPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JFrame mainFrame;
-	private MoviesTab moviesTab;
-
 	DefaultListModel listModel = new DefaultListModel();
 	private JList contactsList = new JList(listModel);
 
@@ -41,8 +38,7 @@ public class ContactsPanel extends JPanel {
 	private JButton inviteM = null;
 
 	public ContactsPanel(JFrame mainFrame, MoviesTab moviesTab) {
-		this.mainFrame = mainFrame;
-		this.moviesTab = moviesTab;
+
 		contactsList.setCellRenderer(new MyCellRenderer());
 		this.setLayout(new ResizableGridLayout(2, 1));
 		this.add(getJToolBar());
