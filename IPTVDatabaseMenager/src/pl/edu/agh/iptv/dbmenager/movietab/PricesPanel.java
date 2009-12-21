@@ -1,4 +1,4 @@
-package pl.edu.agh.iptv.dbmenager.main;
+package pl.edu.agh.iptv.dbmenager.movietab;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -20,6 +20,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import pl.edu.agh.iptv.dbmenager.main.Application;
 import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.OrderedMovie;
 import pl.edu.agh.iptv.persistence.User;
@@ -47,9 +48,7 @@ public class PricesPanel extends JPanel implements ActionListener {
 		tree.getSelectionModel().setSelectionMode(
 				TreeSelectionModel.SINGLE_TREE_SELECTION);
 		tree.setShowsRootHandles(true);
-		tree.addTreeSelectionListener(new TreeSelectionListener() {
-
-			
+		tree.addTreeSelectionListener(new TreeSelectionListener() {		
 
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
@@ -97,7 +96,7 @@ public class PricesPanel extends JPanel implements ActionListener {
 		rootNode.removeAllChildren();
 		for (MoviePayment moviePayment : moviePayments) {
 			category = new InformationTreeNode(moviePayment);
-			Starter.getEntityMenager().refresh(moviePayment);
+			Application.getEntityMenager().refresh(moviePayment);
 			category.setObject(moviePayment);
 			rootNode.add(category);
 			for (OrderedMovie orderedMovie : moviePayment.getOrderedMovieList()) {
@@ -129,7 +128,7 @@ public class PricesPanel extends JPanel implements ActionListener {
 						.getObject();
 				System.out.println(orderedMovie.getId());
 				// em.persist(orderedMovie);
-				EntityManager em = Starter.getEntityMenager();
+				EntityManager em = Application.getEntityMenager();
 				em.getTransaction().begin();
 				OrderedMovie oMovie = em.find(OrderedMovie.class, orderedMovie
 						.getId());
@@ -207,7 +206,7 @@ public class PricesPanel extends JPanel implements ActionListener {
 
 		}
 
-		EntityManager em = Starter.getEntityMenager();
+		EntityManager em = Application.getEntityMenager();
 		em.getTransaction().begin();
 
 		em.persist(moviePayment);

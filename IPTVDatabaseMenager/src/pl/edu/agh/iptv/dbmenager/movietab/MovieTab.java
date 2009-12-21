@@ -1,4 +1,4 @@
-package pl.edu.agh.iptv.dbmenager.main;
+package pl.edu.agh.iptv.dbmenager.movietab;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -9,43 +9,32 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.jvnet.substance.api.renderers.SubstanceDefaultTableCellRenderer;
 
+import pl.edu.agh.iptv.dbmenager.main.Application;
 import pl.edu.agh.iptv.persistence.Category;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.MoviePayment;
-import pl.edu.agh.iptv.telnet.RemovingTelnetClient;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
+import pl.edu.agh.iptv.telnet.RemovingTelnetClient;
 
-public class Starter extends JPanel {
+public class MovieTab extends JPanel {
 
 	private static final long serialVersionUID = -7450798905446077365L;
 
-
-	private static EntityManagerFactory emf;
-
-	private static EntityManager em;
 
 	JTextArea descriptionTextArea = new JTextArea(10, 20);
 
@@ -63,12 +52,12 @@ public class Starter extends JPanel {
 	
 	PricesPanel pricesPanel;
 
-	public Starter() {
+	public MovieTab() {
 		super(new GridLayout(2, 0));
-		Query query = em.createQuery("FROM Movie");
+		Query query = Application.getEntityMenager().createQuery("FROM Movie");
 		final List<Movie> movieList = query.getResultList();
 
-		model = new DBTableModel(movieList, em);
+		model = new DBTableModel(movieList, Application.getEntityMenager());
 
 		table = new JTable(model);
 		setUpSportColumn(table, table.getColumnModel().getColumn(2));
@@ -128,8 +117,8 @@ public class Starter extends JPanel {
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 
-		JComponent panel1 = makeDescriptionPanel();
-		tabbedPane.addTab("Description", panel1);
+		JComponent descriptionPanel = makeDescriptionPanel();
+		tabbedPane.addTab("Description", descriptionPanel);
 
 		pricesPanel = new PricesPanel();
 		tabbedPane.addTab("Prices", pricesPanel);
@@ -150,10 +139,10 @@ public class Starter extends JPanel {
 		saveButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				em.getTransaction().begin();
-				em.persist(movie);
+				Application.getEntityMenager().getTransaction().begin();
+				Application.getEntityMenager().persist(movie);
 				movie.setDescription(descriptionTextArea.getText());
-				em.getTransaction().commit();
+				Application.getEntityMenager().getTransaction().commit();
 			}
 		});
 
@@ -172,16 +161,13 @@ public class Starter extends JPanel {
 	}
 
 	public static void persistMovie(Movie movie) {
-		em.getTransaction().begin();
-		em.persist(movie);
-		em.getTransaction().commit();
+		Application.getEntityMenager().getTransaction().begin();
+		Application.getEntityMenager().persist(movie);
+		Application.getEntityMenager().getTransaction().commit();
 		model.addMovie(movie);
 	}
 	
-	public static EntityManager getEntityMenager()
-	{
-		return em;
-	}
+
 
 	public void setUpSportColumn(JTable table, TableColumn sportColumn) {
 		// Set up the editor for the sport cells.
@@ -204,79 +190,18 @@ public class Starter extends JPanel {
 		String description = movie.getDescription();
 		descriptionTextArea.setText(description);
 
-		em.getTransaction().begin();
-		em.persist(movie);
+		Application.getEntityMenager().getTransaction().begin();
+		Application.getEntityMenager().persist(movie);
 		this.movie = movie;
 		List<MoviePayment> moviePayments = movie.getMoviePayments();
 		pricesPanel.createNodes(moviePayments);
-		em.getTransaction().commit();
+		Application.getEntityMenager().getTransaction().commit();
 
 		removeButton.setEnabled(true);
 
 	}
 
-	/**
-	 * Create the GUI and show it. For thread safety, this method should be
-	 * invoked from the event-dispatching thread.
-	 */
-	private static void createAndShowGUI() {
-
-		Logger.getLogger("org").setLevel(Level.WARN);
-
-		emf = Persistence.createEntityManagerFactory("examplePersistenceUnit");
-		em = emf.createEntityManager();
-
-		/*
-		 * Setting the new look and feel.
-		 */
-		try {
-			UIManager
-					.setLookAndFeel("org.jvnet.substance.skin.SubstanceCremeCoffeeLookAndFeel");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Substance Raven Graphite failed to initialize");
-		}
-
-		JFrame.setDefaultLookAndFeelDecorated(true);
-		JDialog.setDefaultLookAndFeelDecorated(true);
-
-		// Create and set up the window.
-		JFrame frame = new JFrame("Database Menager");
-
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-		JTabbedPane tabbedPane = new JTabbedPane();
-
-		
-		
-		
-		// Create and set up the content pane.
-		Starter newContentPane = new Starter();
-		newContentPane.setOpaque(true); // content panes must be opaque
-		
-		UsersTab usersTab = new UsersTab();
-		usersTab.setOpaque(true);
-
-		tabbedPane.addTab("Movies", newContentPane);
-		tabbedPane.addTab("Users", usersTab);
-		
-		frame.setContentPane(tabbedPane);
-
-		// Display the window.
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-
-		frame.setVisible(true);
-	}
-
-	public static void main(String[] args) {
-		// Schedule a job for the event-dispatching thread:
-		// creating and showing this application's GUI.
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				createAndShowGUI();
-			}
-		});
-	}
+	
 }
