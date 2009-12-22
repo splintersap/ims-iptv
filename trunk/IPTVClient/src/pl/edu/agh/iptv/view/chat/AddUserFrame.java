@@ -77,14 +77,19 @@ public class AddUserFrame extends JDialog implements ActionListener {
 		JScrollPane mainScPane = new JScrollPane(mainPanel);
 
 		mainPanel.add(new JLabel("Conctact name"));
-		mainPanel.add(contactName = new JTextArea());
+		contactName = new JTextArea();
+		contactName.setRows(1);
+		mainPanel.add(contactName);
 		mainPanel.add(new JLabel("Contact URI"));
-		mainPanel.add(contactUri = new JTextArea());
+		contactUri = new JTextArea();
+		contactUri.setRows(1);
+		mainPanel.add(contactUri);
 		mainPanel.add(buttonsPanel);
 
 		this.add(mainScPane);
 
 		this.pack();
+		this.setLocationRelativeTo(parent);
 		this.setVisible(true);
 
 	}

@@ -23,6 +23,7 @@ import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.MyJFrame;
 import pl.edu.agh.iptv.view.chat.AddUserFrame;
 import pl.edu.agh.iptv.view.chat.ContactsPanel;
+import pl.edu.agh.iptv.view.chat.data.Group;
 import pl.edu.agh.iptv.view.components.ListItem;
 
 import com.ericsson.icp.IProfile;
@@ -34,6 +35,13 @@ import com.ericsson.icp.util.IBuddy;
 import com.ericsson.icp.util.IIterator;
 
 public class BuddiesController implements ActionListener, ListSelectionListener {
+
+	/**
+	 * The default subscription time
+	 */
+	private static final int DEFAULT_SUBSCRIPTION_TIME = 3600;
+
+	private static final String DEFAULT_GROUP_NAME = "Others";
 
 	private IPTVClient iptvClient = null;
 
@@ -75,6 +83,11 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 			showErrorMsg("Problem loading buddies list");
 			e.printStackTrace();
 		}
+
+		mainGroup = findGroup(DEFAULT_GROUP_NAME);
+
+		if (mainGroup == null)
+			createDefaultGroup();
 
 		this.contactsPanel.getNewContactB().addActionListener(this);
 		this.contactsPanel.getRemoveContactB().addActionListener(this);
@@ -330,7 +343,6 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 			if (!StringUtil.isEmpty(icpGroup.getDisplayName())) {
 
 				IIterator buddyList = icpGroup.getMembers();
-				mainGroup = icpGroup;
 				while (buddyList.hasNext()) {
 					buddyList.next();
 					IBuddy icpBuddy = (IBuddy) buddyList.getElement();
@@ -368,4 +380,48 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 		}
 		return icpBuddy;
 	}
+
+	/**
+	 * Find the group indentified by name.
+	 * 
+	 * @param name
+	 * @return The group finded or null if no group with the identifier name is
+	 *         finded.
+	 */
+	private IRLSGroup findGroup(String name) {
+		IRLSGroup icpGroup = null;
+		try {
+			icpGroup = groupListManagement.searchGroup(name);
+		} catch (Exception e) {
+			showErrorMsg("Could not find group");
+		}
+		return icpGroup;
+	}
+
+	/**
+	 * Create the default gr4oup as required
+	 */
+	private void createDefaultGroup() {
+		// Create a default group
+		Group group = new Group(DEFAULT_GROUP_NAME);
+		try {
+			addGroup(group);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			showErrorMsg("Problem when creating a group");
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @throws Exception
+	 * @see com.ericsson.winclient.listener.ui.ContactListListener#groupAdded(com.ericsson.winclient.data.Group)
+	 */
+	public void addGroup(Group group) throws Exception {
+		IRLSGroup icpGroup = PGMFactory.createGroup(group.getGroupName());
+		icpGroup.setDisplayName(group.getGroupName());
+		groupListManagement.addGroup(icpGroup);
+		presence.subscribeToGroup(icpGroup, DEFAULT_SUBSCRIPTION_TIME);
+	}
+
 }
