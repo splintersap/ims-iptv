@@ -16,6 +16,7 @@ import pl.edu.agh.iptv.data.MovieDescription;
 import pl.edu.agh.iptv.listeners.CommentListener;
 import pl.edu.agh.iptv.performance.client.PerformanceLauncher;
 import pl.edu.agh.iptv.view.MainView;
+import pl.edu.agh.iptv.view.components.MenuListItem;
 import pl.edu.agh.iptv.view.movies.DescriptionPanel;
 import pl.edu.agh.iptv.view.movies.MovieComments;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
@@ -306,7 +307,7 @@ public class IPTVClient implements ActionListener {
 
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		mainView.setButtonsEnabelment(false, false);
+		mainView.setButtonsEnabelment(false, false, false);
 		addingListener();
 		triggerMoviesRequest();
 	}
@@ -392,19 +393,22 @@ public class IPTVClient implements ActionListener {
 
 			List<MovieDescription> descList = movie.getMovieDescriptionList();
 
+			boolean isBroadcast = ((MenuListItem) mainView.getMoviesTab()
+					.getAllMoviesList().getSelectedValue()).getCategory() == MenuListItem.BROADCAST;
+
 			if (descList.size() == 0) {
-				mainView.setButtonsEnabelment(false, false);
+				mainView.setButtonsEnabelment(false, false, isBroadcast);
 			} else if (descList.get(descList.size() - 1).isOrdered()) {
-				mainView.setButtonsEnabelment(true, false);
+				mainView.setButtonsEnabelment(true, false, isBroadcast);
 			} else {
 
 				for (MovieDescription movieDesc : descList) {
 					if (movieDesc.isOrdered()) {
-						mainView.setButtonsEnabelment(true, true);
+						mainView.setButtonsEnabelment(true, true, isBroadcast);
 						return;
 					}
 				}
-				mainView.setButtonsEnabelment(false, true);
+				mainView.setButtonsEnabelment(false, true, isBroadcast);
 			}
 		}
 	}
