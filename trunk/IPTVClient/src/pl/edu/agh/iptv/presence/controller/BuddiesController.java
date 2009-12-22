@@ -96,11 +96,6 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 	}
 
 	public void addNewBuddy(String buddyName, Buddy buddy, boolean isAvailable) {
-		this.buddies.put(buddyName, buddy);
-		this.buddyUriToName.put(buddy.getUri(), buddyName);
-		this.contactsPanel.addElement(buddy, isAvailable);
-		// Subscription to the presence notification.
-		this.presenceNot.subscribe(buddy.getUri());
 
 		/*
 		 * This is copied part.
@@ -111,9 +106,15 @@ public class BuddiesController implements ActionListener, ListSelectionListener 
 			newBuddy.setDisplayName(buddy.getDisplayName());
 			icpGroup.addMember(newBuddy);
 			groupListManagement.modifyGroup(icpGroup);
+			this.buddies.put(buddyName, buddy);
+			this.buddyUriToName.put(buddy.getUri(), buddyName);
+			this.contactsPanel.addElement(buddy, isAvailable);
+			// Subscription to the presence notification.
+			this.presenceNot.subscribe(buddy.getUri());
 		} catch (Exception e) {
 			showErrorMsg("Problem with adding new buddy");
 		}
+
 	}
 
 	public void refreshContactsList() {

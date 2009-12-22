@@ -16,6 +16,7 @@ import javax.swing.event.ListSelectionListener;
 
 import pl.edu.agh.iptv.IPTVClient;
 import pl.edu.agh.iptv.controllers.MainController;
+import pl.edu.agh.iptv.controllers.helper.VLCHelper;
 import pl.edu.agh.iptv.view.MainView;
 import pl.edu.agh.iptv.view.components.MenuListItem;
 import pl.edu.agh.iptv.view.movies.MoviesTab;
@@ -33,11 +34,13 @@ public class DescriptionListener implements ListSelectionListener {
 	 * Necessary in order to get information about movies.
 	 */
 	private IPTVClient iptvClient = null;
-	
+
 	private MainController mainController;
-	
+
 	private MoviesTab moviesTab;
-	
+
+	private MainView mainView;
+
 	public static ImageIcon loadingIcon = new ImageIcon("images/loading.gif");
 
 	/*
@@ -49,21 +52,23 @@ public class DescriptionListener implements ListSelectionListener {
 		return selectedMovie;
 	}
 
-	public DescriptionListener(IPTVClient iptvClient, MainController mainController, MoviesTab moviesTab) {
+	public DescriptionListener(IPTVClient iptvClient,
+			MainController mainController, MainView mainView) {
 		this.iptvClient = iptvClient;
 		this.mainController = mainController;
-		this.moviesTab = moviesTab;
+		this.mainView = mainView;
+		this.moviesTab = mainView.getMoviesTab();
 	}
 
 	public void valueChanged(ListSelectionEvent selection) {
 
-		if (selection.getValueIsAdjusting() == true ) {
+		if (selection.getValueIsAdjusting() == true) {
 			return;
 		}
 
 		JList list = (JList) selection.getSource();
 		MenuListItem itemList = (MenuListItem) list.getSelectedValue();
-		if (itemList  == null) {
+		if (itemList == null) {
 			return;
 		}
 		String item = itemList.getTitle();
@@ -77,41 +82,43 @@ public class DescriptionListener implements ListSelectionListener {
 		loadingIconLabel.setForeground(Color.red);
 		loadingIconLabel.setBackground(Color.red);
 
-	    Dimension size = new Dimension(loadingIcon.getIconWidth(), loadingIcon.getIconHeight());
-	    loadingIconLabel.setPreferredSize(size);
-	    loadingIconLabel.setMinimumSize(size);
-	    loadingIconLabel.setMaximumSize(size);
-	    loadingIconLabel.setSize(size);
-	    loadingPanel.add(loadingIconLabel, BorderLayout.CENTER );
-		//loadingPanel.add(new ImagePanel(loadingIcon), BorderLayout.CENTER);
+		Dimension size = new Dimension(loadingIcon.getIconWidth(), loadingIcon
+				.getIconHeight());
+		loadingIconLabel.setPreferredSize(size);
+		loadingIconLabel.setMinimumSize(size);
+		loadingIconLabel.setMaximumSize(size);
+		loadingIconLabel.setSize(size);
+		loadingPanel.add(loadingIconLabel, BorderLayout.CENTER);
+		// loadingPanel.add(new ImagePanel(loadingIcon), BorderLayout.CENTER);
 		moviesTab.setDescriptionPanel(loadingPanel);
 
-	}
-	
+		mainView.getPlayListener().setPaused(false);
+		VLCHelper.isPlayingMovie = false;
 
+	}
 
 }
 
 class ImagePanel extends JPanel {
 
-	  private Image img;
+	private Image img;
 
-	  public ImagePanel(ImageIcon img) {
-	    this(img.getImage());
-	  }
-
-	  public ImagePanel(Image img) {
-	    this.img = img;
-	    Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
-	    setPreferredSize(size);
-	    setMinimumSize(size);
-	    setMaximumSize(size);
-	    setSize(size);
-	    setLayout(null);
-	  }
-
-	  public void paintComponent(Graphics g) {
-	    g.drawImage(img, 1, 0, null);
-	  }
-
+	public ImagePanel(ImageIcon img) {
+		this(img.getImage());
 	}
+
+	public ImagePanel(Image img) {
+		this.img = img;
+		Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
+		setPreferredSize(size);
+		setMinimumSize(size);
+		setMaximumSize(size);
+		setSize(size);
+		setLayout(null);
+	}
+
+	public void paintComponent(Graphics g) {
+		g.drawImage(img, 1, 0, null);
+	}
+
+}

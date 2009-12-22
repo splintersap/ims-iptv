@@ -54,10 +54,10 @@ public class MainController {
 				 */
 				final IPTVClient iptvClient = new IPTVClient(mainView);
 
-				moviesTab.getAllMoviesList()
-						.addListSelectionListener(
-								new DescriptionListener(iptvClient,
-										MainController.this, MainController.this.mainView.getMoviesTab()));
+				moviesTab.getAllMoviesList().addListSelectionListener(
+						new DescriptionListener(iptvClient,
+								MainController.this,
+								MainController.this.mainView));
 
 				// mainView.getPlayButton().addActionListener(
 				// new PlayListener(iptvClient, mainView));
@@ -70,7 +70,7 @@ public class MainController {
 							public void actionPerformed(ActionEvent e) {
 
 								stopMovie(iptvClient);
-//								mainView.getPlayButton().setEnabled(true);
+								// mainView.getPlayButton().setEnabled(true);
 							}
 						});
 
@@ -116,6 +116,7 @@ public class MainController {
 
 		VLCHelper.isPlayingMovie = false;
 		mainView.getPlayButton().setIcon(MainView.playIcon);
+		mainView.getPlayListener().setPaused(false);
 		MenuListItem item = (MenuListItem) moviesTab.getAllMoviesList()
 				.getSelectedValue();
 		iptvClient.getMovieInformations(item.getTitle());

@@ -298,7 +298,7 @@ public class MainView {
 		getMainFrame().addWindowListener(iperfListener);
 	}
 
-	public void setButtonsEnabelment(boolean ordered, boolean moreToOrder) {
+	public void setButtonsEnabelment(boolean ordered, boolean moreToOrder, boolean isBroadcast) {
 		play.setEnabled(ordered);
 		if (moviesTab.getDescriptionPanel() instanceof DescriptionPanel) {
 			adjustPlayMenu(((DescriptionPanel) moviesTab.getDescriptionPanel())
@@ -306,7 +306,7 @@ public class MainView {
 		}
 		stop.setEnabled(ordered);
 		orderButton.setEnabled(moreToOrder);
-		record.setEnabled(ordered);
+		record.setEnabled(isBroadcast);
 	}
 
 	public void adjustPlayMenu(Movie movie) {
@@ -339,10 +339,24 @@ public class MainView {
 
 		private void checkPopup(MouseEvent e) {
 
-			if (play.getIcon().equals(MainView.playIcon)) {
+			if (!playListener.isPaused()
+					&& play.getIcon().equals(MainView.playIcon)
+					&& !VLCHelper.isPlayingMovie) {
 				playMenu.show(e.getComponent(), play.getX() - 100, play.getY()
 						+ play.getHeight());
-			} else {
+			} else if (playListener.isPaused()
+					&& play.getIcon().equals(MainView.playIcon)
+					&& VLCHelper.isPlayingMovie) {
+				try {
+					VLCHelper.playlist.togglePause();
+				} catch (VLCException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				playListener.setPaused(false);
+				play.setIcon(MainView.pauseIcon);
+			} else if (play.getIcon().equals(MainView.pauseIcon)
+					&& !playListener.isPaused()) {
 				if (VLCHelper.isPlayingMovie) {
 					try {
 						VLCHelper.playlist.togglePause();
@@ -350,11 +364,8 @@ public class MainView {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					playListener.setPaused(true);
 					play.setIcon(MainView.playIcon);
-				} else {
-					playMenu.show(e.getComponent(), play.getX() - 100, play
-							.getY()
-							+ play.getHeight());
 				}
 			}
 
@@ -363,6 +374,10 @@ public class MainView {
 
 	public void setPlayListner(PlayListener playListner) {
 		this.playListener = playListner;
+	}
+
+	public PlayListener getPlayListener() {
+		return this.playListener;
 	}
 
 }
