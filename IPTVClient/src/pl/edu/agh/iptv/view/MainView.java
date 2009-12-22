@@ -3,6 +3,7 @@ package pl.edu.agh.iptv.view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -93,6 +94,9 @@ public class MainView {
 
 			mainTabs.addTab("Chat", chatTab = new ChatTab(mainFrame,
 					getMoviesTab()));
+
+			mainFrame.setIconImage(new ImageIcon("images/tv_icon.gif")
+					.getImage());
 
 			mainFrame.pack();
 			mainFrame.setLocationRelativeTo(null);
