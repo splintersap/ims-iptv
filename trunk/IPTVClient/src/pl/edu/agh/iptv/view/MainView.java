@@ -2,6 +2,7 @@ package pl.edu.agh.iptv.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -298,8 +299,16 @@ public class MainView {
 		getMainFrame().addWindowListener(iperfListener);
 	}
 
-	public void setButtonsEnabelment(boolean ordered, boolean moreToOrder, boolean isBroadcast) {
-		play.setEnabled(ordered);
+	public void setButtonsEnabelment(final boolean ordered,
+			boolean moreToOrder, boolean isBroadcast) {
+		EventQueue.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				play.setEnabled(ordered);
+			}
+
+		});
 		if (moviesTab.getDescriptionPanel() instanceof DescriptionPanel) {
 			adjustPlayMenu(((DescriptionPanel) moviesTab.getDescriptionPanel())
 					.getMovie());
