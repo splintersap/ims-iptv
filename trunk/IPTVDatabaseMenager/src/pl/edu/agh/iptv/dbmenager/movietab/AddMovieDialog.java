@@ -181,14 +181,14 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 				//		+ telnet.getUuid().toString());
 				for(MoviePayment moviePayment : movie.getMoviePayments()) {
 					moviePayment.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/" + moviePayment.getUuid());
-					telnet = new VodTelnetClient(moviePathTextField.getText(), moviePayment.getUuid(), moviePayment.getQuality());
+					telnet = new VodTelnetClient(moviePathTextField.getText(), moviePayment.getUuid(), moviePayment.getQuality(), address);
 					AbstractTelnetWorker.doTelnetWork(telnet);
 				}
 				
 				
 				
 			} else if (BROADCAST.equals(streaming)) {
-				
+				//TODO change
 				movie.setMediaType(MediaType.BROADCAST);
 				// getIpAddress();
 				//movie.setMovieUrl("rtp://@239.255.12.42:5004");
@@ -199,7 +199,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 				mp.setMovieUrl("rtp://@" + multicastIP + ":5004");
 				
 				telnet =  new MulticastTelnetClient(moviePathTextField
-						.getText(), multicastIP, mp.getUuid());
+						.getText(), multicastIP, mp.getUuid(), "127.0.0.1");
 				AbstractTelnetWorker.doTelnetWork(telnet);
 			}
 			//movie.setUuid(telnet.getUuid().toString());

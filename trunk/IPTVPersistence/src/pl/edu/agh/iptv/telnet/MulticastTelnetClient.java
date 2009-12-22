@@ -8,9 +8,9 @@ public class MulticastTelnetClient extends AbstractTelnetWorker {
 	
 	private String multicastIp;
 	
-	public MulticastTelnetClient(String source, String multicastIp, String uuid)
+	public MulticastTelnetClient(String source, String multicastIp, String uuid, String remoteIp)
 	{
-		super();
+		super(remoteIp);
 		this.source = source;
 		this.multicastIp = multicastIp;
 		this.uuid = uuid;

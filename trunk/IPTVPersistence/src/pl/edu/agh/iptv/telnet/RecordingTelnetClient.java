@@ -12,8 +12,8 @@ public class RecordingTelnetClient extends AbstractTelnetWorker {
 	private Date startDate;
 	private Date endDate;
 	
-	public RecordingTelnetClient(String source, Date startDate, Date endDate, String uuid) {
-		super();
+	public RecordingTelnetClient(String source, Date startDate, Date endDate, String uuid, String remoteIp) {
+		super(remoteIp);
 		this.source = source;
 		this.startDate = startDate;
 		this.endDate = endDate;

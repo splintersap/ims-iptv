@@ -37,6 +37,8 @@ public abstract class AbstractTelnetWorker extends Thread {
 	private TelnetClient tc = null;
 	
 	private static final String PASSWORD = "videolan";
+	
+	private String remoteIp;
 
 	OutputStreamWriter writer;
 
@@ -49,7 +51,8 @@ public abstract class AbstractTelnetWorker extends Thread {
 		return uuid;
 	}
 
-	public AbstractTelnetWorker() {
+	public AbstractTelnetWorker(String remoteIp) {
+		this.remoteIp = remoteIp;
 
 		tc = new TelnetClient();
 		TerminalTypeOptionHandler ttopt = new TerminalTypeOptionHandler(
@@ -78,14 +81,17 @@ public abstract class AbstractTelnetWorker extends Thread {
 	 ***/
 	public void run() {
 
-		String remoteip = "127.0.0.1";
 		int remoteport = 4212;
+		System.err.println("Connecting to " + remoteIp + ", port : " + remoteport);
+		//remoteIp = "127.0.0.1";
+		
 
 		try {
-			tc.connect(remoteip, remoteport);
+			
+			tc.connect(remoteIp, remoteport);
 		} catch (Exception e) {
 			System.err.println("Error connecting to telnet: " + e.getMessage());
-			restartTelnet(remoteip, remoteport);
+			//restartTelnet(remoteIp, remoteport);
 		}
 
 		instr = tc.getInputStream();

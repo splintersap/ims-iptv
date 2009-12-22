@@ -12,8 +12,8 @@ public class SharedMulticastTelnet extends AbstractTelnetWorker {
 	private String multicastIp;
 	private Date date;
 
-	public SharedMulticastTelnet(String source, String multicastIp, Date date, String uuid) {
-		super();
+	public SharedMulticastTelnet(String source, String multicastIp, Date date, String uuid, String remoteIp) {
+		super(remoteIp);
 		this.source = source;
 		this.multicastIp = multicastIp;
 		this.date = date;
