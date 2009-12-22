@@ -89,19 +89,18 @@ public class MovieTab extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//TODO ip of telnet
 				System.out.println("Remove button started");
 				System.out.println("Selected row = " + table.getSelectedRow());
-				String uuid = (String) table.getValueAt(table.getSelectedRow(), 6);
-				int selectedRow = table.getSelectedRow();
-				AbstractTelnetWorker telnet = new RemovingTelnetClient(uuid.toString());
-				
-				telnet.start();
-				try {
-					telnet.join();
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
+				Movie movie = MovieTab.this.movie;
+				//String uuid = (String) table.getValueAt(table.getSelectedRow(), 6);
+				for(MoviePayment moviePayment : movie.getMoviePayments())
+				{
+					AbstractTelnetWorker telnet = new RemovingTelnetClient(moviePayment.getUuid(), "127.0.0.1");
+					AbstractTelnetWorker.doTelnetWork(telnet);
 				}
 				
+				int selectedRow = table.getSelectedRow();
 				model.removeMovie(table.convertRowIndexToModel(selectedRow));
 			}
 		});

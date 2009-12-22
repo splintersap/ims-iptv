@@ -24,7 +24,9 @@ import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.MovieRating;
 import pl.edu.agh.iptv.persistence.OrderedMovie;
 import pl.edu.agh.iptv.persistence.Quality;
+import pl.edu.agh.iptv.persistence.Setting;
 import pl.edu.agh.iptv.persistence.User;
+import pl.edu.agh.iptv.servlet.VideoServlet;
 
 public class MessageCreator {
 	EntityManager em;
@@ -287,7 +289,7 @@ public class MessageCreator {
 		
 		MoviePayment moviePayment = movie.addMoviePayment(0, Quality.HIGH);
 		movie.setMoviePath("C:/Movies/" + moviePayment.getUuid() + ".mov");
-		moviePayment.setMovieUrl("rtsp://" + getIpAddress() + ":5554/" + moviePayment.getUuid());
+		moviePayment.setMovieUrl("rtsp://" + getIpAddress(em) + ":5554/" + moviePayment.getUuid());
 		movie.setAvailableFrom(endDate);
 
 		try {
@@ -346,13 +348,24 @@ public class MessageCreator {
 		return moviePayment;
 	}
 
-	public static String getIpAddress() {
+	public static String getIpAddress(EntityManager em) {
 		String address = null;
-		try {
+		/*try {
 			InetAddress addr = InetAddress.getLocalHost();
 			address = addr.getHostAddress();
 		} catch (UnknownHostException e) {
 		}
+		return address;*/
+		if(em.find(Setting.class, "VLCIP") != null) {
+			address  = ((Setting)em.find(Setting.class, "VLCIP")).getValue();
+		} else {
+			try {
+				InetAddress addr = InetAddress.getLocalHost();
+				address = addr.getHostAddress();
+			} catch (UnknownHostException e) {
+			}
+		}
+		
 		return address;
 	}
 

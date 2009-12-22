@@ -24,7 +24,8 @@
 		</class>
 		<class>pl.edu.agh.iptv.persistence.OrderedMovie
 		</class>
-		
+		<class>pl.edu.agh.iptv.persistence.Setting</class>
+
 
 		<properties>
 

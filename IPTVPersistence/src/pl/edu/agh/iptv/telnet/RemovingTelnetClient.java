@@ -6,8 +6,8 @@ public class RemovingTelnetClient extends AbstractTelnetWorker {
 
 	private String removingUuid;
 	
-	public RemovingTelnetClient(String removingUuid) {
-		super();
+	public RemovingTelnetClient(String removingUuid, String remoteIp) {
+		super(remoteIp);
 		this.removingUuid = removingUuid;
 	}
 	
