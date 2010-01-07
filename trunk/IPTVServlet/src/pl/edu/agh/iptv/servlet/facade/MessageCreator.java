@@ -368,4 +368,9 @@ public class MessageCreator {
 		return address;
 	}
 
+	public long getCreditForUser(String sip) {
+		User user = getUserFromSip(sip);
+		return user.getCredit();
+	}
+
 }
