@@ -26,10 +26,13 @@ import org.jvnet.substance.api.renderers.SubstanceDefaultTableCellRenderer;
 
 import pl.edu.agh.iptv.dbmenager.main.Application;
 import pl.edu.agh.iptv.persistence.Category;
+import pl.edu.agh.iptv.persistence.MediaType;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.RemovingTelnetClient;
+import pl.edu.agh.iptv.telnet.StartBroadcastTelnetClient;
+import pl.edu.agh.iptv.telnet.StopBroadcastTelnetClient;
 
 public class MovieTab extends JPanel {
 
@@ -55,6 +58,10 @@ public class MovieTab extends JPanel {
 	CommentsPanel commentsPanel;
 	
 	RatingPanel ratingPanel;
+	
+	JButton startBroadcastButton;
+	
+	JButton stopBroadcastButton;
 
 	public MovieTab() {
 		super(new GridLayout(2, 0));
@@ -112,8 +119,34 @@ public class MovieTab extends JPanel {
 
 			}
 		});
+		
+		startBroadcastButton = new JButton("Start broadcast");
+		startBroadcastButton.setEnabled(false);
+		startBroadcastButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {	
+				for(MoviePayment payment : movie.getMoviePayments()) {
+					AbstractTelnetWorker telnet = new StartBroadcastTelnetClient("127.0.0.1", payment.getUuid());
+					AbstractTelnetWorker.doTelnetWork(telnet);
+				}
+			}});
+		stopBroadcastButton = new JButton("Stop broadcast");
+		stopBroadcastButton.setEnabled(false);
+		stopBroadcastButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for(MoviePayment payment : movie.getMoviePayments()) {
+					AbstractTelnetWorker telnet = new StopBroadcastTelnetClient("127.0.0.1", payment.getUuid());
+					AbstractTelnetWorker.doTelnetWork(telnet);
+				}
+			}});
+		
 		newMoviePanel.add(newMovieButton);
 		newMoviePanel.add(removeButton);
+		newMoviePanel.add(startBroadcastButton);
+		newMoviePanel.add(stopBroadcastButton);
+		
 		tablePanel.add(newMoviePanel, BorderLayout.SOUTH);
 		// Add the scroll pane to this panel.
 		add(tablePanel);
@@ -163,8 +196,13 @@ public class MovieTab extends JPanel {
 				descriptionTextArea.setText(movie.getDescription());
 			}
 		});
+		
+
+		
 		buttonPanel.add(saveButton);
 		buttonPanel.add(revertButton);
+	
+		
 		panel.add(buttonPanel, BorderLayout.PAGE_END);
 		return panel;
 	}
@@ -196,6 +234,14 @@ public class MovieTab extends JPanel {
 			return;
 		}
 		Movie movie = model.getMovieList().get(table.getSelectedRow());
+		if(movie.getMediaType().equals(MediaType.BROADCAST)) {
+			startBroadcastButton.setEnabled(true);
+			stopBroadcastButton.setEnabled(true);
+		} else {
+			startBroadcastButton.setEnabled(false);
+			stopBroadcastButton.setEnabled(false);
+		}
+		
 		String description = movie.getDescription();
 		descriptionTextArea.setText(description);
 
