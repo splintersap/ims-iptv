@@ -171,6 +171,8 @@ public class IPTVClient implements ActionListener {
 
 						});
 
+						getAccountBalance();
+						
 						if (!iperfStarted) {
 							iperfStarted = true;
 							askForIP();
@@ -218,7 +220,9 @@ public class IPTVClient implements ActionListener {
 							new Thread(new PerformanceLauncher(mainView,
 									new String(aMessage))).start();
 						}
-					} else {
+					}else if("application/credit".equals(aContentType)){
+						mainView.getMoneyLabel().setText("Your credit - " + new Double(new String(aMessage)) / 100.0 + "zl");
+					}else {
 						System.out.println("Unrecognized message");
 					}
 				}
@@ -301,6 +305,17 @@ public class IPTVClient implements ActionListener {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			showError("Error wile starting session.", e);
+			e.printStackTrace();
+		}
+	}
+	
+	private void getAccountBalance(){
+		try {
+			String text = "Request for account balance";
+			session.sendInformation("info/credit", text.getBytes(),
+					text.length());
+		} catch (Exception e) {
+			showError("Error while sending INFO with comment.", e);
 			e.printStackTrace();
 		}
 	}
