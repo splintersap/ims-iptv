@@ -3,7 +3,6 @@ package pl.edu.agh.iptv.view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -53,6 +52,7 @@ public class MainView {
 	private PlayListener playListener;
 
 	private JLabel bandwidthLabel;
+	private JLabel moneyLabel;
 
 	public static ImageIcon playIcon = new ImageIcon("images/play.gif");
 
@@ -116,12 +116,13 @@ public class MainView {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(gridLayout);
 
-			ResizableGridLayout menuLabelGL = new ResizableGridLayout(1, 2, 2,
+			ResizableGridLayout menuLabelGL = new ResizableGridLayout(1, 3, 2,
 					0);
 			JPanel menuLabelP = new JPanel();
 			menuLabelP.setLayout(menuLabelGL);
 			menuLabelP.add(getJToolBar());
 			menuLabelP.add(getBandwidthLabel());
+			menuLabelP.add(getMoneyLabel());
 
 			jContentPane.add(menuLabelP, BorderLayout.NORTH);
 			jContentPane.add(getMainTabs(), null);
@@ -297,6 +298,13 @@ public class MainView {
 			bandwidthLabel = new JLabel("Requesting server for bandwidth...");
 		}
 		return this.bandwidthLabel;
+	}
+	
+	public JLabel getMoneyLabel(){
+		if(this.moneyLabel == null){
+			moneyLabel = new JLabel("Requesting server for credit info");
+		}
+		return this.moneyLabel;
 	}
 
 	public void setWindowCloseOperation(IperfManagerListener iperfListener) {
