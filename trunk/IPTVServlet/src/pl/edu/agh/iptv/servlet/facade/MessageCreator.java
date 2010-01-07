@@ -26,7 +26,6 @@ import pl.edu.agh.iptv.persistence.OrderedMovie;
 import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.persistence.Setting;
 import pl.edu.agh.iptv.persistence.User;
-import pl.edu.agh.iptv.servlet.VideoServlet;
 
 public class MessageCreator {
 	EntityManager em;

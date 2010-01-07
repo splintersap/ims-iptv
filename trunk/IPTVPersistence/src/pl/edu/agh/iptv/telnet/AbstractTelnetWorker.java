@@ -39,6 +39,9 @@ public abstract class AbstractTelnetWorker extends Thread {
 	private static final String PASSWORD = "videolan";
 	
 	private String remoteIp;
+	
+	private boolean isTelnetWorking = true;
+
 
 	OutputStreamWriter writer;
 
@@ -91,6 +94,8 @@ public abstract class AbstractTelnetWorker extends Thread {
 			tc.connect(remoteIp, remoteport);
 		} catch (Exception e) {
 			System.err.println("Error connecting to telnet: " + e.getMessage());
+			isTelnetWorking = false;
+			return;
 			//restartTelnet(remoteIp, remoteport);
 		}
 
@@ -200,6 +205,10 @@ public abstract class AbstractTelnetWorker extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isTelnetWorking() {
+		return isTelnetWorking;
 	}
 
 }

@@ -12,6 +12,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import pl.edu.agh.iptv.dbmenager.movietab.MovieTab;
+import pl.edu.agh.iptv.dbmenager.telnettab.TelnetTab;
 import pl.edu.agh.iptv.dbmenager.usertab.UsersTab;
 
 
@@ -61,8 +62,12 @@ public class Application {
 		UsersTab usersTab = new UsersTab();
 		usersTab.setOpaque(true);
 
+		TelnetTab telnetTab = new TelnetTab();
+		telnetTab.setOpaque(true);
+		
 		tabbedPane.addTab("Movies", movieTab);
 		tabbedPane.addTab("Users", usersTab);
+		tabbedPane.addTab("Telnet", telnetTab);
 		
 		frame.setContentPane(tabbedPane);
 

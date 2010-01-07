@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 
 @Entity
 public class Setting {
+	
+	public static final String VLCIP = "VLCIP";
+	
 	@Id
 	private String name;
 	private String value;

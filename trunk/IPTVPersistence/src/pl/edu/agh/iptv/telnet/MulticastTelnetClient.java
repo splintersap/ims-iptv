@@ -20,9 +20,10 @@ public class MulticastTelnetClient extends AbstractTelnetWorker {
 	void doTelnetWork() throws IOException {
 		writeCommandAndRead("new " + uuid + " broadcast enabled");
 		writeCommandAndRead("setup " + uuid + " input " + source);
-		writeCommandAndRead("setup " + uuid + " output #rtp{mux=ts,dst=" + multicastIp
-				+ "}");
-		writeCommandAndRead("control "+ uuid + " play");
+		//writeCommandAndRead("setup " + uuid + " output #rtp{mux=ts,dst=" + multicastIp
+		//		+ "}");
+		writeCommandAndRead("setup " + uuid + " output #transcode{vcodec=DIV3,scale=1,acodec=mp3}:rtp{mux=ts,dst=" + multicastIp + "}");
+		//writeCommandAndRead("control "+ uuid + " play");
 	}
 
 	

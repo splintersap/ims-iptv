@@ -226,7 +226,7 @@ public class RandomDatabaseData {
 		aljazera.setDirector("director");
 		aljazera.setMediaType(MediaType.BROADCAST);
 		aljazera.addMoviePayment(700, Quality.HIGH);
-		Setting setting = new Setting("VLCIP", "192.168.0.72");
+		Setting setting = new Setting(Setting.VLCIP, "127.0.0.1");
 
 		try {
 			utx.begin();
