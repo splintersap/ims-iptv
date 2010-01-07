@@ -93,9 +93,21 @@ public class VideoServlet extends SipServlet {
 			createSharedMulticast(mimes[1], reqContent);
 		} else if ("info/ip_address".equals(contentType)) {
 			sendIpAddress(req.getSession());
+		} else if("info/credit".equals(contentType)) {
+			sendCredit(sip, req.getSession());
 		} else {
 			log("Unrecognized INFO message " + req);
 		}
+	}
+
+	private void sendCredit(String sip, SipSession session) throws IOException {
+		String credit = String.valueOf(helper.getCreditForUser(sip));
+		SipServletRequest info = session.createRequest("INFO");
+		info.setContent(credit, "application/credit");
+		info.send();
+
+		log("User " + sip + " has " + credit + " zl");
+		
 	}
 
 	private synchronized void sendIpAddress(SipSession session)
