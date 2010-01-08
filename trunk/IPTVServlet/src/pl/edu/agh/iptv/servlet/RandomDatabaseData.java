@@ -26,8 +26,6 @@ public class RandomDatabaseData {
 	@SuppressWarnings("unchecked")
 	public static void fillDatabase(EntityManager em, UserTransaction utx) {
 
-		
-		
 		// return when there are already movies in database
 		try {
 			utx.begin();
@@ -41,7 +39,6 @@ public class RandomDatabaseData {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 
 		User coco = new User("sip:coco@ericsson.com");
 		coco.setCredit(10000);
@@ -202,7 +199,6 @@ public class RandomDatabaseData {
 		aliceInWonderland.addMoviePayment(600, Quality.HIGH);
 		aliceInWonderland.setMediaType(MediaType.VOD);
 
-
 		Movie xman = new Movie("X-Men Origins: Wolverine",
 				"C:/Movies/x-man.mov");
 		xman
@@ -220,19 +216,40 @@ public class RandomDatabaseData {
 		xman.addMoviePayment(700, Quality.HIGH);
 		xman.setMediaType(MediaType.VOD);
 
+		Movie itv = new Movie("ITV", "mms://stream.mni.pl/ITV");
+		itv.setCategory(Category.Documentary);
+		itv.setMediaType(MediaType.BROADCAST);
+		itv.addMoviePayment(700, Quality.HIGH);
+		
+		Movie wapster = new Movie("WAPSTER TV", "mms://nadajnik.wapster.pl/wapstertv");
+		wapster.setCategory(Category.Documentary);
+		wapster.setMediaType(MediaType.BROADCAST);
+		wapster.addMoviePayment(700, Quality.HIGH);
+
 		Movie aljazera = new Movie("Aljazera",
 				"mms://stream.onet.pl/media.wsx?/live/aljazeera");
 		aljazera.setCategory(Category.Documentary);
-		aljazera.setDirector("director");
 		aljazera.setMediaType(MediaType.BROADCAST);
 		aljazera.addMoviePayment(700, Quality.HIGH);
+
+		Movie toya = new Movie("TOYA TV", "mms://217.113.224.22/TVToya");
+		toya.setCategory(Category.Documentary);
+		toya.setMediaType(MediaType.BROADCAST);
+		toya.addMoviePayment(700, Quality.HIGH);
+
+		Movie interiaTv = new Movie("INTERIA TV",
+				"http://streamlive.interia.pl/interiatv400");
+		interiaTv.setCategory(Category.Documentary);
+		interiaTv.setMediaType(MediaType.BROADCAST);
+		interiaTv.addMoviePayment(700, Quality.HIGH);
+
 		Setting setting = new Setting(Setting.VLCIP, "127.0.0.1");
 
 		try {
 			utx.begin();
 
 			em.persist(setting);
-			
+
 			em.persist(coco);
 			em.persist(alice);
 			em.persist(maciek);
@@ -244,21 +261,26 @@ public class RandomDatabaseData {
 			em.persist(avatar);
 			em.persist(aliceInWonderland);
 			em.persist(xman);
+
+			em.persist(itv);
+			em.persist(wapster);
 			em.persist(aljazera);
+			em.persist(toya);
+			em.persist(interiaTv);
 
 			coco.addOrderedMovie(movie2012, Quality.LOW);
-			
+
 			coco.addOrderedMovie(up, Quality.LOW);
 			coco.addOrderedMovie(up, Quality.MEDIUM);
-			
+
 			coco.addOrderedMovie(xman, Quality.LOW);
 			coco.addOrderedMovie(xman, Quality.MEDIUM);
 			coco.addOrderedMovie(xman, Quality.HIGH);
-			
+
 			alice.addOrderedMovie(up, Quality.LOW);
 			alice.addOrderedMovie(up, Quality.MEDIUM);
 			alice.addOrderedMovie(up, Quality.HIGH);
-			
+
 			alice.addOrderedMovie(aliceInWonderland, Quality.LOW);
 			alice.addOrderedMovie(aliceInWonderland, Quality.MEDIUM);
 			alice.addOrderedMovie(aliceInWonderland, Quality.HIGH);
@@ -274,11 +296,11 @@ public class RandomDatabaseData {
 		AbstractTelnetWorker telnet = null;
 
 		String multicastIp = MulticastSet.getMulticastIp();
-		
+
 		MoviePayment mp = movie.getMoviePayments(Quality.HIGH);
-		
-		telnet = new MulticastTelnetClient(movie.getMoviePath(),
-				multicastIp, mp.getUuid(), MessageCreator.getIpAddress(em));
+
+		telnet = new MulticastTelnetClient(movie.getMoviePath(), multicastIp,
+				mp.getUuid(), MessageCreator.getIpAddress(em));
 		mp.setMovieUrl("rtp://@" + multicastIp + ":5004");
 
 		System.out.println("Starting telnet");
@@ -288,29 +310,30 @@ public class RandomDatabaseData {
 	private static void delAllMoviesFromTelnet(EntityManager em) {
 		AbstractTelnetWorker telnet = null;
 
-		telnet = new RemovingTelnetClient("all", MessageCreator.getIpAddress(em));
+		telnet = new RemovingTelnetClient("all", MessageCreator
+				.getIpAddress(em));
 		AbstractTelnetWorker.doTelnetWork(telnet);
 
 	}
 
 	private static void addVodMovieToTelnet(Movie movie, EntityManager em) {
-		
+
 		String address = MessageCreator.getIpAddress(em);
 
-		for(MoviePayment moviePayment : movie.getMoviePayments())
-		{
-			AbstractTelnetWorker telnet = new VodTelnetClient(movie.getMoviePath(), moviePayment.getUuid(), moviePayment.getQuality(), address);
-			moviePayment.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
-					+ moviePayment.getUuid());
+		for (MoviePayment moviePayment : movie.getMoviePayments()) {
+			AbstractTelnetWorker telnet = new VodTelnetClient(movie
+					.getMoviePath(), moviePayment.getUuid(), moviePayment
+					.getQuality(), address);
+			moviePayment.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT
+					+ "/" + moviePayment.getUuid());
 			AbstractTelnetWorker.doTelnetWork(telnet);
 		}
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
 	public static void addDBMoviesToTelnet(EntityManager em, UserTransaction utx) {
-		
-		
+
 		try {
 			utx.begin();
 			delAllMoviesFromTelnet(em);
