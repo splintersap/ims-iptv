@@ -140,8 +140,8 @@ public class MainView {
 		if (mainTabs == null) {
 			mainTabs = new JTabbedPane();
 			mainTabs.addTab("Movies", getMoviesTab());
-			mainTabs.addTab("Statistics", getStatisticsTabBeans());
-			mainTabs.addTab("Payments", getPaymentsTab());
+			//mainTabs.addTab("Statistics", getStatisticsTabBeans());
+			//mainTabs.addTab("Payments", getPaymentsTab());
 		}
 		return mainTabs;
 	}
