@@ -29,6 +29,7 @@ import pl.edu.agh.iptv.persistence.Category;
 import pl.edu.agh.iptv.persistence.MediaType;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.MoviePayment;
+import pl.edu.agh.iptv.persistence.Setting;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.RemovingTelnetClient;
 import pl.edu.agh.iptv.telnet.StartBroadcastTelnetClient;
@@ -124,9 +125,10 @@ public class MovieTab extends JPanel {
 		startBroadcastButton.setEnabled(false);
 		startBroadcastButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {	
+			public void actionPerformed(ActionEvent arg0) {
+				String address  = ((Setting)Application.getEntityMenager().find(Setting.class, "VLCIP")).getValue();
 				for(MoviePayment payment : movie.getMoviePayments()) {
-					AbstractTelnetWorker telnet = new StartBroadcastTelnetClient("127.0.0.1", payment.getUuid());
+					AbstractTelnetWorker telnet = new StartBroadcastTelnetClient(address, payment.getUuid());
 					AbstractTelnetWorker.doTelnetWork(telnet);
 				}
 			}});
@@ -137,7 +139,8 @@ public class MovieTab extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				for(MoviePayment payment : movie.getMoviePayments()) {
-					AbstractTelnetWorker telnet = new StopBroadcastTelnetClient("127.0.0.1", payment.getUuid());
+					String address  = ((Setting)Application.getEntityMenager().find(Setting.class, "VLCIP")).getValue();
+					AbstractTelnetWorker telnet = new StopBroadcastTelnetClient(address, payment.getUuid());
 					AbstractTelnetWorker.doTelnetWork(telnet);
 				}
 			}});
