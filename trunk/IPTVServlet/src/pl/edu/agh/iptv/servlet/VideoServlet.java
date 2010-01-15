@@ -157,7 +157,7 @@ public class VideoServlet extends SipServlet {
 				startDate, endDate);
 
 		AbstractTelnetWorker telnet = new RecordingTelnetClient(movie
-				.getMoviePath(), startDate, endDate, moviePayment.getUuid(), MessageCreator.getIpAddress(em));
+				.getMoviePath(), startDate, endDate, moviePayment.getUuid(), MessageCreator.getVODIpAddress(em));
 		AbstractTelnetWorker.doTelnetWork(telnet);
 
 		log("Recording movie " + movieTitle + " from: " + startDate + " to: "
@@ -176,7 +176,7 @@ public class VideoServlet extends SipServlet {
 		MoviePayment moviePayment = helper.createSharedMulticast(title, users,
 				date, multicastAddr);
 		AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie
-				.getMoviePath(), multicastAddr, date, moviePayment.getUuid(), MessageCreator.getIpAddress(em));
+				.getMoviePath(), multicastAddr, date, moviePayment.getUuid(), MessageCreator.getVODIpAddress(em));
 		AbstractTelnetWorker.doTelnetWork(telnet);
 		log("Shared multicast " + title);
 	}
@@ -279,6 +279,6 @@ public class VideoServlet extends SipServlet {
 	}
 
 	private String getIpAddress() {
-		return MessageCreator.getIpAddress(em);
+		return MessageCreator.getVODIpAddress(em);
 	}
 }

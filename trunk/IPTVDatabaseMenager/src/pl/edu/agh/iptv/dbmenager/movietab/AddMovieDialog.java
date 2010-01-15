@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Random;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,11 +21,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import pl.edu.agh.iptv.dbmenager.main.Application;
 import pl.edu.agh.iptv.persistence.Category;
 import pl.edu.agh.iptv.persistence.MediaType;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.Quality;
+import pl.edu.agh.iptv.persistence.Setting;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
 import pl.edu.agh.iptv.telnet.VodTelnetClient;
@@ -71,7 +74,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 		JPanel moviePathPanel = new JPanel();
 		moviePathPanel.setLayout(new BoxLayout(moviePathPanel,
 				BoxLayout.LINE_AXIS));
-		JLabel moviePathLabel = new JLabel("Movie Path");
+		JLabel moviePathLabel = new JLabel("URL");
 		final JButton browseButton = new JButton("Browse");
 		final JFileChooser fc = new JFileChooser();
 
@@ -154,14 +157,13 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource().equals(cancelButton)) {
-			
+
 		} else if (arg0.getSource().equals(saveButton)) {
 			Movie movie = new Movie(titleTextFiled.getText(),
 					moviePathTextField.getText());
 			movie.setCategory((Category) categoryComboBox.getSelectedItem());
 			movie.setDirector(directorTextFiled.getText());
 			movie.setDescription(descriptionTextArea.getText());
-			
 
 			String streaming = (String) streamingComboBox.getSelectedItem();
 
@@ -169,42 +171,46 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 
 			if (VOD.equals(streaming)) {
 				movie.setMediaType(MediaType.VOD);
-				
+
 				for (QualitySpinner spinner : spinners) {
 					movie.addMoviePayment(Double.valueOf(
 							spinner.getValue().toString()).longValue(), spinner
 							.getQuality());
 				}
-				
+
 				String address = getIpAddress();
-				//movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
-				//		+ telnet.getUuid().toString());
-				for(MoviePayment moviePayment : movie.getMoviePayments()) {
-					moviePayment.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/" + moviePayment.getUuid());
-					telnet = new VodTelnetClient(moviePathTextField.getText(), moviePayment.getUuid(), moviePayment.getQuality(), address);
+				// movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
+				// + telnet.getUuid().toString());
+				for (MoviePayment moviePayment : movie.getMoviePayments()) {
+					moviePayment.setMovieUrl("rtsp://" + address + ":"
+							+ RTSP_PORT + "/" + moviePayment.getUuid());
+					telnet = new VodTelnetClient(moviePathTextField.getText(),
+							moviePayment.getUuid(), moviePayment.getQuality(),
+							address);
 					AbstractTelnetWorker.doTelnetWork(telnet);
 				}
-				
-				
-				
+
 			} else if (BROADCAST.equals(streaming)) {
-				//TODO change
+				// TODO change
 				movie.setMediaType(MediaType.BROADCAST);
 				// getIpAddress();
-				//movie.setMovieUrl("rtp://@239.255.12.42:5004");
+				// movie.setMovieUrl("rtp://@239.255.12.42:5004");
 				MoviePayment mp = movie.addMoviePayment(Double.valueOf(
-						spinners[2].getValue().toString()).longValue(), spinners[2].getQuality());
-				
-				String multicastIP = "239.255.12.42";
+						spinners[2].getValue().toString()).longValue(),
+						spinners[2].getQuality());
+
+				String multicastIP = getMulticastIp();
 				mp.setMovieUrl("rtp://@" + multicastIP + ":5004");
+
+				String broadcastAddress = ((Setting)Application.getEntityMenager().find(Setting.class, "VLCIP")).getValue();
 				
-				telnet =  new MulticastTelnetClient(moviePathTextField
-						.getText(), multicastIP, mp.getUuid(), "127.0.0.1");
+				telnet = new MulticastTelnetClient(
+						moviePathTextField.getText(), multicastIP,
+						mp.getUuid(), "127.0.0.1");
 				AbstractTelnetWorker.doTelnetWork(telnet);
 			}
-			//movie.setUuid(telnet.getUuid().toString());
+			// movie.setUuid(telnet.getUuid().toString());
 			System.out.println("Starting telnet");
-			
 
 			MovieTab.persistMovie(movie);
 
@@ -221,5 +227,17 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 		} catch (UnknownHostException e) {
 		}
 		return address;
+	}
+
+	public static String getMulticastIp() {
+		String multicastIp = null;
+		Random random = new Random();
+		Integer first = random.nextInt(15) + 224;
+		Integer second = random.nextInt(255);
+		Integer third = random.nextInt(255);
+		Integer fourth = random.nextInt(255);
+		multicastIp = first + "." + second + "." + third + "." + fourth;
+
+		return multicastIp;
 	}
 }

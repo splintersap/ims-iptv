@@ -287,7 +287,7 @@ public class MessageCreator {
 		
 		MoviePayment moviePayment = movie.addMoviePayment(0, Quality.HIGH);
 		movie.setMoviePath("C:/Movies/" + moviePayment.getUuid() + ".mov");
-		moviePayment.setMovieUrl("rtsp://" + getIpAddress(em) + ":5554/" + moviePayment.getUuid());
+		moviePayment.setMovieUrl("rtsp://" + getVODIpAddress(em) + ":5554/" + moviePayment.getUuid());
 		movie.setAvailableFrom(endDate);
 
 		try {
@@ -345,16 +345,11 @@ public class MessageCreator {
 		return moviePayment;
 	}
 
-	public static String getIpAddress(EntityManager em) {
+	public static String getVODIpAddress(EntityManager em) {
 		String address = null;
-		/*try {
-			InetAddress addr = InetAddress.getLocalHost();
-			address = addr.getHostAddress();
-		} catch (UnknownHostException e) {
-		}
-		return address;*/
+		
 		if(em.find(Setting.class, "VLCIP") != null) {
-			address  = ((Setting)em.find(Setting.class, "VLCIP")).getValue();
+			address  = ((Setting)em.find(Setting.class, "BROADCASTIP")).getValue();
 		} else {
 			try {
 				InetAddress addr = InetAddress.getLocalHost();
