@@ -66,7 +66,7 @@ public class IPTVClient implements ActionListener {
 
 	private static String infoContent = null;
 
-	private static boolean isInfoToSend = false;
+	static boolean isInfoToSend = false;
 
 	/*
 	 * This is in order to pass the reference of IPTVClient class to the
@@ -96,6 +96,11 @@ public class IPTVClient implements ActionListener {
 		}
 	}
 
+	public void restartSession() {
+		addingListener();
+		triggerMoviesRequest();
+	}
+	
 	/**
 	 * This function adds a listener which listens to the actions regarding
 	 * response of the servlet.
@@ -104,7 +109,7 @@ public class IPTVClient implements ActionListener {
 
 		try {
 			session = service.createSession();
-			session.addListener(new SessionAdapter() {
+			session.addListener(new SessionAdapter(this) {
 
 				@Override
 				public void processSessionStartFailed(ErrorReason aError,
