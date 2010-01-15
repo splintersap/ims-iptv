@@ -244,11 +244,13 @@ public class RandomDatabaseData {
 		interiaTv.addMoviePayment(700, Quality.HIGH);
 
 		Setting setting = new Setting(Setting.VLCIP, "127.0.0.1");
+		Setting broadcastSetting = new Setting(Setting.BROADCASTIP, "127.0.0.1");
 
 		try {
 			utx.begin();
 
 			em.persist(setting);
+			em.persist(broadcastSetting);
 
 			em.persist(coco);
 			em.persist(alice);
@@ -300,7 +302,7 @@ public class RandomDatabaseData {
 		MoviePayment mp = movie.getMoviePayments(Quality.HIGH);
 
 		telnet = new MulticastTelnetClient(movie.getMoviePath(), multicastIp,
-				mp.getUuid(), MessageCreator.getIpAddress(em));
+				mp.getUuid(), MessageCreator.getVODIpAddress(em));
 		mp.setMovieUrl("rtp://@" + multicastIp + ":5004");
 
 		System.out.println("Starting telnet");
@@ -311,20 +313,20 @@ public class RandomDatabaseData {
 		AbstractTelnetWorker telnet = null;
 
 		telnet = new RemovingTelnetClient("all", MessageCreator
-				.getIpAddress(em));
+				.getVODIpAddress(em));
 		AbstractTelnetWorker.doTelnetWork(telnet);
 
 	}
 
 	private static void addVodMovieToTelnet(Movie movie, EntityManager em) {
 
-		String address = MessageCreator.getIpAddress(em);
+		String vodAddress = MessageCreator.getVODIpAddress(em);
 
 		for (MoviePayment moviePayment : movie.getMoviePayments()) {
 			AbstractTelnetWorker telnet = new VodTelnetClient(movie
 					.getMoviePath(), moviePayment.getUuid(), moviePayment
-					.getQuality(), address);
-			moviePayment.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT
+					.getQuality(), vodAddress);
+			moviePayment.setMovieUrl("rtsp://" + vodAddress + ":" + RTSP_PORT
 					+ "/" + moviePayment.getUuid());
 			AbstractTelnetWorker.doTelnetWork(telnet);
 		}

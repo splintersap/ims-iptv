@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 public class Setting {
 	
 	public static final String VLCIP = "VLCIP";
+	public static final String BROADCASTIP = "BROADCASTIP";
 	
 	@Id
 	private String name;
