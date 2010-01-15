@@ -279,12 +279,6 @@ public class VideoServlet extends SipServlet {
 	}
 
 	private String getIpAddress() {
-		String address = null;
-		try {
-			InetAddress addr = InetAddress.getLocalHost();
-			address = addr.getHostAddress();
-		} catch (UnknownHostException e) {
-		}
-		return address;
+		return MessageCreator.getIpAddress(em);
 	}
 }

@@ -275,7 +275,6 @@ public class MessageCreator {
 
 	public MoviePayment createRecordedMovie(String movieTitle, String sip,
 			Date startDate, Date endDate) {
-		//TODO Change it to movie payments
 
 		String startFormatedDate = formatter.format(startDate);
 		String endFormatedDate = formatter.format(endDate);
@@ -308,7 +307,6 @@ public class MessageCreator {
 	}
 
 	public MoviePayment createSharedMulticast(String title, String[] users, Date date, String multicastAddr) {
-		//TODO change it to MoviePayments
 		Movie sharedMovie = null;
 		MoviePayment moviePayment = null;
 		try {
