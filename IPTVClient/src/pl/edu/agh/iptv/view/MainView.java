@@ -312,22 +312,23 @@ public class MainView {
 	}
 
 	public void setButtonsEnabelment(final boolean ordered,
-			boolean moreToOrder, boolean isBroadcast) {
+			final boolean moreToOrder, final boolean isBroadcast) {
 		EventQueue.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
 				play.setEnabled(ordered);
+				if (moviesTab.getDescriptionPanel() instanceof DescriptionPanel) {
+					adjustPlayMenu(((DescriptionPanel) moviesTab.getDescriptionPanel())
+							.getMovie());
+				}
+				stop.setEnabled(ordered);
+				orderButton.setEnabled(moreToOrder);
+				record.setEnabled(isBroadcast);
 			}
 
-		});
-		if (moviesTab.getDescriptionPanel() instanceof DescriptionPanel) {
-			adjustPlayMenu(((DescriptionPanel) moviesTab.getDescriptionPanel())
-					.getMovie());
-		}
-		stop.setEnabled(ordered);
-		orderButton.setEnabled(moreToOrder);
-		record.setEnabled(isBroadcast);
+		});		
+		
 	}
 
 	public void adjustPlayMenu(Movie movie) {
