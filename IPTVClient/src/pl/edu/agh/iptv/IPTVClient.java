@@ -145,8 +145,6 @@ public class IPTVClient implements ActionListener {
 				public void processSessionInformation(String aContentType,
 						byte[] aMessage, int aLength) {
 
-					System.out.println("Tutaj");
-
 					super.processSessionInformation(aContentType, aMessage,
 							aLength);
 
@@ -341,23 +339,11 @@ public class IPTVClient implements ActionListener {
 
 		String ratingString = String.valueOf(rating);
 		sendMovieInformation("rating/" + title, ratingString);
-		/*
-		 * try { session.sendInformation("rating/" + title,
-		 * ratingString.getBytes(), ratingString.length()); } catch (Exception
-		 * e) { showError("Error while sending INFO about user rating.", e);
-		 * e.printStackTrace(); }
-		 */
+
 	}
 
 	public void getMovieInformations(String item) {
 		sendMovieInformation("text/title-info", item);
-		/*
-		 * try { session.sendInformation("text/title-info", item.getBytes(),
-		 * item .length()); System.out.println("Wysylam info"); } catch
-		 * (Exception e) {
-		 * showError("Error while sending INFO about movie movie.", e);
-		 * e.printStackTrace(); }
-		 */
 	}
 
 	public void purchaseMovie(String movieTitle, String quality) {
