@@ -21,7 +21,12 @@ import com.ericsson.icp.util.MIMEContainer;
 
 public class SessionAdapter implements ISessionListener
 {
+	private IPTVClient iptvclient;
 
+	public SessionAdapter(IPTVClient client) {
+		this.iptvclient = client;
+	}
+	
 	public void processSessionAlerting()
     {   
     }
@@ -42,6 +47,13 @@ public class SessionAdapter implements ISessionListener
 
     public void processSessionInformationFailed(ErrorReason arg0, long arg1)
     {  
+    	System.out.println("processSessionInformationFailed");
+    	try {
+    		iptvclient.restartSession();
+    		IPTVClient.isInfoToSend = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     public void processSessionInformationSuccessful(String arg0, byte[] arg1, int arg2)
