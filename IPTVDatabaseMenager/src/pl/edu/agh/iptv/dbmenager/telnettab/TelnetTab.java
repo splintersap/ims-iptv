@@ -1,12 +1,16 @@
 package pl.edu.agh.iptv.dbmenager.telnettab;
 
+import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.persistence.Query;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -19,25 +23,37 @@ import pl.edu.agh.iptv.telnet.CheckConnetcionTelnetClient;
 public class TelnetTab extends JPanel {
 
 	private Setting vlcipSetting = null;
+	
+	private Setting liveSetting = null;
 
 	JTextField telnetIpTextField;
+	
+	JTextField telnetBroadcastIpTextField;
 
 	private static final long serialVersionUID = -376429230198879816L;
 
 	public TelnetTab() {
+		this.setLayout(new BorderLayout());
+		//this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
 		Query query = Application.getEntityMenager()
 				.createQuery("FROM Setting");
 
 		List<Setting> settingList = query.getResultList();
 		String telnetIp = null;
+		String liveVideoIp = null;
 		for (Setting setting : settingList) {
 			if (Setting.VLCIP.equals(setting.getName())) {
 				this.vlcipSetting = setting;
 				telnetIp = setting.getValue();
-				break;
+			} else if(Setting.BROADCASTIP.equals(setting.getName())) {
+				this.liveSetting = setting;
+				liveVideoIp = setting.getValue();;
+				
 			}
 		}
 
+		JLabel vodLabel = new JLabel("Video on demand");
+		
 		telnetIpTextField = new JTextField(telnetIp);
 
 		JButton setButton = new JButton("Set");
@@ -45,7 +61,7 @@ public class TelnetTab extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TelnetTab.this.setTelnetIpAddress();
+				TelnetTab.this.setTelnetIpAddress(vlcipSetting, telnetIpTextField.getText());
 			}
 		});
 
@@ -54,19 +70,65 @@ public class TelnetTab extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TelnetTab.this.checkTelnetIpAddress();
+				TelnetTab.this.checkTelnetIpAddress(telnetIpTextField.getText());
+			}
+		});
+		
+		JLabel liveVideoLabel = new JLabel("Live video");
+		
+		telnetBroadcastIpTextField = new JTextField(liveVideoIp);
+		
+		JButton liveVideoSetButton = new JButton("Set");
+		liveVideoSetButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				TelnetTab.this.setTelnetIpAddress(liveSetting, telnetBroadcastIpTextField.getText());
 			}
 		});
 
-		add(telnetIpTextField);
-		add(setButton);
-		add(checkButton);
+		JButton liveVideoCheckButton = new JButton("Check");
+		liveVideoCheckButton.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				TelnetTab.this.checkTelnetIpAddress(telnetBroadcastIpTextField.getText());
+			}
+		});
+
+		JPanel northPanel = new JPanel();
+	
+		northPanel.setLayout(new GridLayout(3, 6, 10, 10));
+		
+		northPanel.add(new JPanel());
+		northPanel.add(new JPanel());
+		northPanel.add(new JPanel());
+		northPanel.add(new JPanel());
+		northPanel.add(new JPanel());
+		northPanel.add(new JPanel());
+		
+		northPanel.add(new JPanel());
+		northPanel.add(vodLabel);
+		northPanel.add(telnetIpTextField);
+		northPanel.add(setButton);
+		northPanel.add(checkButton);
+		northPanel.add(new JPanel());
+		
+		northPanel.add(new JPanel());
+		northPanel.add(liveVideoLabel);
+		northPanel.add(telnetBroadcastIpTextField);
+		northPanel.add(liveVideoSetButton);
+		northPanel.add(liveVideoCheckButton);
+		northPanel.add(new JPanel());
+		
+		
+
+		add(northPanel, BorderLayout.NORTH);
 	}
 
-	protected void checkTelnetIpAddress() {
+	protected void checkTelnetIpAddress(String address) {
 		AbstractTelnetWorker telnet = new CheckConnetcionTelnetClient(
-				telnetIpTextField.getText());
+				address);
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		AbstractTelnetWorker.doTelnetWork(telnet);
 		setCursor(Cursor.getDefaultCursor());
@@ -82,11 +144,11 @@ public class TelnetTab extends JPanel {
 		}
 	}
 
-	protected void setTelnetIpAddress() {
+	protected void setTelnetIpAddress(Setting setting, String value) {
 		Application.getEntityMenager().getTransaction().begin();
 
-		Application.getEntityMenager().refresh(vlcipSetting);
-		vlcipSetting.setValue(telnetIpTextField.getText());
+		Application.getEntityMenager().refresh(setting);
+		setting.setValue(value);
 
 		Application.getEntityMenager().getTransaction().commit();
 		JOptionPane.showInternalMessageDialog(this.getParent(),
