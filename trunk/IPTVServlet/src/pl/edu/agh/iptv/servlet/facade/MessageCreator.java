@@ -349,7 +349,7 @@ public class MessageCreator {
 		String address = null;
 		
 		if(em.find(Setting.class, "VLCIP") != null) {
-			address  = ((Setting)em.find(Setting.class, "BROADCASTIP")).getValue();
+			address  = ((Setting)em.find(Setting.class, "VLCIP")).getValue();
 		} else {
 			try {
 				InetAddress addr = InetAddress.getLocalHost();
