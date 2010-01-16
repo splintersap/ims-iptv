@@ -175,12 +175,11 @@ public class MessageCreator {
 	}
 
 	
-	public void purchaseMovie(String title, String mainMovieTitle, String sip, String qualityString, int divider) {
+	public void purchaseMovie(String title, boolean isMulticast, String sip, String qualityString, int divider) {
 		try {
 			utx.begin();
 			User user = getUserFromSip(sip);
 			Movie movie = getMovieFromTitle(title);
-			Movie mainMovie = getMovieFromTitle(mainMovieTitle);
 			long payed = 0;
 			for (MoviePayment moviePayment : movie.getMoviePayments()) {
 				OrderedMovie orderedMovie = user.getOrderedMovie(moviePayment);
@@ -192,13 +191,13 @@ public class MessageCreator {
 			MoviePayment moviePayment = movie.getMoviePayments(Quality.valueOf(qualityString));
 						
 			long newCredit = user.getCredit() - ((moviePayment.getPirce() - payed) / divider);
-			if(newCredit > 0)
+			if(newCredit >= 0)
 			{
 				Quality quality = Quality.valueOf(qualityString);
 				for(Quality movieQualities : Quality.values()) {
 					if(movie.getMoviePayments(movieQualities) != null) {
 						if(quality.compareTo(movieQualities) >= 0) {
-							if(mainMovie == null)
+							if(!isMulticast)
 								user.addOrderedMovie(movie, movieQualities);
 						}
 					}
