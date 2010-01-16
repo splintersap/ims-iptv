@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -64,7 +65,8 @@ public class VideoServlet extends SipServlet {
 	protected void doInfo(SipServletRequest req) throws ServletException,
 			IOException {
 		req.createResponse(200).send();
-		//log("Multicast ip = " + MulticastSet.getMulticastIp()+ ", element nr. " + MulticastSet.multicastIpSet.size());
+		// log("Multicast ip = " + MulticastSet.getMulticastIp()+
+		// ", element nr. " + MulticastSet.multicastIpSet.size());
 
 		String contentType = req.getContentType();
 		String[] mimes = contentType.split("/");
@@ -90,10 +92,15 @@ public class VideoServlet extends SipServlet {
 		} else if ("movies".equals(mimes[0])) {
 			sendUrl(req.getSession(), mimes[1], reqContent);
 		} else if ("shared".equals(mimes[0])) {
-			createSharedMulticast(mimes[1], reqContent);
+			try {
+				createSharedMulticast(mimes[1], reqContent);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else if ("info/ip_address".equals(contentType)) {
 			sendIpAddress(req.getSession());
-		} else if("info/credit".equals(contentType)) {
+		} else if ("info/credit".equals(contentType)) {
 			sendCredit(sip, req.getSession());
 		} else {
 			log("Unrecognized INFO message " + req);
@@ -107,7 +114,7 @@ public class VideoServlet extends SipServlet {
 		info.send();
 
 		log("User " + sip + " has " + credit + " zl");
-		
+
 	}
 
 	private synchronized void sendIpAddress(SipSession session)
@@ -165,20 +172,35 @@ public class VideoServlet extends SipServlet {
 	}
 
 	private void createSharedMulticast(String title, String messageContent)
-			throws IOException {
+			throws Exception {
+		utx.begin();
 		String[] messageInformations = messageContent.split("\n");
 		String[] users = messageInformations[0].split("\\|");
 		Long dateLong = Long.valueOf(messageInformations[1]);
 		Date date = new Date(dateLong);
 		Movie movie = helper.getMovieFromTitle(title);
 
-		String multicastAddr = MulticastSet.getMulticastIp();
+		List<MoviePayment> payment = movie.getMoviePayments();
+		String quality = payment.get(payment.size() - 1).getQuality().name();
+		
+		utx.commit();
+		if (helper.checkIfAllCanPay(users, quality, movie, users.length)) {
+			String multicastAddr = MulticastSet.getMulticastIp();
 		MoviePayment moviePayment = helper.createSharedMulticast(title, users,
 				date, multicastAddr);
 		AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie
 				.getMoviePath(), multicastAddr, date, moviePayment.getUuid(), MessageCreator.getVODIpAddress(em));
 		AbstractTelnetWorker.doTelnetWork(telnet);
 		log("Shared multicast " + title);
+
+			for (int i = 0; i < users.length; i++) {
+
+				helper.purchaseMovie(movie.getTitle(), moviePayment.getMovie().getTitle(), users[i], quality, users.length);
+				log("Purchase another movie " + title + ", quality = "
+						+ quality + ", sip = " + users[i]);
+			}
+
+		}
 	}
 
 	private void sendUrl(SipSession session, String title, String quality)
@@ -202,7 +224,7 @@ public class VideoServlet extends SipServlet {
 
 	private void updatePurchase(String quality, String title, String sip)
 			throws IOException {
-		helper.purchaseMovie(title, sip, quality);
+		helper.purchaseMovie(title, null, sip, quality, 1);
 		log("Purchase another movie " + title + ", quality = " + quality
 				+ ", sip = " + sip);
 	}
@@ -279,6 +301,12 @@ public class VideoServlet extends SipServlet {
 	}
 
 	private String getIpAddress() {
-		return MessageCreator.getVODIpAddress(em);
+		String address = null;
+		try {
+			InetAddress addr = InetAddress.getLocalHost();
+			address = addr.getHostAddress();
+		} catch (UnknownHostException e) {
+		}
+		return address;
 	}
 }
