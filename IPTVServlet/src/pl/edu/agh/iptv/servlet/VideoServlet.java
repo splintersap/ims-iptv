@@ -195,7 +195,7 @@ public class VideoServlet extends SipServlet {
 
 			for (int i = 0; i < users.length; i++) {
 
-				helper.purchaseMovie(movie.getTitle(), moviePayment.getMovie().getTitle(), users[i], quality, users.length);
+				helper.purchaseMovie(movie.getTitle(), true, users[i], quality, users.length);
 				log("Purchase another movie " + title + ", quality = "
 						+ quality + ", sip = " + users[i]);
 			}
@@ -224,7 +224,7 @@ public class VideoServlet extends SipServlet {
 
 	private void updatePurchase(String quality, String title, String sip)
 			throws IOException {
-		helper.purchaseMovie(title, null, sip, quality, 1);
+		helper.purchaseMovie(title, false, sip, quality, 1);
 		log("Purchase another movie " + title + ", quality = " + quality
 				+ ", sip = " + sip);
 	}
