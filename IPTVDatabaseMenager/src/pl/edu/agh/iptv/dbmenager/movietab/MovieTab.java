@@ -126,7 +126,7 @@ public class MovieTab extends JPanel {
 		startBroadcastButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String address  = ((Setting)Application.getEntityMenager().find(Setting.class, "VLCIP")).getValue();
+				String address  = ((Setting)Application.getEntityMenager().find(Setting.class, Setting.BROADCASTIP)).getValue();
 				for(MoviePayment payment : movie.getMoviePayments()) {
 					AbstractTelnetWorker telnet = new StartBroadcastTelnetClient(address, payment.getUuid());
 					AbstractTelnetWorker.doTelnetWork(telnet);
@@ -139,7 +139,7 @@ public class MovieTab extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				for(MoviePayment payment : movie.getMoviePayments()) {
-					String address  = ((Setting)Application.getEntityMenager().find(Setting.class, "VLCIP")).getValue();
+					String address  = ((Setting)Application.getEntityMenager().find(Setting.class, Setting.BROADCASTIP)).getValue();
 					AbstractTelnetWorker telnet = new StopBroadcastTelnetClient(address, payment.getUuid());
 					AbstractTelnetWorker.doTelnetWork(telnet);
 				}

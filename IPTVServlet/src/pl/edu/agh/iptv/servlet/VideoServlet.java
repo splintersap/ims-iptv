@@ -22,11 +22,13 @@ import net.sourceforge.jsdp.SessionDescription;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.Quality;
+import pl.edu.agh.iptv.persistence.Setting;
 import pl.edu.agh.iptv.servlet.facade.MessageCreator;
 import pl.edu.agh.iptv.servlet.performance.PerformanceLauncher;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.RecordingTelnetClient;
 import pl.edu.agh.iptv.telnet.SharedMulticastTelnet;
+import pl.edu.agh.iptv.telnet.StartBroadcastTelnetClient;
 
 public class VideoServlet extends SipServlet {
 
@@ -92,12 +94,7 @@ public class VideoServlet extends SipServlet {
 		} else if ("movies".equals(mimes[0])) {
 			sendUrl(req.getSession(), mimes[1], reqContent);
 		} else if ("shared".equals(mimes[0])) {
-			try {
-				createSharedMulticast(mimes[1], reqContent);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			createSharedMulticast(mimes[1], reqContent);
 		} else if ("info/ip_address".equals(contentType)) {
 			sendIpAddress(req.getSession());
 		} else if ("info/credit".equals(contentType)) {
@@ -164,42 +161,49 @@ public class VideoServlet extends SipServlet {
 				startDate, endDate);
 
 		AbstractTelnetWorker telnet = new RecordingTelnetClient(movie
-				.getMoviePath(), startDate, endDate, moviePayment.getUuid(), MessageCreator.getVODIpAddress(em));
+				.getMoviePath(), startDate, endDate, moviePayment.getUuid(),
+				MessageCreator.getVODIpAddress(em));
 		AbstractTelnetWorker.doTelnetWork(telnet);
 
 		log("Recording movie " + movieTitle + " from: " + startDate + " to: "
 				+ endDate);
 	}
 
-	private void createSharedMulticast(String title, String messageContent)
-			throws Exception {
-		utx.begin();
-		String[] messageInformations = messageContent.split("\n");
-		String[] users = messageInformations[0].split("\\|");
-		Long dateLong = Long.valueOf(messageInformations[1]);
-		Date date = new Date(dateLong);
-		Movie movie = helper.getMovieFromTitle(title);
+	private void createSharedMulticast(String title, String messageContent) {
+		try {
+			utx.begin();
+			String[] messageInformations = messageContent.split("\n");
+			String[] users = messageInformations[0].split("\\|");
+			Long dateLong = Long.valueOf(messageInformations[1]);
+			Date date = new Date(dateLong);
+			Movie movie = helper.getMovieFromTitle(title);
 
-		List<MoviePayment> payment = movie.getMoviePayments();
-		String quality = payment.get(payment.size() - 1).getQuality().name();
-		
-		utx.commit();
-		if (helper.checkIfAllCanPay(users, quality, movie, users.length)) {
-			String multicastAddr = MulticastSet.getMulticastIp();
-		MoviePayment moviePayment = helper.createSharedMulticast(title, users,
-				date, multicastAddr);
-		AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie
-				.getMoviePath(), multicastAddr, date, moviePayment.getUuid(), MessageCreator.getVODIpAddress(em));
-		AbstractTelnetWorker.doTelnetWork(telnet);
-		log("Shared multicast " + title);
+			List<MoviePayment> payment = movie.getMoviePayments();
+			String quality = payment.get(payment.size() - 1).getQuality()
+					.name();
 
-			for (int i = 0; i < users.length; i++) {
+			utx.commit();
+			if (helper.checkIfAllCanPay(users, quality, movie, users.length)) {
+				String multicastAddr = MulticastSet.getMulticastIp();
+				MoviePayment moviePayment = helper.createSharedMulticast(title,
+						users, date, multicastAddr);
+				AbstractTelnetWorker telnet = new SharedMulticastTelnet(movie
+						.getMoviePath(), multicastAddr, date, moviePayment
+						.getUuid(), MessageCreator.getVODIpAddress(em));
+				AbstractTelnetWorker.doTelnetWork(telnet);
+				log("Shared multicast " + title);
 
-				helper.purchaseMovie(movie.getTitle(), true, users[i], quality, users.length);
-				log("Purchase another movie " + title + ", quality = "
-						+ quality + ", sip = " + users[i]);
+				for (int i = 0; i < users.length; i++) {
+
+					helper.purchaseMovie(movie.getTitle(), true, users[i],
+							quality, users.length);
+					log("Purchase another movie " + title + ", quality = "
+							+ quality + ", sip = " + users[i]);
+				}
+
 			}
-
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -212,6 +216,14 @@ public class VideoServlet extends SipServlet {
 			utx.begin();
 			movie = helper.getMovieFromTitle(title);
 			moviePayment = movie.getMoviePayments(Quality.valueOf(quality));
+
+			String address = ((Setting) em.find(Setting.class,
+					Setting.BROADCASTIP)).getValue();
+
+			AbstractTelnetWorker telnet = new StartBroadcastTelnetClient(
+					address, moviePayment.getUuid());
+			AbstractTelnetWorker.doTelnetWork(telnet);
+
 			utx.commit();
 		} catch (Exception ex) {
 			ex.printStackTrace();
