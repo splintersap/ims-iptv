@@ -13,6 +13,10 @@
  * **********************************************************************/
 package pl.edu.agh.iptv.view.chat;
 
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 import com.ericsson.icp.ISessionListener;
@@ -22,183 +26,200 @@ import com.ericsson.icp.util.MIMEContainer;
 
 public class SessionAdapter extends BaseAdapter implements ISessionListener
 {
-    public SessionAdapter(JTextArea area)
+	private JFrame mainFrame;
+	
+    public SessionAdapter(JTextArea area, JFrame mainFrame)
     {
         super(area);
+        this.mainFrame = mainFrame;
     }
 
     public void processSessionStarted(ISessionDescription aSdpBody)
     {
-        log("processSessionStarted");
+//        log("processSessionStarted");
     }
 
     public void processSessionEnded()
     {
-        log("processSessionEnded");
+//        log("processSessionEnded");
     }
 
     public void processSessionCancelled()
     {
-        log("processSessionCancelled");
+//        log("processSessionCancelled");
     }
 
     public void processSessionStartFailed(ErrorReason aReasonCode, long retryAfter)
     {
-        log("processSessionStartFailed");
+//        log("processSessionStartFailed");
+    	showMessageDialog("Problem when starting the chat sesion");
     }
 
     public void processSessionUpdateSuccessful(ISessionDescription aSdpBody)
     {
-        log("processSessionUpdateSuccessful");
+//        log("processSessionUpdateSuccessful");
     }
 
     public void processSessionUpdateFailed(ErrorReason aReasonCode, long retryAfter)
     {
-        log("processSessionUpdateFailed");
+//        log("processSessionUpdateFailed");
     }
 
     public void processSessionAlerting()
     {
-        log("processSessionAlerting");
+//        log("processSessionAlerting");
     }
 
     public void processSessionInformation(String aContentType, byte[] aBody, int aLength)
     {
-        log("processSessionInformation");
+//        log("processSessionInformation");
     }
 
     public void processSessionInformationSuccessful(String aContentType, byte[] aBody, int aLength)
     {
-        log("processSessionInformationSuccessful");
+//        log("processSessionInformationSuccessful");
     }
 
     public void processSessionInformationFailed(ErrorReason aReasonCode, long retryAfter)
     {
-        log("processSessionInformationFailed");
+//        log("processSessionInformationFailed");
     }
 
     public void processSessionMessage(String aContentType, byte[] aMessage, int aLength)
     {
-        log("processSessionMessage-1");
+//        log("processSessionMessage-1");
     }
     
     public void processSessionMessage(String aContentType, byte[] aMessage, int aLength, String aContentEncoding)
     {
-        log("processSessionMessage-2" );
+//        log("processSessionMessage-2" );
     }
 
     public void processSessionMessageSuccessful(String aContentType, byte[] aBody, int aLength)
     {
-        log("processSessionMessageSuccessful");
+//        log("processSessionMessageSuccessful");
     }
 
     public void processSessionMessageFailed(ErrorReason aReason, long retryAfter)
     {
-        log("processSessionMessageFailed");
+//        log("processSessionMessageFailed");
     }
 
     public void processSessionInvitation(String aFrom, boolean aProvisionalRequired, ISessionDescription aSdpBody, MIMEContainer mimeContainer)
     {
-        log("processSessionInvitation");
+//        log("processSessionInvitation");
     }
 
     public void processSessionUpdate(ISessionDescription aSdpBody)
     {
-        log("processSessionUpdate");
+//        log("processSessionUpdate");
     }
 
     public void processSessionSubscribeSuccessful(String aEvent, String aContentType, byte[] aContent, int aLength)
     {
-        log("processSessionSubscribeSuccessful");
+//        log("processSessionSubscribeSuccessful");
     }
 
     public void processSessionSubscribeFailed(String aEvent, String aContentType, byte[] aContent, int aLength, ErrorReason aReason, long retryAfter)
     {
-        log("processSessionSubscribeFailed");
+//        log("processSessionSubscribeFailed");
     }
 
     public void processSessionSubscribeDeactived(String aEvent, String aContentType, byte[] aContent, int aLength)
     {
-        log("processSessionSubscribeDeactived");
+//        log("processSessionSubscribeDeactived");
     }
 
     public void processSessionSubscribeNotification(String aEvent, String aContentType, byte[] aContent, int aLength)
     {
-        log("processSessionSubscribeNotification");
+//        log("processSessionSubscribeNotification");
     }
 
     public void processSessionMediaNegotiation(ISessionDescription aSdpBody)
     {
-        log("processSessionMediaNegotiation");
+//        log("processSessionMediaNegotiation");
     }
 
     public void processSessionOptionsSuccessful(String aContentType, ISessionDescription aSdpBody)
     {
-        log("processSessionOptionsSuccessful");
+//        log("processSessionOptionsSuccessful");
     }
 
     public void processSessionOptionsFailed(ErrorReason aReason, long retryAfter)
     {
-        log("processSessionOptionsFailed");
+//        log("processSessionOptionsFailed");
     }
 
     public void processSessionOptions(String aContentType, ISessionDescription aSdpBody)
     {
-        log("processSessionOptions");
+//        log("processSessionOptions");
     }
 
     public void processSessionRefer(String aReferTo, String aContentType, byte[] aBody, int aLength)
     {
-        log("processSessionRefer");
+//        log("processSessionRefer");
     }
 
     public void processSessionReferSuccessful(String aReferTo)
     {
-        log("processSessionReferSuccessful");
+//        log("processSessionReferSuccessful");
     }
 
     public void processSessionReferFailed(String aReferTo, ErrorReason aReasonCode, long retryAfter)
     {
-        log("processSessionReferFailed");
+//        log("processSessionReferFailed");
     }
 
     public void processSessionReferNotify(String aReferTo, int aReferenceState, String aSubscriptionState)
     {
-        log("processSessionReferNotify");
+//        log("processSessionReferNotify");
     }
 
     public void processSessionReferNotifySuccessful(String aReferTo)
     {
-        log("processSessionReferNotifySuccessful");
+//        log("processSessionReferNotifySuccessful");
     }
 
     public void processSessionReferNotifyFailed(String aReferTo, ErrorReason aReasonCode, long retryAfter)
     {
-        log("processSessionReferNotifyFailed");
+//        log("processSessionReferNotifyFailed");
     }
 
     public void processSessionReferEnded(String aReferTo)
     {
-        log("processSessionReferEnded");
+//        log("processSessionReferEnded");
     }
 
     public void processSessionPublishFailed(String aEvent, byte[] aState, int aLength, ErrorReason aReason, long retryAfter)
     {
-        log("processSessionPublishFailed");
+//        log("processSessionPublishFailed");
     }
 
     public void processSessionPublishSuccessful(String aEvent, int aReturnedExpires, byte[] aState, int aLength)
     {
-        log("processSessionPublishSuccessful");
+//        log("processSessionPublishSuccessful");
     }
 
     public void processSessionReceivedPRACK(ISessionDescription aSdpBody)
     {
-        log("processSessionReceivedPRACK");
+//        log("processSessionReceivedPRACK");
     }
 
     public void processSessionReceivedPRACKResponse(ISessionDescription aSdpBody)
     {
-        log("processSessionReceivedPRACKResponse");
+//        log("processSessionReceivedPRACKResponse");
     }
+    
+    private void showMessageDialog(final String message) {
+		EventQueue.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				JOptionPane.showMessageDialog(mainFrame, message,
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}
+
+		});
+	}
 }

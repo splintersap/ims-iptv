@@ -28,11 +28,11 @@ public class ProfileAdapter extends BaseAdapter implements IProfileListener
 
     public void processEvent(String aEvent, String aSource, ErrorReason aReasonCode)
     {
-        log("processEvent");
+//        log("processEvent");
     }
 
     public void processStateChanged(State state)
     {
-        log("processIcpStateChanged");
+//        log("processIcpStateChanged");
     }
 }

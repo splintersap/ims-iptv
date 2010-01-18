@@ -13,55 +13,70 @@
  * **********************************************************************/
 package pl.edu.agh.iptv.view.chat;
 
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 import com.ericsson.icp.media.IPacketMediaListener;
 
-public class PacketMediaAdapter extends BaseAdapter implements IPacketMediaListener
-{
-    public PacketMediaAdapter(JTextArea area)
-    {
-        super(area);
-    }
-    
-    public void processFailureReport(int aStatusCode, String aData)
-    {        
-        log("processFailureReport");
-    }
-    
-    public void processMediaActivated()
-    {
-        log("processMediaActivated");
-    }
+public class PacketMediaAdapter extends BaseAdapter implements
+		IPacketMediaListener {
+	private JFrame mainFrame;
 
-    public void processMediaDeactivated()
-    {
-        log("processMediaDeactivated");
-    }
-    
-    public void processReceivedData(String aContentType, byte[] aData, int aLength, boolean isCompleted)
-    {
-        log("processReceivedData");
-    }
-    
-    public void processReceivingStarted(String aFileName, String aContentType)
-    {
-        log("processReceivingStarted content-type:"+aContentType+"\t file name:"+aFileName);
-    }
-    
-    public void processSendingProgress(int aPercentage)
-    {
-        log("processSendingProgress" + aPercentage);
-    }
-    
-    public void processSendingSucceed()
+	public PacketMediaAdapter(JTextArea area, JFrame frame) {
+		super(area);
+		this.mainFrame = frame;
+	}
 
-    {
-        log("processSendingSucceed");
-    }
+	public void processFailureReport(int aStatusCode, String aData) {
+		// log("processFailureReport");
+	}
 
-    public void processSuccessReport(int aStatusCode, String aData)
-    {
-        log("processSucessReport");
-    }
+	public void processMediaActivated() {
+		// log("processMediaActivated");
+		showMessageDialog("Chat session started");
+	}
+
+	public void processMediaDeactivated() {
+		// log("processMediaDeactivated");
+		showMessageDialog("Chat session ended");
+	}
+
+	public void processReceivedData(String aContentType, byte[] aData,
+			int aLength, boolean isCompleted) {
+		// log("processReceivedData");
+	}
+
+	public void processReceivingStarted(String aFileName, String aContentType) {
+		// log("processReceivingStarted content-type:"+aContentType+"\t file name:"+aFileName);
+	}
+
+	public void processSendingProgress(int aPercentage) {
+		// log("processSendingProgress" + aPercentage);
+	}
+
+	public void processSendingSucceed()
+
+	{
+		// log("processSendingSucceed");
+	}
+
+	public void processSuccessReport(int aStatusCode, String aData) {
+		// log("processSucessReport");
+	}
+
+	private void showMessageDialog(final String message) {
+		EventQueue.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				JOptionPane.showMessageDialog(mainFrame, message, "Info",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+
+		});
+	}
 }
