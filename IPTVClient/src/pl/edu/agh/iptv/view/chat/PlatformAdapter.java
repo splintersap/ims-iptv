@@ -27,16 +27,16 @@ public class PlatformAdapter extends BaseAdapter implements IPlatformListener
 
     public void processPlatformTerminated(ErrorReason aError)
     {
-        log("processPlatformTerminated");
+//        log("processPlatformTerminated");
     }
 
     public void processApplicationData(String aApplication, byte[] aData, int aLength)
     {
-        log("processApplicationData");
+//        log("processApplicationData");
     }
 
     public void processIncomingProfile(String aProfileName)
     {
-        log("processIncomingProfile");
+//        log("processIncomingProfile");
     }
 }

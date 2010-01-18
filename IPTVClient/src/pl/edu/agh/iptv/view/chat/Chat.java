@@ -122,8 +122,7 @@ public class Chat {
 	/**
 	 * Button that allows the user to send the file.
 	 */
-	private JButton sendFileButton;
-
+	// private JButton sendFileButton;
 	private CommonWatchingWaiting watchingWaiting;
 
 	private Map<String, String> buddyUriToName = null;
@@ -227,41 +226,32 @@ public class Chat {
 		JLabel uriLabel = new JLabel("Callee URI:");
 		uriField = new JTextField();
 		messageField = new JTextField();
-		sendFileButton = new JButton("Send File");
-		final JTextField fileField = new JTextField();
-		fileField.setText("");
+		// sendFileButton = new JButton("Send File");
+		// final JTextField fileField = new JTextField();
+		// fileField.setText("");
 
 		infoPanel.add(uriLabel, createConstraints(0, 0, 0));
 		infoPanel.add(uriField, createConstraints(1, 0, 1));
 		infoPanel.add(sendMessageButton, createConstraints(0, 1, 0));
 		infoPanel.add(messageField, createConstraints(1, 1, 1));
-		infoPanel.add(sendFileButton, createConstraints(0, 2, 0));
-		sendFileButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					logMessage("preparing to send file", null);
-					File afile = new File(fileField.getText());
-					if (afile.exists() && afile.canRead()) {
-						String extension = "unknown";
-						int extensionIndex = afile.getName().indexOf(".");
-						if (extensionIndex != -1) {
-							extension = afile.getName().substring(
-									extensionIndex + 1);
-						}
-
-						String contentDisposition = "Content-Disposition:attachment;filename="
-								+ afile.getName();
-						packetMedia.sendFile("image/" + extension, afile
-								.getAbsolutePath(), contentDisposition, 0);
-						logMessage("file sending started...", null);
-					}
-				} catch (Exception ex) {
-					logMessage("Could not send file");
-				}
-			}
-		});
-		infoPanel.add(fileField, createConstraints(1, 2, 1));
-
+		// infoPanel.add(sendFileButton, createConstraints(0, 2, 0));
+		/*
+		 * sendFileButton.addActionListener(new ActionListener() { public void
+		 * actionPerformed(ActionEvent e) { try {
+		 * logMessage("preparing to send file", null); File afile = new
+		 * File(fileField.getText()); if (afile.exists() && afile.canRead()) {
+		 * String extension = "unknown"; int extensionIndex =
+		 * afile.getName().indexOf("."); if (extensionIndex != -1) { extension =
+		 * afile.getName().substring( extensionIndex + 1); }
+		 * 
+		 * String contentDisposition =
+		 * "Content-Disposition:attachment;filename=" + afile.getName();
+		 * packetMedia.sendFile("image/" + extension, afile .getAbsolutePath(),
+		 * contentDisposition, 0); logMessage("file sending started...", null);
+		 * } } catch (Exception ex) { // logMessage("Could not send file");
+		 * showMessageDialog("Could not send file"); } } });
+		 */
+		// infoPanel.add(fileField, createConstraints(1, 2, 1));
 		JPanel buttonPanel = new JPanel();
 		GridLayout layout = new GridLayout(1, 0);
 		layout.setHgap(5);
@@ -309,7 +299,7 @@ public class Chat {
 								.getMediaDescription(0));
 						packetMedia.activate();
 					} catch (Exception e) {
-						log("Couldn't start chat session");
+						showMessageDialog("Couldn't start chat session");
 					}
 				}
 			});
@@ -327,7 +317,8 @@ public class Chat {
 					SdpFactory.createMIMEContainer());
 			setTalking(true);
 		} catch (Exception e) {
-			logMessage("Error calling");
+			// logMessage("Error calling");
+			showMessageDialog("Error calling");
 		}
 	}
 
@@ -356,7 +347,7 @@ public class Chat {
 							ISessionDescription aSdpBody) {
 						super.processSessionStarted(aSdpBody);
 						try {
-							log("activating packet media");
+							// log("activating packet media");
 							ISessionDescription remoteSdp = (ISessionDescription) aSdpBody
 									.duplicate();
 							packetMedia.setConfiguration(localSdp
@@ -367,7 +358,7 @@ public class Chat {
 									+ movieTitle + ";" + watchingDate + ";",
 									localSession);
 						} catch (Exception e) {
-							log("Could not activate packet media");
+							// log("Could not activate packet media");
 						}
 					}
 				});
@@ -386,7 +377,8 @@ public class Chat {
 				setTalking(true);
 			}
 		} catch (Exception e) {
-			logMessage("Error calling");
+			// logMessage("Error calling");
+			showMessageDialog("Error calling");
 		}
 	}
 
@@ -410,9 +402,10 @@ public class Chat {
 			session
 					.sendMessage("text/plain", messageBytes,
 							messageBytes.length);
-			logMessage("You: " + message);
+			logMessage("You: " + message + "\n--------------------");
 		} catch (Exception e) {
-			logMessage("Error sending message");
+			// logMessage("Error sending message");
+			showMessageDialog("Error while sending message");
 		}
 	}
 
@@ -427,7 +420,8 @@ public class Chat {
 							messageBytes.length);
 			logMessage("You: " + message);
 		} catch (Exception e) {
-			logMessage("Error sending message");
+			// logMessage("Error sending message");
+			showMessageDialog("Error while sending message");
 		}
 	}
 
@@ -472,7 +466,7 @@ public class Chat {
 												aProvisionalRequired, aSdpBody,
 												aContainer);
 										try {
-											log("Got remote SDP!");
+											// log("Got remote SDP!");
 											ISessionDescription remoteSdp = (ISessionDescription) aSdpBody
 													.duplicate();
 											ISessionDescription localSdp = createLocalSdp();
@@ -489,7 +483,7 @@ public class Chat {
 																	.createMediaDescription());
 											packetMedia.setConfiguration(
 													localDesc, remoteDesc);
-											log("activating packet media");
+											// log("activating packet media");
 											packetMedia.activate();
 											localSdp
 													.addMediaDescription(localDesc);
@@ -506,7 +500,7 @@ public class Chat {
 
 															try {
 
-																log("Accept invite");
+																// log("Accept invite");
 																session
 																		.acceptInvitation(myLocalSdp);
 																setTalking(true);
@@ -536,27 +530,31 @@ public class Chat {
 																 * (false); }
 																 */
 															} catch (Exception e) {
-																log("Could not establish chat session");
+																// log("Could not establish chat session");
+																showMessageDialog("Could not establish chat session");
 															}
 														}
 
 													});
 
 										} catch (Exception e) {
-											log("Could not establish chat session");
+											// log("Could not establish chat session");
+											showMessageDialog("Could not establish chat session");
 										}
 									}
 
 								});
 
 					} catch (Exception e) {
-						log("Error handling chat");
+						// log("Error handling chat");
+						showMessageDialog("Error handling chat");
 					}
 				}
 
 			});
 		} catch (Exception e) {
-			logMessage("Could not init ICP");
+			// logMessage("Could not init ICP");
+			showMessageDialog("Could not init ICP");
 		}
 	}
 
@@ -594,7 +592,7 @@ public class Chat {
 		try {
 			session.end();
 		} catch (Exception e) {
-			logMessage("Cannot end session", e);
+			// logMessage("Cannot end session", e);
 		}
 		setTalking(false);
 	}
@@ -610,7 +608,7 @@ public class Chat {
 				base.release();
 			}
 		} catch (Exception e) {
-			logMessage("Cannot release", e);
+			// logMessage("Cannot release", e);
 		}
 	}
 
@@ -632,7 +630,7 @@ public class Chat {
 				inviteButton.setEnabled(!is);
 				hangupButton.setEnabled(is);
 				sendMessageButton.setEnabled(is);
-				sendFileButton.setEnabled(is);
+				// sendFileButton.setEnabled(is);
 			}
 
 		});
@@ -644,18 +642,18 @@ public class Chat {
 	private void clean() {
 		try {
 			if (packetMedia != null) {
-				logMessage("Deactiving media");
+				// logMessage("Deactiving media");
 				packetMedia.deactivate();
 			}
-			logMessage("Release media");
+			// logMessage("Release media");
 			release(packetMedia);
-			logMessage("Release session");
+			// logMessage("Release session");
 			release(session);
 			packetMedia = null;
 			session = null;
 			setTalking(false);
 		} catch (Exception e) {
-			logMessage("Error cleaning");
+			// logMessage("Error cleaning");
 		}
 
 	}
@@ -678,7 +676,7 @@ public class Chat {
 			timeDescription.setSessionActiveTime("0 0");
 			localSdp.addTimeDescription(timeDescription);
 		} catch (Exception e) {
-			logMessage("Could not create the SDP");
+			// logMessage("Could not create the SDP");
 		}
 		return localSdp;
 	}
@@ -691,10 +689,11 @@ public class Chat {
 	 */
 	private void initPacketMedia(final JPanel panel, ISession session) {
 		try {
-			logMessage("creating packet media");
+			// logMessage("creating packet media");
 			// Create the packet media and add a listener on it
 			packetMedia = session.createPacketMedia();
-			packetMedia.addListener(new PacketMediaAdapter(messageArea) {
+			packetMedia.addListener(new PacketMediaAdapter(messageArea,
+					mainFrame) {
 				private File currentReceivedFile = null;
 
 				private FileOutputStream output = null;
@@ -714,7 +713,7 @@ public class Chat {
 								}
 							}
 						} catch (IOException e) {
-							log(e.toString());
+							// log(e.toString());
 						}
 					} else {
 						String message;
@@ -723,7 +722,7 @@ public class Chat {
 						} catch (UnsupportedEncodingException e) {
 							message = "Cannot decode message!";
 						}
-						log("processReceivedData " + message);
+						// log("processReceivedData " + message);
 					}
 				}
 
@@ -741,7 +740,7 @@ public class Chat {
 
 						output = new FileOutputStream(currentReceivedFile);
 					} catch (IOException e) {
-						log("Could not create new file");
+						// log("Could not create new file");
 					}
 				}
 
@@ -779,7 +778,7 @@ public class Chat {
 			packetMedia.setDirection(Direction.SendRecv);
 			packetMedia.setSupportedMIME(MIME_TYPE);
 		} catch (Exception e) {
-			logMessage("Error intializing the packet media");
+			// logMessage("Error intializing the packet media");
 		}
 	}
 
@@ -800,7 +799,7 @@ public class Chat {
 
 	private class ChatSessionAdapter extends SessionAdapter {
 		protected ChatSessionAdapter(JTextArea area) {
-			super(area);
+			super(area, mainFrame);
 		}
 
 		public void processSessionStartFailed(ErrorReason reason,
@@ -809,7 +808,7 @@ public class Chat {
 			try {
 				clean();
 			} catch (Exception e) {
-				log("Could release not packet media");
+				// log("Could release not packet media");
 			}
 		}
 
@@ -820,7 +819,7 @@ public class Chat {
 				// clean();
 				setTalking(false);
 			} catch (Exception e) {
-				log("Could release packet media");
+				// log("Could release packet media");
 			}
 		}
 
@@ -874,7 +873,7 @@ public class Chat {
 					Chat.this.getCommonWatchingWaiting().setAgreement(
 							Chat.this.parseUri(message), false);
 				} else {
-					log("Buddy: " + message);
+					log("Buddy: " + message + "\n--------------------");
 				}
 			} catch (UnsupportedEncodingException e) {
 				message = "Cannot decode message!";
@@ -994,6 +993,19 @@ public class Chat {
 
 	public Map<String, String> getBuddyUriToName() {
 		return this.buddyUriToName;
+	}
+
+	private void showMessageDialog(final String message) {
+		EventQueue.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				JOptionPane.showMessageDialog(mainFrame, "Error: " + message,
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}
+
+		});
 	}
 
 }

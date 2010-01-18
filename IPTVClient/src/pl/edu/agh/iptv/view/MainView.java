@@ -312,7 +312,7 @@ public class MainView {
 	}
 
 	public void setButtonsEnabelment(final boolean ordered,
-			final boolean moreToOrder, final boolean isBroadcast) {
+			final boolean moreToOrder, final boolean isBroadcastAndOrdered) {
 		EventQueue.invokeLater(new Runnable() {
 
 			@Override
@@ -324,7 +324,7 @@ public class MainView {
 				}
 				stop.setEnabled(ordered);
 				orderButton.setEnabled(moreToOrder);
-				record.setEnabled(isBroadcast);
+				record.setEnabled(isBroadcastAndOrdered);
 			}
 
 		});		
