@@ -80,6 +80,27 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 
 		JLabel streamingLabel = new JLabel("Streaming");
 		streamingComboBox = new JComboBox(new String[] { VOD, BROADCAST });
+		streamingComboBox.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JComboBox cb = (JComboBox) e.getSource();
+				String mediaType = (String) cb.getSelectedItem();
+				if (mediaType.equals(BROADCAST)) {
+					for (QualitySpinner spinner : AddMovieDialog.this.spinners) {
+						if (!(spinner.getQuality().equals(Quality.HIGH))) {
+							spinner.setEnabled(false);
+						}
+					}
+				} else {
+					for (QualitySpinner spinner : AddMovieDialog.this.spinners) {
+						spinner.setEnabled(true);
+					}
+				}
+
+			}
+		});
+
 		informationPanel.add(streamingLabel);
 		informationPanel.add(streamingComboBox);
 
@@ -178,7 +199,8 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 							.getQuality());
 				}
 
-				String address = ((Setting)Application.getEntityMenager().find(Setting.class, Setting.VLCIP)).getValue();
+				String address = ((Setting) Application.getEntityMenager()
+						.find(Setting.class, Setting.VLCIP)).getValue();
 				// movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
 				// + telnet.getUuid().toString());
 				for (MoviePayment moviePayment : movie.getMoviePayments()) {
@@ -202,8 +224,10 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 				String multicastIP = getRandomMulticastIp();
 				mp.setMovieUrl("rtp://@" + multicastIP + ":5004");
 
-				String broadcastAddress = ((Setting)Application.getEntityMenager().find(Setting.class, Setting.BROADCASTIP)).getValue();
-				
+				String broadcastAddress = ((Setting) Application
+						.getEntityMenager().find(Setting.class,
+								Setting.BROADCASTIP)).getValue();
+
 				telnet = new MulticastTelnetClient(
 						moviePathTextField.getText(), multicastIP,
 						mp.getUuid(), broadcastAddress);
@@ -213,9 +237,9 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 			System.out.println("Starting telnet");
 
 			MovieTab.persistMovie(movie);
+		}
 
 			this.dispose();
-		}
 
 	}
 
