@@ -178,7 +178,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 							.getQuality());
 				}
 
-				String address = getIpAddress();
+				String address = ((Setting)Application.getEntityMenager().find(Setting.class, Setting.VLCIP)).getValue();
 				// movie.setMovieUrl("rtsp://" + address + ":" + RTSP_PORT + "/"
 				// + telnet.getUuid().toString());
 				for (MoviePayment moviePayment : movie.getMoviePayments()) {
@@ -199,14 +199,14 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 						spinners[2].getValue().toString()).longValue(),
 						spinners[2].getQuality());
 
-				String multicastIP = getMulticastIp();
+				String multicastIP = getRandomMulticastIp();
 				mp.setMovieUrl("rtp://@" + multicastIP + ":5004");
 
-				String broadcastAddress = ((Setting)Application.getEntityMenager().find(Setting.class, "VLCIP")).getValue();
+				String broadcastAddress = ((Setting)Application.getEntityMenager().find(Setting.class, Setting.BROADCASTIP)).getValue();
 				
 				telnet = new MulticastTelnetClient(
 						moviePathTextField.getText(), multicastIP,
-						mp.getUuid(), "127.0.0.1");
+						mp.getUuid(), broadcastAddress);
 				AbstractTelnetWorker.doTelnetWork(telnet);
 			}
 			// movie.setUuid(telnet.getUuid().toString());
@@ -229,7 +229,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 		return address;
 	}
 
-	public static String getMulticastIp() {
+	public static String getRandomMulticastIp() {
 		String multicastIp = null;
 		Random random = new Random();
 		Integer first = random.nextInt(15) + 224;

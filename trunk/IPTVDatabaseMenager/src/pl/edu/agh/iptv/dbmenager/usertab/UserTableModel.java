@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.swing.table.AbstractTableModel;
 
+import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.User;
 
 public class UserTableModel extends AbstractTableModel {
@@ -86,6 +87,24 @@ public class UserTableModel extends AbstractTableModel {
 		}
 		
 		em.getTransaction().commit();
+	}
+
+	public void addUser(User user) {
+		userList.add(user);
+		fireTableDataChanged();
+	}
+
+	public void removeUser(int index) {
+		
+		User user = userList.get(index);
+		userList.remove(index);
+		
+		em.getTransaction().begin();
+		em.persist(user);
+		em.remove(user);
+		em.getTransaction().commit();
+		
+		fireTableDataChanged();
 	}
 
 }
