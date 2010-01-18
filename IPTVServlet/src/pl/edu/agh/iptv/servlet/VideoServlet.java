@@ -19,6 +19,7 @@ import javax.servlet.sip.SipSession;
 import javax.transaction.UserTransaction;
 
 import net.sourceforge.jsdp.SessionDescription;
+import pl.edu.agh.iptv.persistence.MediaType;
 import pl.edu.agh.iptv.persistence.Movie;
 import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.Quality;
@@ -29,6 +30,7 @@ import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.RecordingTelnetClient;
 import pl.edu.agh.iptv.telnet.SharedMulticastTelnet;
 import pl.edu.agh.iptv.telnet.StartBroadcastTelnetClient;
+import pl.edu.agh.iptv.telnet.StopBroadcastTelnetClient;
 
 public class VideoServlet extends SipServlet {
 
@@ -99,8 +101,39 @@ public class VideoServlet extends SipServlet {
 			sendIpAddress(req.getSession());
 		} else if ("info/credit".equals(contentType)) {
 			sendCredit(sip, req.getSession());
+		} else if("leave".equals(mimes[0])) {
+			leaveMulticast(mimes[1], reqContent);
 		} else {
 			log("Unrecognized INFO message " + req);
+		}
+	}
+
+	private void leaveMulticast(String title, String quality) {
+		try {
+			utx.begin();
+			Movie movie = helper.getMovieFromTitle(title);
+			MoviePayment moviePayment = movie.getMoviePayments(Quality.valueOf(quality));
+			
+
+			if (movie.getMediaType().equals(MediaType.BROADCAST)) {
+				String address = ((Setting) em.find(Setting.class,
+						Setting.BROADCASTIP)).getValue();
+				em.refresh(moviePayment);
+				
+				moviePayment.setNumberWatching(moviePayment.getNumberWatching() - 1);
+				
+				if(moviePayment.getNumberWatching() <= 0) {
+					
+					AbstractTelnetWorker telnet = new StopBroadcastTelnetClient(
+							address, moviePayment.getUuid());
+					AbstractTelnetWorker.doTelnetWork(telnet);	
+				}
+			}
+
+			
+			utx.commit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 
@@ -217,12 +250,15 @@ public class VideoServlet extends SipServlet {
 			movie = helper.getMovieFromTitle(title);
 			moviePayment = movie.getMoviePayments(Quality.valueOf(quality));
 
-			String address = ((Setting) em.find(Setting.class,
-					Setting.BROADCASTIP)).getValue();
+			if (movie.getMediaType().equals(MediaType.BROADCAST)) {
+				String address = ((Setting) em.find(Setting.class,
+						Setting.BROADCASTIP)).getValue();
 
-			AbstractTelnetWorker telnet = new StartBroadcastTelnetClient(
-					address, moviePayment.getUuid());
-			AbstractTelnetWorker.doTelnetWork(telnet);
+				AbstractTelnetWorker telnet = new StartBroadcastTelnetClient(
+						address, moviePayment.getUuid());
+				AbstractTelnetWorker.doTelnetWork(telnet);
+				moviePayment.setNumberWatching(moviePayment.getNumberWatching() + 1);
+			}
 
 			utx.commit();
 		} catch (Exception ex) {
