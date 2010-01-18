@@ -1,7 +1,6 @@
 package pl.edu.agh.iptv.persistence;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +24,9 @@ public class MoviePayment extends pl.edu.agh.iptv.persistence.Entity {
 	@Column(nullable = false)
 	private String url;
 	private String uuid;
+	private int numberWatching = 0;
+	
+
 	private List<OrderedMovie> orderedMovieList = new ArrayList<OrderedMovie>();
 
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Movie.class)
@@ -101,6 +103,14 @@ public class MoviePayment extends pl.edu.agh.iptv.persistence.Entity {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+	
+	public int getNumberWatching() {
+		return numberWatching;
+	}
+
+	public void setNumberWatching(int numberWatching) {
+		this.numberWatching = numberWatching;
 	}
 	
 	@Override
