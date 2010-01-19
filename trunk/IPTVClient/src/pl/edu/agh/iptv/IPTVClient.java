@@ -400,6 +400,15 @@ public class IPTVClient implements ActionListener {
 
 			List<MovieDescription> descList = movie.getMovieDescriptionList();
 
+			if(mainView.getMoviesTab().getAllMoviesList() == null)
+			{
+				return;
+			}
+			
+			if(mainView.getMoviesTab().getAllMoviesList().getSelectedValue() == null) {
+				return;
+			}
+			
 			boolean isBroadcastAndOrdered = ((MenuListItem) mainView.getMoviesTab()
 					.getAllMoviesList().getSelectedValue()).getCategory() == MenuListItem.BROADCAST;
 
