@@ -326,10 +326,12 @@ public class MessageCreator {
 	public MoviePayment createRecordedMovie(String movieTitle, String sip,
 			Date startDate, Date endDate) {
 
+		long dif = (endDate.getTime() - startDate.getTime()) / (1000*60);
+		
 		String startFormatedDate = formatter.format(startDate);
-		String endFormatedDate = formatter.format(endDate);
+		//String endFormatedDate = formatter.format(endDate);
 		String title = movieTitle + " " + startFormatedDate + " "
-				+ endFormatedDate;
+				+ dif + "min";
 		Movie movie = new Movie();
 		movie.setTitle(title);
 		// Movie movie = new Movie(title, "C:/Movies/" + uuid + ".mov");
