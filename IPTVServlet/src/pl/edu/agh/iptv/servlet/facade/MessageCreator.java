@@ -109,13 +109,13 @@ public class MessageCreator {
 	private void addingMoviePayments(String sip,
 			SessionDescription sessionDescription, Movie movie)
 			throws SDPException {
-		
+
 		long price = 0;
-		
+
 		for (MoviePayment moviePayment : movie.getMoviePayments()) {
 			OrderedMovie orderedMovie = moviePayment.getOrderByUser(sip);
-			//Date date = moviePayment.getOrderByUser(sip).getDate();
-			
+			// Date date = moviePayment.getOrderByUser(sip).getDate();
+
 			String dateString = null;
 			if (orderedMovie != null) {
 				dateString = String.valueOf(orderedMovie.getDate().getTime());
@@ -174,8 +174,8 @@ public class MessageCreator {
 		return user;
 	}
 
-	
-	public void purchaseMovie(String title, boolean isMulticast, String sip, String qualityString, int divider) {
+	public void purchaseMovie(String title, boolean isMulticast, String sip,
+			String qualityString, int divider) {
 		try {
 			utx.begin();
 			User user = getUserFromSip(sip);
@@ -183,63 +183,67 @@ public class MessageCreator {
 			long payed = 0;
 			for (MoviePayment moviePayment : movie.getMoviePayments()) {
 				OrderedMovie orderedMovie = user.getOrderedMovie(moviePayment);
-				if(orderedMovie != null && moviePayment.getPirce() > payed) {	
+				if (orderedMovie != null && moviePayment.getPirce() > payed) {
 					payed = moviePayment.getPirce();
 				}
 			}
-			
-			MoviePayment moviePayment = movie.getMoviePayments(Quality.valueOf(qualityString));
-						
-			long newCredit = user.getCredit() - ((moviePayment.getPirce() - payed) / divider);
-			if(newCredit >= 0)
-			{
+
+			MoviePayment moviePayment = movie.getMoviePayments(Quality
+					.valueOf(qualityString));
+
+			long newCredit = user.getCredit()
+					- ((moviePayment.getPirce() - payed) / divider);
+			if (newCredit >= 0) {
 				Quality quality = Quality.valueOf(qualityString);
-				for(Quality movieQualities : Quality.values()) {
-					if(movie.getMoviePayments(movieQualities) != null) {
-						if(quality.compareTo(movieQualities) >= 0) {
-							if(!isMulticast)
+				for (Quality movieQualities : Quality.values()) {
+					if (movie.getMoviePayments(movieQualities) != null) {
+						if (quality.compareTo(movieQualities) >= 0) {
+							if (!isMulticast)
 								user.addOrderedMovie(movie, movieQualities);
 						}
 					}
-					
+
 				}
 				user.setCredit(newCredit);
 			}
-			
+
 			utx.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public boolean checkIfAllCanPay(String[] multicastUsers, String qualityString, Movie movie, int divider) throws Exception{
+	public boolean checkIfAllCanPay(String[] multicastUsers,
+			String qualityString, Movie movie, int divider) throws Exception {
 
 		utx.begin();
 		long payed;
-		for(int i = 0; i < multicastUsers.length; i++){
+		for (int i = 0; i < multicastUsers.length; i++) {
 			payed = 0;
 			User user = getUserFromSip(multicastUsers[i]);
 			for (MoviePayment moviePayment : movie.getMoviePayments()) {
 				OrderedMovie orderedMovie = user.getOrderedMovie(moviePayment);
-				if(orderedMovie != null && moviePayment.getPirce() > payed) {	
+				if (orderedMovie != null && moviePayment.getPirce() > payed) {
 					payed = moviePayment.getPirce();
 				}
 			}
-			
-			MoviePayment moviePayment = movie.getMoviePayments(Quality.valueOf(qualityString));
-						
-			long newCredit = user.getCredit() - ((moviePayment.getPirce() - payed) / divider);
-			
-			if(newCredit < 0){
+
+			MoviePayment moviePayment = movie.getMoviePayments(Quality
+					.valueOf(qualityString));
+
+			long newCredit = user.getCredit()
+					- ((moviePayment.getPirce() - payed) / divider);
+
+			if (newCredit < 0) {
 				utx.commit();
 				return false;
 			}
-			
-		}		
+
+		}
 		utx.commit();
 		return true;
 	}
-	
+
 	public void setRatingToDatabase(String title, Integer rating, String sip) {
 		try {
 			utx.begin();
@@ -277,7 +281,8 @@ public class MessageCreator {
 			for (Movie movie : movieList) {
 				boolean isOrdered = false;
 				for (MoviePayment moviePayment : movie.getMoviePayments()) {
-					OrderedMovie orderedMovie = moviePayment.getOrderByUser(sip);
+					OrderedMovie orderedMovie = moviePayment
+							.getOrderByUser(sip);
 					if (orderedMovie != null) {
 						isOrdered = true;
 						break;
@@ -286,11 +291,25 @@ public class MessageCreator {
 
 				Date now = new Date();
 
-				if ((movie.getRecordingUser() == null
-						&& ((!movie.getMediaType().equals(MediaType.SHARED))) || isOrdered)
-						|| (sip.equals(movie.getRecordingUser().getSip()) && (now
-								.after(movie.getAvailableFrom())))) {
-
+				if((movie.getMediaType().equals(MediaType.VOD)) ||
+				   (movie.getMediaType().equals(MediaType.BROADCAST)) ||
+				   (movie.getMediaType().equals(MediaType.SHARED) && isOrdered) ||
+				   (movie.getMediaType().equals(MediaType.RECORDING) && sip.equals(movie.getRecordingUser().getSip()) && now
+								.after(movie.getAvailableFrom()))
+				)
+				
+				{
+					if (movie.getAvailableFrom() != null) {
+						System.err.println("Now = " + now + ", available = "
+								+ movie.getAvailableFrom());
+						System.err.println("Test after : "
+								+ now.after(movie.getAvailableFrom()));
+						if(movie.getRecordingUser() == null) {
+							System.err.println("Recording user to null");
+						} else {
+							System.err.println("Recording user to nie null");
+						}
+					}
 					stringBuilder.append(movie.getTitle() + "|" + isOrdered
 							+ "|" + movie.getOverallRating() + "|"
 							+ movie.getMediaType().name());
@@ -313,12 +332,13 @@ public class MessageCreator {
 				+ endFormatedDate;
 		Movie movie = new Movie();
 		movie.setTitle(title);
-		//Movie movie = new Movie(title, "C:/Movies/" + uuid + ".mov");
+		// Movie movie = new Movie(title, "C:/Movies/" + uuid + ".mov");
 		movie.setMediaType(MediaType.RECORDING);
-		
+
 		MoviePayment moviePayment = movie.addMoviePayment(0, Quality.HIGH);
 		movie.setMoviePath("C:/Movies/" + moviePayment.getUuid() + ".mov");
-		moviePayment.setMovieUrl("rtsp://" + getVODIpAddress(em) + ":5554/" + moviePayment.getUuid());
+		moviePayment.setMovieUrl("rtsp://" + getVODIpAddress(em) + ":5554/"
+				+ moviePayment.getUuid());
 		movie.setAvailableFrom(endDate);
 
 		try {
@@ -332,12 +352,13 @@ public class MessageCreator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return moviePayment;
 
 	}
 
-	public MoviePayment createSharedMulticast(String title, String[] users, Date date, String multicastAddr) {
+	public MoviePayment createSharedMulticast(String title, String[] users,
+			Date date, String multicastAddr) {
 		Movie sharedMovie = null;
 		MoviePayment moviePayment = null;
 		try {
@@ -349,18 +370,18 @@ public class MessageCreator {
 			// create new movie
 			sharedMovie = new Movie(sharedTitle, movie.getMoviePath());
 			sharedMovie.setMediaType(MediaType.SHARED);
-			//sharedMovie.addMoviePayment(400, Quality.LOW);
-			//sharedMovie.addMoviePayment(600, Quality.MEDIUM);
+			// sharedMovie.addMoviePayment(400, Quality.LOW);
+			// sharedMovie.addMoviePayment(600, Quality.MEDIUM);
 			sharedMovie.setAvailableFrom(date);
 			moviePayment = sharedMovie.addMoviePayment(0, Quality.HIGH);
 			moviePayment.setMovieUrl("rtp://@" + multicastAddr + ":5004");
-			
+
 			em.persist(sharedMovie);
 			em.persist(moviePayment);
-			
-			//sharedMovie.setUuid(uuid);
+
+			// sharedMovie.setUuid(uuid);
 			// rtp://@239.255.12.42:5004
-			//sharedMovie.setMovieUrl("rtp://@" + multicastAddr + ":5004");
+			// sharedMovie.setMovieUrl("rtp://@" + multicastAddr + ":5004");
 
 			// let users purchase movie
 			for (String userSip : users) {
@@ -372,15 +393,15 @@ public class MessageCreator {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return moviePayment;
 	}
 
 	public static String getVODIpAddress(EntityManager em) {
 		String address = null;
-		
-		if(em.find(Setting.class, "VLCIP") != null) {
-			address  = ((Setting)em.find(Setting.class, "VLCIP")).getValue();
+
+		if (em.find(Setting.class, "VLCIP") != null) {
+			address = ((Setting) em.find(Setting.class, "VLCIP")).getValue();
 		} else {
 			try {
 				InetAddress addr = InetAddress.getLocalHost();
@@ -388,7 +409,7 @@ public class MessageCreator {
 			} catch (UnknownHostException e) {
 			}
 		}
-		
+
 		return address;
 	}
 
