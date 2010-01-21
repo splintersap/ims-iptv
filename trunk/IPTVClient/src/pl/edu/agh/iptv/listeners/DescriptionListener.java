@@ -41,6 +41,8 @@ public class DescriptionListener implements ListSelectionListener {
 
 	private MainView mainView;
 
+	private MenuListItem lastSelected = null;
+
 	public static ImageIcon loadingIcon = new ImageIcon("images/loading.gif");
 
 	/*
@@ -61,6 +63,11 @@ public class DescriptionListener implements ListSelectionListener {
 	}
 
 	public void valueChanged(ListSelectionEvent selection) {
+
+		PlayListener playListener = mainView.getPlayListener();
+		if (playListener.getCategory() == MenuListItem.BROADCAST)
+			iptvClient.closeBroadcast(playListener.getPlayedMovie(),
+					playListener.getPlayedMovieQuality());
 
 		if (selection.getValueIsAdjusting() == true) {
 			return;

@@ -68,8 +68,21 @@ public class MainController {
 
 							@Override
 							public void actionPerformed(ActionEvent e) {
-
+								
+								/*
+								 * This part of code needs to precede stopMovie(iptvClient) 
+								 */
+								PlayListener playListener = mainView
+								.getPlayListener();
+								if (playListener.getCategory() == MenuListItem.BROADCAST)
+									iptvClient.closeBroadcast(playListener
+											.getPlayedMovie(), playListener
+											.getPlayedMovieQuality());
+								/*
+								 * ******************************************************
+								 */
 								stopMovie(iptvClient);
+								
 								// mainView.getPlayButton().setEnabled(true);
 							}
 						});
