@@ -221,7 +221,7 @@ public class IPTVClient implements ActionListener {
 
 							});
 						} else {
-							new Thread(new PerformanceLauncher(mainView,
+							new Thread(new PerformanceLauncher(IPTVClient.this, mainView,
 									new String(aMessage))).start();
 						}
 					}else if("application/credit".equals(aContentType)){
@@ -455,6 +455,18 @@ public class IPTVClient implements ActionListener {
 		try {
 			String text = "Request for server ip address";
 			session.sendInformation("info/ip_address", text.getBytes(), text
+					.length());
+
+		} catch (Exception e) {
+			showError("Error while sending request for server ip address.", e);
+			e.printStackTrace();
+		}
+	}
+	
+	public void closeBroadcast(String title, String quality) {
+		try {
+			
+			session.sendInformation("leave/" + title, quality.getBytes(), quality
 					.length());
 
 		} catch (Exception e) {

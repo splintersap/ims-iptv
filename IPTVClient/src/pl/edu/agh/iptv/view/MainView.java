@@ -400,6 +400,6 @@ public class MainView {
 
 	public PlayListener getPlayListener() {
 		return this.playListener;
-	}
+	}		
 
 }

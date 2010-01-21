@@ -21,10 +21,13 @@ public class PlayListener implements ActionListener {
 	private MoviesTab moviesTab;
 	private MainView mainView;
 
+	private MenuListItem lastSelected;
+
 	private boolean isPaused = false;
 
 	private String playedMovie;
 	private String playedQuality;
+	private Integer playedCategory;
 
 	JPopupMenu menu = qualityChoice();
 
@@ -56,6 +59,7 @@ public class PlayListener implements ActionListener {
 
 					playedMovie = menuItem.getTitle();
 					playedQuality = clickedItem.getLabel();
+					playedCategory = menuItem.getCategory();
 
 					iptvClient.showChosenMovie(playedMovie, playedQuality);
 				}
@@ -104,6 +108,22 @@ public class PlayListener implements ActionListener {
 
 	public void setPaused(boolean isPaused) {
 		this.isPaused = isPaused;
+	}
+
+	public String getPlayedMovie() {
+		return this.playedMovie;
+	}
+
+	public String getPlayedMovieQuality() {
+		return this.playedQuality;
+	}
+
+	public void setPlayedMovie() {
+
+	}
+
+	public Integer getCategory() {
+		return VLCHelper.isPlayingMovie ? this.playedCategory : -1;
 	}
 
 }
