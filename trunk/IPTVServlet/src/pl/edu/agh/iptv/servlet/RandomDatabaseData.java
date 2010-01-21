@@ -46,6 +46,8 @@ public class RandomDatabaseData {
 		maciek.setCredit(2000);
 		User alice = new User("sip:alice@ericsson.com");
 		alice.setCredit(700);
+		User bob = new User("sip:bob@ericsson.com");
+		bob.setCredit(17000);
 
 		Movie up = new Movie("Up", "C:/Movies/Up.mov");
 		up
@@ -216,15 +218,15 @@ public class RandomDatabaseData {
 		xman.addMoviePayment(700, Quality.HIGH);
 		xman.setMediaType(MediaType.VOD);
 
-		Movie itv = new Movie("ITV", "mms://stream.mni.pl/ITV");
-		itv.setCategory(Category.Documentary);
-		itv.setMediaType(MediaType.BROADCAST);
-		itv.addMoviePayment(700, Quality.HIGH);
+		Movie trwam = new Movie("Telewizja TRWAM", "mms://195.94.205.211/Trwam");
+		trwam.setCategory(Category.Documentary);
+		trwam.setMediaType(MediaType.BROADCAST);
+		trwam.addMoviePayment(700, Quality.HIGH);
 		
-		Movie wapster = new Movie("WAPSTER TV", "mms://nadajnik.wapster.pl/wapstertv");
-		wapster.setCategory(Category.Documentary);
-		wapster.setMediaType(MediaType.BROADCAST);
-		wapster.addMoviePayment(700, Quality.HIGH);
+		Movie labelle = new Movie("Labelle TV", "mms://www.labelletv.com/labelleTV");
+		labelle.setCategory(Category.Documentary);
+		labelle.setMediaType(MediaType.BROADCAST);
+		labelle.addMoviePayment(700, Quality.HIGH);
 
 		Movie aljazera = new Movie("Aljazera",
 				"mms://stream.onet.pl/media.wsx?/live/aljazeera");
@@ -237,11 +239,11 @@ public class RandomDatabaseData {
 		toya.setMediaType(MediaType.BROADCAST);
 		toya.addMoviePayment(700, Quality.HIGH);
 
-		Movie interiaTv = new Movie("INTERIA TV",
-				"http://streamlive.interia.pl/interiatv400");
-		interiaTv.setCategory(Category.Documentary);
-		interiaTv.setMediaType(MediaType.BROADCAST);
-		interiaTv.addMoviePayment(700, Quality.HIGH);
+		Movie telenight = new Movie("Telenight",
+				"mms://195.95.225.110/telenight");
+		telenight.setCategory(Category.Documentary);
+		telenight.setMediaType(MediaType.BROADCAST);
+		telenight.addMoviePayment(700, Quality.HIGH);
 
 		Setting setting = new Setting(Setting.VLCIP, "127.0.0.1");
 		Setting broadcastSetting = new Setting(Setting.BROADCASTIP, "127.0.0.1");
@@ -255,6 +257,7 @@ public class RandomDatabaseData {
 			em.persist(coco);
 			em.persist(alice);
 			em.persist(maciek);
+			em.persist(bob);
 
 			em.persist(up);
 			em.persist(movie2012);
@@ -264,11 +267,11 @@ public class RandomDatabaseData {
 			em.persist(aliceInWonderland);
 			em.persist(xman);
 
-			em.persist(itv);
-			em.persist(wapster);
+			em.persist(trwam);
+			em.persist(labelle);
 			em.persist(aljazera);
 			em.persist(toya);
-			em.persist(interiaTv);
+			em.persist(telenight);
 
 			coco.addOrderedMovie(movie2012, Quality.LOW);
 
