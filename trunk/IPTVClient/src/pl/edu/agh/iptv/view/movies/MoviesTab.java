@@ -27,6 +27,8 @@ public class MoviesTab extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private final int moviesListPaneWidth = 250;
+	
+	public static boolean sendMessage = true; 
 
 	/*
 	 * This is the pane on the left side with the movies list.
@@ -183,6 +185,8 @@ public class MoviesTab extends JPanel {
 
 	}
 
+	
+	
 	/**
 	 * Method setting the list of movies. It is called when server sends a
 	 * response with a list of all movies.
@@ -236,6 +240,21 @@ public class MoviesTab extends JPanel {
 		allMoviesList.setListData(movieList.toArray());
 		this.getPanelForMoviesList().repaint();
 
+	}
+	
+	public int findTitleIndex(String title) {
+		if(allMoviesList == null || movieList == null)
+		{
+			return -1;
+		}
+		
+		for(int i = 0; i < movieList.size(); i++)
+		{
+			if(movieList.get(i).getTitle().equals(title)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	/*
