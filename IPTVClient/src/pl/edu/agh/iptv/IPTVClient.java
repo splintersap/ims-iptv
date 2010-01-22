@@ -100,7 +100,7 @@ public class IPTVClient implements ActionListener {
 		addingListener();
 		triggerMoviesRequest();
 	}
-	
+
 	/**
 	 * This function adds a listener which listens to the actions regarding
 	 * response of the servlet.
@@ -116,7 +116,7 @@ public class IPTVClient implements ActionListener {
 						long retryAfter) {
 					showError("Could not start session", new Exception(aError
 							.getReasonString()));
-					//IPTVClient.isInfoToSend = true;
+					// IPTVClient.isInfoToSend = true;
 
 				}
 
@@ -124,7 +124,7 @@ public class IPTVClient implements ActionListener {
 				public void processSessionStarted(
 						com.ericsson.icp.util.ISessionDescription arg0) {
 					System.out.println("Session started");
-					
+
 				};
 
 				@Override
@@ -170,13 +170,14 @@ public class IPTVClient implements ActionListener {
 							System.out.println("Sending INFO : "
 									+ IPTVClient.infoType + ", "
 									+ IPTVClient.infoContent);
-							IPTVClient.this.sendMovieInformation(
-									IPTVClient.infoType, IPTVClient.infoContent);
+							IPTVClient.this
+									.sendMovieInformation(IPTVClient.infoType,
+											IPTVClient.infoContent);
 							isInfoToSend = false;
 						}
-						
+
 						getAccountBalance();
-						
+
 						if (!iperfStarted) {
 							iperfStarted = true;
 							askForIP();
@@ -221,12 +222,15 @@ public class IPTVClient implements ActionListener {
 
 							});
 						} else {
-							new Thread(new PerformanceLauncher(IPTVClient.this, mainView,
-									new String(aMessage))).start();
+							new Thread(new PerformanceLauncher(IPTVClient.this,
+									mainView, new String(aMessage))).start();
 						}
-					}else if("application/credit".equals(aContentType)){
-						mainView.getMoneyLabel().setText("Your credit - " + new Double(new String(aMessage)) / 100.0 + "zl");
-					}else {
+					} else if ("application/credit".equals(aContentType)) {
+						mainView.getMoneyLabel().setText(
+								"Your credit - "
+										+ new Double(new String(aMessage))
+										/ 100.0 + "zl");
+					} else {
 						System.out.println("Unrecognized message");
 					}
 				}
@@ -312,12 +316,12 @@ public class IPTVClient implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
-	private void getAccountBalance(){
+
+	private void getAccountBalance() {
 		try {
 			String text = "Request for account balance";
-			session.sendInformation("info/credit", text.getBytes(),
-					text.length());
+			session.sendInformation("info/credit", text.getBytes(), text
+					.length());
 		} catch (Exception e) {
 			showError("Error while sending INFO with comment.", e);
 			e.printStackTrace();
@@ -348,14 +352,6 @@ public class IPTVClient implements ActionListener {
 
 	public void purchaseMovie(String movieTitle, String quality) {
 		sendMovieInformation("purchase/" + movieTitle, quality);
-		/*
-		 * try {
-		 * 
-		 * session.sendInformation("purchase/" + movieTitle, quality
-		 * .getBytes(), quality.length()); } catch (Exception e) {
-		 * showError("Error while sending INFO about purchaseing movie.", e);
-		 * e.printStackTrace(); }
-		 */
 	}
 
 	public void sendMovieInformation(String type, String content) {
@@ -398,29 +394,40 @@ public class IPTVClient implements ActionListener {
 
 			this.moviesTab.setDescriptionPanel(descriptionPanel);
 
+			if (this.moviesTab.getAllMoviesList().getSelectedIndex() == -1) {
+				int index = this.moviesTab.findTitleIndex(movie.getTitle());
+				if (index != -1) {
+					this.moviesTab.getAllMoviesList().setSelectedIndex(index);
+				}
+				
+				MoviesTab.sendMessage = false;
+			}
+
 			List<MovieDescription> descList = movie.getMovieDescriptionList();
 
-			if(mainView.getMoviesTab().getAllMoviesList() == null)
-			{
+			if (mainView.getMoviesTab().getAllMoviesList() == null) {
 				return;
 			}
-			
-			if(mainView.getMoviesTab().getAllMoviesList().getSelectedValue() == null) {
+
+			if (mainView.getMoviesTab().getAllMoviesList().getSelectedValue() == null) {
 				return;
 			}
-			
-			boolean isBroadcastAndOrdered = ((MenuListItem) mainView.getMoviesTab()
-					.getAllMoviesList().getSelectedValue()).getCategory() == MenuListItem.BROADCAST;
+
+			boolean isBroadcastAndOrdered = ((MenuListItem) mainView
+					.getMoviesTab().getAllMoviesList().getSelectedValue())
+					.getCategory() == MenuListItem.BROADCAST;
 
 			if (descList.size() == 0) {
 				mainView.setButtonsEnabelment(false, false, false);
 			} else if (descList.get(descList.size() - 1).isOrdered()) {
-				mainView.setButtonsEnabelment(true, false, isBroadcastAndOrdered);
+				mainView.setButtonsEnabelment(true, false,
+						isBroadcastAndOrdered);
 			} else {
 
 				for (MovieDescription movieDesc : descList) {
 					if (movieDesc.isOrdered()) {
-						mainView.setButtonsEnabelment(true, true, isBroadcastAndOrdered);
+						mainView.setButtonsEnabelment(true, true,
+								isBroadcastAndOrdered);
 						return;
 					}
 				}
@@ -462,12 +469,12 @@ public class IPTVClient implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void closeBroadcast(String title, String quality) {
 		try {
-			
-			session.sendInformation("leave/" + title, quality.getBytes(), quality
-					.length());
+
+			session.sendInformation("leave/" + title, quality.getBytes(),
+					quality.length());
 
 		} catch (Exception e) {
 			showError("Error while sending request for server ip address.", e);

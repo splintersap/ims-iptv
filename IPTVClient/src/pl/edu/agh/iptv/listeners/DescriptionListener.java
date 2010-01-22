@@ -64,6 +64,11 @@ public class DescriptionListener implements ListSelectionListener {
 
 	public void valueChanged(ListSelectionEvent selection) {
 
+		if(MoviesTab.sendMessage == false) {
+			MoviesTab.sendMessage = true;
+			return;
+		}
+		
 		PlayListener playListener = mainView.getPlayListener();
 		if (playListener.getCategory() == MenuListItem.BROADCAST)
 			iptvClient.closeBroadcast(playListener.getPlayedMovie(),
