@@ -1,4 +1,4 @@
-package pl.edu.agh.iptv.servlet.facade;
+package pl.edu.agh.iptv.servlet;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -119,10 +119,10 @@ public class MessageCreator {
 			String dateString = null;
 			if (orderedMovie != null) {
 				dateString = String.valueOf(orderedMovie.getDate().getTime());
-				price = moviePayment.getPirce();
+				price = moviePayment.getPrice();
 			}
 			String moviePaymentString = moviePayment.getQuality() + "|"
-					+ (moviePayment.getPirce() - price) + "|" + dateString;
+					+ (moviePayment.getPrice() - price) + "|" + dateString;
 			Attribute paymentAtr = SDPFactory.createAttribute("payment",
 					moviePaymentString);
 			sessionDescription.addAttribute(paymentAtr);
@@ -183,8 +183,8 @@ public class MessageCreator {
 			long payed = 0;
 			for (MoviePayment moviePayment : movie.getMoviePayments()) {
 				OrderedMovie orderedMovie = user.getOrderedMovie(moviePayment);
-				if (orderedMovie != null && moviePayment.getPirce() > payed) {
-					payed = moviePayment.getPirce();
+				if (orderedMovie != null && moviePayment.getPrice() > payed) {
+					payed = moviePayment.getPrice();
 				}
 			}
 
@@ -192,7 +192,7 @@ public class MessageCreator {
 					.valueOf(qualityString));
 
 			long newCredit = user.getCredit()
-					- ((moviePayment.getPirce() - payed) / divider);
+					- ((moviePayment.getPrice() - payed) / divider);
 			if (newCredit >= 0) {
 				Quality quality = Quality.valueOf(qualityString);
 				for (Quality movieQualities : Quality.values()) {
@@ -223,8 +223,8 @@ public class MessageCreator {
 			User user = getUserFromSip(multicastUsers[i]);
 			for (MoviePayment moviePayment : movie.getMoviePayments()) {
 				OrderedMovie orderedMovie = user.getOrderedMovie(moviePayment);
-				if (orderedMovie != null && moviePayment.getPirce() > payed) {
-					payed = moviePayment.getPirce();
+				if (orderedMovie != null && moviePayment.getPrice() > payed) {
+					payed = moviePayment.getPrice();
 				}
 			}
 
@@ -232,7 +232,7 @@ public class MessageCreator {
 					.valueOf(qualityString));
 
 			long newCredit = user.getCredit()
-					- ((moviePayment.getPirce() - payed) / divider);
+					- ((moviePayment.getPrice() - payed) / divider);
 
 			if (newCredit < 0) {
 				utx.commit();
