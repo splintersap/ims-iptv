@@ -13,7 +13,6 @@ import pl.edu.agh.iptv.persistence.MoviePayment;
 import pl.edu.agh.iptv.persistence.Quality;
 import pl.edu.agh.iptv.persistence.Setting;
 import pl.edu.agh.iptv.persistence.User;
-import pl.edu.agh.iptv.servlet.facade.MessageCreator;
 import pl.edu.agh.iptv.telnet.AbstractTelnetWorker;
 import pl.edu.agh.iptv.telnet.MulticastTelnetClient;
 import pl.edu.agh.iptv.telnet.RemovingTelnetClient;

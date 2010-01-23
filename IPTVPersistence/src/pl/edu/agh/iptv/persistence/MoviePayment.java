@@ -19,7 +19,7 @@ import javax.persistence.OneToMany;
 public class MoviePayment extends pl.edu.agh.iptv.persistence.Entity {
 
 	private Movie movie;
-	private long pirce;
+	private long price;
 	private Quality quality;
 	@Column(nullable = false)
 	private String url;
@@ -39,12 +39,12 @@ public class MoviePayment extends pl.edu.agh.iptv.persistence.Entity {
 		this.movie = movie;
 	}
 
-	public long getPirce() {
-		return pirce;
+	public long getPrice() {
+		return price;
 	}
 
-	public void setPirce(long pirce) {
-		this.pirce = pirce;
+	public void setPrice(long pirce) {
+		this.price = pirce;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -81,9 +81,9 @@ public class MoviePayment extends pl.edu.agh.iptv.persistence.Entity {
 	public MoviePayment() {
 	}
 
-	public MoviePayment(Movie movie, long pirce, Quality quality) {
+	public MoviePayment(Movie movie, long price, Quality quality) {
 		this.movie = movie;
-		this.pirce = pirce;
+		this.price = price;
 		this.quality = quality;
 		this.uuid = UUID.randomUUID().toString();
 	}
@@ -115,7 +115,7 @@ public class MoviePayment extends pl.edu.agh.iptv.persistence.Entity {
 	
 	@Override
 	public String toString() {
-		return getQuality().name() + " : " +getPirce();
+		return getQuality().name() + " : " +getPrice();
 	}
 
 }
