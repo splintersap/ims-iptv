@@ -132,6 +132,14 @@ public class IPTVClient implements ActionListener {
 					showError("Session Error", new Exception(aError
 							.getReasonString()));
 				}
+				
+				@Override
+				public void processSessionEnded() {
+			
+					System.out.println("processSessionEnded");
+					IPTVClient.this.actionPerformed(null);
+				};
+				
 
 				@Override
 				public void processSessionInformationFailed(ErrorReason arg0,
