@@ -88,7 +88,7 @@ public class MainView {
 			mainFrame = new MyJFrame();
 			mainFrame.setSize(new Dimension(704, 445));
 			mainFrame.setContentPane(getJContentPane());
-			mainFrame.setTitle("Watcher");
+			mainFrame.setTitle("IPTV Client");
 
 			mainFrame.setJMenuBar(getJMenuBar());
 
