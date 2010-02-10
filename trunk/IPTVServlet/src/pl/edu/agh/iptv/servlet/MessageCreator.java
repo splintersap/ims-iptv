@@ -414,6 +414,22 @@ public class MessageCreator {
 
 		return address;
 	}
+	
+	public static String getBroadcastIpAddress(EntityManager em) {
+		String address = null;
+
+		if (em.find(Setting.class, Setting.BROADCASTIP) != null) {
+			address = ((Setting) em.find(Setting.class, Setting.BROADCASTIP)).getValue();
+		} else {
+			try {
+				InetAddress addr = InetAddress.getLocalHost();
+				address = addr.getHostAddress();
+			} catch (UnknownHostException e) {
+			}
+		}
+
+		return address;
+	}
 
 	public long getCreditForUser(String sip) {
 		User user = getUserFromSip(sip);
