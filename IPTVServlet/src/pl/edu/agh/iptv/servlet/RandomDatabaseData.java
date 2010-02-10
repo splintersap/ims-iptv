@@ -304,7 +304,7 @@ public class RandomDatabaseData {
 		MoviePayment mp = movie.getMoviePayments(Quality.HIGH);
 
 		telnet = new MulticastTelnetClient(movie.getMoviePath(), multicastIp,
-				mp.getUuid(), MessageCreator.getVODIpAddress(em));
+				mp.getUuid(), MessageCreator.getBroadcastIpAddress(em));
 		mp.setMovieUrl("rtp://@" + multicastIp + ":5004");
 
 		System.out.println("Starting telnet");
@@ -316,6 +316,10 @@ public class RandomDatabaseData {
 
 		telnet = new RemovingTelnetClient("all", MessageCreator
 				.getVODIpAddress(em));
+		AbstractTelnetWorker.doTelnetWork(telnet);
+		
+		telnet = new RemovingTelnetClient("all", MessageCreator
+				.getBroadcastIpAddress(em));
 		AbstractTelnetWorker.doTelnetWork(telnet);
 
 	}
