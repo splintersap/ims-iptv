@@ -67,7 +67,7 @@ public class Application {
 		
 		tabbedPane.addTab("Movies", movieTab);
 		tabbedPane.addTab("Users", usersTab);
-		tabbedPane.addTab("Telnet", telnetTab);
+		tabbedPane.addTab("VLC", telnetTab);
 		
 		frame.setContentPane(tabbedPane);
 

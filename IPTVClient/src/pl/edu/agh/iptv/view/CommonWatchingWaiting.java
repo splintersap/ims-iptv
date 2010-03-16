@@ -76,7 +76,7 @@ public class CommonWatchingWaiting extends JDialog implements ActionListener {
 
 		for (String key : this.urisToUsers.keySet()) {
 			listModel.addElement(this.urisToUsers.get(key)
-					+ " - DIDN'T RESPOND");
+					+ " - DID NOT RESPOND");
 			this.urisToAgreed.put(key, NO_RESPONSE);
 		}
 
@@ -93,7 +93,7 @@ public class CommonWatchingWaiting extends JDialog implements ActionListener {
 
 			if (this.urisToAgreed.get(uri) == NO_RESPONSE) {
 				String comp = (String) listModel.get(i);
-				comp = comp.substring(0, comp.indexOf("DIDN'T RESPOND"));
+				comp = comp.substring(0, comp.indexOf("DID NOT RESPOND"));
 				comp = comp.substring(0, comp.length() - 3);
 
 				if (this.urisToUsers.get(uri).compareTo(comp) == 0) {

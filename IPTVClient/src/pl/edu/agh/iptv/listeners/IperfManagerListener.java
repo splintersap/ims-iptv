@@ -37,8 +37,8 @@ public class IperfManagerListener implements WindowListener {
 	public void windowClosing(WindowEvent e) {
 		// TODO Auto-generated method stub
 		PlayListener playListener = mainView.getPlayListener();
-		if (playListener.getCategory() == MenuListItem.BROADCAST)
-			iptvClient.closeBroadcast(playListener.getPlayedMovie(),
+		if (playListener.getCategory() == MenuListItem.MULTICAST)
+			iptvClient.closeMulticast(playListener.getPlayedMovie(),
 					playListener.getPlayedMovieQuality());
 		iperfThread.quit();
 	}

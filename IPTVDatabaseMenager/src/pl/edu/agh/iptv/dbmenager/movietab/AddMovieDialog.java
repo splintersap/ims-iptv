@@ -46,7 +46,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 	private int RTSP_PORT = 5554;
 
 	public final String VOD = "Vod";
-	public final String BROADCAST = "Broadcast";
+	public final String MULTICAST = "Multicast";
 
 	QualitySpinner[] spinners;
 
@@ -56,17 +56,17 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 
 		JPanel informationPanel = new JPanel();
 		informationPanel.setLayout(new GridLayout(5, 2, 10, 6));
-		JLabel titleLabel = new JLabel("Title");
-		titleTextFiled = new JTextField(20);
+		JLabel titleLabel = new JLabel("     Title");
+		titleTextFiled = new JTextField(15);
 		informationPanel.add(titleLabel);
 		informationPanel.add(titleTextFiled);
 
-		JLabel directorLabel = new JLabel("Director");
-		directorTextFiled = new JTextField(20);
+		JLabel directorLabel = new JLabel("     Director");
+		directorTextFiled = new JTextField(15);
 		informationPanel.add(directorLabel);
 		informationPanel.add(directorTextFiled);
 
-		JLabel categoryLabel = new JLabel("Category");
+		JLabel categoryLabel = new JLabel("     Category");
 		categoryComboBox = new JComboBox(Category.values());
 		informationPanel.add(categoryLabel);
 		informationPanel.add(categoryComboBox);
@@ -74,19 +74,19 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 		JPanel moviePathPanel = new JPanel();
 		moviePathPanel.setLayout(new BoxLayout(moviePathPanel,
 				BoxLayout.LINE_AXIS));
-		JLabel moviePathLabel = new JLabel("URL");
+		JLabel moviePathLabel = new JLabel("     URL");
 		final JButton browseButton = new JButton("Browse");
 		final JFileChooser fc = new JFileChooser();
 
-		JLabel streamingLabel = new JLabel("Streaming");
-		streamingComboBox = new JComboBox(new String[] { VOD, BROADCAST });
+		JLabel streamingLabel = new JLabel("     Media type");
+		streamingComboBox = new JComboBox(new String[] { VOD, MULTICAST });
 		streamingComboBox.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JComboBox cb = (JComboBox) e.getSource();
 				String mediaType = (String) cb.getSelectedItem();
-				if (mediaType.equals(BROADCAST)) {
+				if (mediaType.equals(MULTICAST)) {
 					for (QualitySpinner spinner : AddMovieDialog.this.spinners) {
 						if (!(spinner.getQuality().equals(Quality.HIGH))) {
 							spinner.setEnabled(false);
@@ -130,8 +130,9 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 
 		JPanel descriptionPanel = new JPanel();
 		descriptionPanel.setLayout(new BorderLayout());
-		JLabel descriptionLabel = new JLabel("Description");
+		JLabel descriptionLabel = new JLabel("     Description");
 		descriptionTextArea = new JTextArea(5, 20);
+		descriptionTextArea.setLineWrap(true);
 		descriptionPanel.add(descriptionLabel, BorderLayout.PAGE_START);
 		descriptionPanel.add(descriptionTextArea, BorderLayout.CENTER);
 
@@ -148,7 +149,7 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 
 			spinners[i] = new QualitySpinner();
 			spinners[i].setQuality(quality);
-			JLabel qualityLabel = new JLabel(quality.name());
+			JLabel qualityLabel = new JLabel("     " + quality.name());
 			pricesPanel.add(qualityLabel);
 			pricesPanel.add(spinners[i]);
 			i++;
@@ -212,9 +213,9 @@ public class AddMovieDialog extends JDialog implements ActionListener {
 					AbstractTelnetWorker.doTelnetWork(telnet);
 				}
 
-			} else if (BROADCAST.equals(streaming)) {
+			} else if (MULTICAST.equals(streaming)) {
 				// TODO change
-				movie.setMediaType(MediaType.BROADCAST);
+				movie.setMediaType(MediaType.MULTICAST);
 				// getIpAddress();
 				// movie.setMovieUrl("rtp://@239.255.12.42:5004");
 				MoviePayment mp = movie.addMoviePayment(Double.valueOf(

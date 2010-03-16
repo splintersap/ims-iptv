@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.sip.Proxy;
 import javax.servlet.sip.SipServlet;
 import javax.servlet.sip.SipServletRequest;
 import javax.servlet.sip.SipServletResponse;
@@ -114,7 +115,7 @@ public class VideoServlet extends SipServlet {
 			MoviePayment moviePayment = movie.getMoviePayments(Quality.valueOf(quality));
 			
 
-			if (movie.getMediaType().equals(MediaType.BROADCAST)) {
+			if (movie.getMediaType().equals(MediaType.MULTICAST)) {
 				String address = ((Setting) em.find(Setting.class,
 						Setting.BROADCASTIP)).getValue();
 				em.refresh(moviePayment);
@@ -249,7 +250,7 @@ public class VideoServlet extends SipServlet {
 			movie = helper.getMovieFromTitle(title);
 			moviePayment = movie.getMoviePayments(Quality.valueOf(quality));
 
-			if (movie.getMediaType().equals(MediaType.BROADCAST)) {
+			if (movie.getMediaType().equals(MediaType.MULTICAST)) {
 				String address = ((Setting) em.find(Setting.class,
 						Setting.BROADCASTIP)).getValue();
 

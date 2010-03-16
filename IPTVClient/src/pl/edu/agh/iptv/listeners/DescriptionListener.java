@@ -70,8 +70,8 @@ public class DescriptionListener implements ListSelectionListener {
 		}
 		
 		PlayListener playListener = mainView.getPlayListener();
-		if (playListener.getCategory() == MenuListItem.BROADCAST)
-			iptvClient.closeBroadcast(playListener.getPlayedMovie(),
+		if (playListener.getCategory() == MenuListItem.MULTICAST)
+			iptvClient.closeMulticast(playListener.getPlayedMovie(),
 					playListener.getPlayedMovieQuality());
 
 		if (selection.getValueIsAdjusting() == true) {

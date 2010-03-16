@@ -219,29 +219,29 @@ public class RandomDatabaseData {
 
 		Movie trwam = new Movie("Telewizja TRWAM", "mms://195.94.205.211/Trwam");
 		trwam.setCategory(Category.Documentary);
-		trwam.setMediaType(MediaType.BROADCAST);
+		trwam.setMediaType(MediaType.MULTICAST);
 		trwam.addMoviePayment(700, Quality.HIGH);
 		
 		Movie labelle = new Movie("Labelle TV", "mms://www.labelletv.com/labelleTV");
 		labelle.setCategory(Category.Documentary);
-		labelle.setMediaType(MediaType.BROADCAST);
+		labelle.setMediaType(MediaType.MULTICAST);
 		labelle.addMoviePayment(700, Quality.HIGH);
 
 		Movie aljazera = new Movie("Aljazera",
 				"mms://stream.onet.pl/media.wsx?/live/aljazeera");
 		aljazera.setCategory(Category.Documentary);
-		aljazera.setMediaType(MediaType.BROADCAST);
+		aljazera.setMediaType(MediaType.MULTICAST);
 		aljazera.addMoviePayment(700, Quality.HIGH);
 
 		Movie toya = new Movie("TOYA TV", "mms://217.113.224.22/TVToya");
 		toya.setCategory(Category.Documentary);
-		toya.setMediaType(MediaType.BROADCAST);
+		toya.setMediaType(MediaType.MULTICAST);
 		toya.addMoviePayment(700, Quality.HIGH);
 
 		Movie telenight = new Movie("Telenight",
 				"mms://195.95.225.110/telenight");
 		telenight.setCategory(Category.Documentary);
-		telenight.setMediaType(MediaType.BROADCAST);
+		telenight.setMediaType(MediaType.MULTICAST);
 		telenight.addMoviePayment(700, Quality.HIGH);
 
 		Setting setting = new Setting(Setting.VLCIP, "127.0.0.1");
@@ -350,7 +350,7 @@ public class RandomDatabaseData {
 			for (Movie movie : movieList) {
 				if (movie.getMediaType().equals(MediaType.VOD)) {
 					addVodMovieToTelnet(movie, em);
-				} else if (movie.getMediaType().equals(MediaType.BROADCAST)) {
+				} else if (movie.getMediaType().equals(MediaType.MULTICAST)) {
 					addBroadcastToTelnet(movie, em);
 				}
 			}

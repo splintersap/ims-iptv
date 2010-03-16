@@ -421,21 +421,21 @@ public class IPTVClient implements ActionListener {
 				return;
 			}
 
-			boolean isBroadcastAndOrdered = ((MenuListItem) mainView
+			boolean isMulticastAndOrdered = ((MenuListItem) mainView
 					.getMoviesTab().getAllMoviesList().getSelectedValue())
-					.getCategory() == MenuListItem.BROADCAST;
+					.getCategory() == MenuListItem.MULTICAST;
 
 			if (descList.size() == 0) {
 				mainView.setButtonsEnabelment(false, false, false);
 			} else if (descList.get(descList.size() - 1).isOrdered()) {
 				mainView.setButtonsEnabelment(true, false,
-						isBroadcastAndOrdered);
+						isMulticastAndOrdered);
 			} else {
 
 				for (MovieDescription movieDesc : descList) {
 					if (movieDesc.isOrdered()) {
 						mainView.setButtonsEnabelment(true, true,
-								isBroadcastAndOrdered);
+								isMulticastAndOrdered);
 						return;
 					}
 				}
@@ -478,7 +478,7 @@ public class IPTVClient implements ActionListener {
 		}
 	}
 
-	public void closeBroadcast(String title, String quality) {
+	public void closeMulticast(String title, String quality) {
 		try {
 
 			session.sendInformation("leave/" + title, quality.getBytes(),
