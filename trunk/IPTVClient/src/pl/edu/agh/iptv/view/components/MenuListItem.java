@@ -4,7 +4,7 @@ package pl.edu.agh.iptv.view.components;
 public class MenuListItem {
 	
 	public static final int VOD = 0;
-	public static final int BROADCAST = 1;
+	public static final int MULTICAST = 1;
 	public static final int RECORDING = 2;
 	
 	private String title;
@@ -35,8 +35,8 @@ public class MenuListItem {
 		this.rating = rating;
 		if("VOD".equals(category)) {
 			this.category = VOD;
-		} else if("BROADCAST".equals(category)) {
-			this.category = BROADCAST;
+		} else if("MULTICAST".equals(category)) {
+			this.category = MULTICAST;
 		} else if("RECORDING".equals(category)) {
 			this.category = RECORDING;
 		}

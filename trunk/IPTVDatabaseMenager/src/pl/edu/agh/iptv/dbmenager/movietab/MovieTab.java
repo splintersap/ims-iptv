@@ -60,9 +60,9 @@ public class MovieTab extends JPanel {
 	
 	RatingPanel ratingPanel;
 	
-	JButton startBroadcastButton;
+	JButton startMulticastButton;
 	
-	JButton stopBroadcastButton;
+	JButton stopMulticastButton;
 
 	public MovieTab() {
 		super(new GridLayout(2, 0));
@@ -121,9 +121,9 @@ public class MovieTab extends JPanel {
 			}
 		});
 		
-		startBroadcastButton = new JButton("Start broadcast");
-		startBroadcastButton.setEnabled(false);
-		startBroadcastButton.addActionListener(new ActionListener() {
+		startMulticastButton = new JButton("Start multicast");
+		startMulticastButton.setEnabled(false);
+		startMulticastButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String address  = ((Setting)Application.getEntityMenager().find(Setting.class, Setting.BROADCASTIP)).getValue();
@@ -132,9 +132,9 @@ public class MovieTab extends JPanel {
 					AbstractTelnetWorker.doTelnetWork(telnet);
 				}
 			}});
-		stopBroadcastButton = new JButton("Stop broadcast");
-		stopBroadcastButton.setEnabled(false);
-		stopBroadcastButton.addActionListener(new ActionListener() {
+		stopMulticastButton = new JButton("Stop multicast");
+		stopMulticastButton.setEnabled(false);
+		stopMulticastButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -147,8 +147,8 @@ public class MovieTab extends JPanel {
 		
 		newMoviePanel.add(newMovieButton);
 		newMoviePanel.add(removeButton);
-		newMoviePanel.add(startBroadcastButton);
-		newMoviePanel.add(stopBroadcastButton);
+		newMoviePanel.add(startMulticastButton);
+		newMoviePanel.add(stopMulticastButton);
 		
 		tablePanel.add(newMoviePanel, BorderLayout.SOUTH);
 		// Add the scroll pane to this panel.
@@ -237,12 +237,12 @@ public class MovieTab extends JPanel {
 			return;
 		}
 		Movie movie = model.getMovieList().get(table.getSelectedRow());
-		if(movie.getMediaType().equals(MediaType.BROADCAST)) {
-			startBroadcastButton.setEnabled(true);
-			stopBroadcastButton.setEnabled(true);
+		if(movie.getMediaType().equals(MediaType.MULTICAST)) {
+			startMulticastButton.setEnabled(true);
+			stopMulticastButton.setEnabled(true);
 		} else {
-			startBroadcastButton.setEnabled(false);
-			stopBroadcastButton.setEnabled(false);
+			startMulticastButton.setEnabled(false);
+			stopMulticastButton.setEnabled(false);
 		}
 		
 		String description = movie.getDescription();

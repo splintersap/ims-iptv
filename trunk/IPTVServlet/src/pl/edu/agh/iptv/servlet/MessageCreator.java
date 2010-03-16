@@ -292,7 +292,7 @@ public class MessageCreator {
 				Date now = new Date();
 
 				if((movie.getMediaType().equals(MediaType.VOD)) ||
-				   (movie.getMediaType().equals(MediaType.BROADCAST)) ||
+				   (movie.getMediaType().equals(MediaType.MULTICAST)) ||
 				   (movie.getMediaType().equals(MediaType.SHARED) && isOrdered) ||
 				   (movie.getMediaType().equals(MediaType.RECORDING) && sip.equals(movie.getRecordingUser().getSip()) && now
 								.after(movie.getAvailableFrom()))

@@ -33,7 +33,7 @@ public class MenuCellRenderer extends JPanel implements ListCellRenderer {
 			"images/rating/full_star_small.gif");
 	private final static ImageIcon recordIcon = new ImageIcon(
 			"images/menu/disk.gif");
-	private final static ImageIcon broadcastIcon = new ImageIcon(
+	private final static ImageIcon multicastIcon = new ImageIcon(
 			"images/menu/broadcast.gif");
 	private final static ImageIcon vodIcon = new ImageIcon(
 			"images/menu/vod.gif");
@@ -52,8 +52,8 @@ public class MenuCellRenderer extends JPanel implements ListCellRenderer {
 		JLabel categoryLabel = null;
 		if (listItem.getCategory() == MenuListItem.VOD) {
 			categoryLabel = new JLabel(vodIcon);
-		} else if (listItem.getCategory() == MenuListItem.BROADCAST) {
-			categoryLabel = new JLabel(broadcastIcon);
+		} else if (listItem.getCategory() == MenuListItem.MULTICAST) {
+			categoryLabel = new JLabel(multicastIcon);
 		} else if (listItem.getCategory() == MenuListItem.RECORDING) {
 			categoryLabel = new JLabel(recordIcon);
 		}

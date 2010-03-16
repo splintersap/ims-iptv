@@ -74,8 +74,8 @@ public class MainController {
 								 */
 								PlayListener playListener = mainView
 								.getPlayListener();
-								if (playListener.getCategory() == MenuListItem.BROADCAST)
-									iptvClient.closeBroadcast(playListener
+								if (playListener.getCategory() == MenuListItem.MULTICAST)
+									iptvClient.closeMulticast(playListener
 											.getPlayedMovie(), playListener
 											.getPlayedMovieQuality());
 								/*
