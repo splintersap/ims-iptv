@@ -490,8 +490,9 @@ public class IPTVClient implements ActionListener {
 		}
 	}
 
-	public void recordMovie(Date startDate, Date endDate, String movieTitle) {
-		String text = startDate.getTime() + "|" + endDate.getTime();
+	public void recordMovie(Date startDate, Date endDate, String movieTitle, String quality) {
+		String text = startDate.getTime() + "|" + endDate.getTime() + "|" + quality;
+		System.out.println("Sending text = " + text);
 		try {
 			session.sendInformation("record/" + movieTitle, text.getBytes(),
 					text.length());

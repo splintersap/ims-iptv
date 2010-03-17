@@ -54,8 +54,10 @@ public class RecordMovieListener implements ActionListener {
 				MenuListItem movie = (MenuListItem) moviesTab
 						.getAllMoviesList().getSelectedValue();
 
+				String quality = recM.getQualityList().getSelectedItem().toString();
+				
 				iptvClient.recordMovie(startCalendar.getTime(), endCalendar
-						.getTime(), movie.getTitle());
+						.getTime(), movie.getTitle(), quality);
 
 				recM.dispose();
 

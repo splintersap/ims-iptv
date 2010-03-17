@@ -6,18 +6,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
+import pl.edu.agh.iptv.persistence.Quality;
+
 public class RecordingTelnetClient extends AbstractTelnetWorker {
 
 	private String source;
 	private Date startDate;
 	private Date endDate;
+	private Quality quality;
 	
-	public RecordingTelnetClient(String source, Date startDate, Date endDate, String uuid, String remoteIp) {
+	public RecordingTelnetClient(String source, Date startDate, Date endDate, String uuid, String remoteIp, Quality quality) {
 		super(remoteIp);
 		this.source = source;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.uuid = uuid;
+		this.quality = quality;
 	}
 	
 	@Override
@@ -39,6 +43,8 @@ public class RecordingTelnetClient extends AbstractTelnetWorker {
 		// setup stopR append del startR
 		// setup stopR append del stopR
 
+		String scale = quality.getScale();
+		
 		Format formatter = new SimpleDateFormat("yyyy/M/d-HH:mm:ss");
 		
 		String startFormatedDate = formatter.format(startDate);
@@ -51,7 +57,7 @@ public class RecordingTelnetClient extends AbstractTelnetWorker {
 		writeCommandAndRead("new " + recorederUuid + " broadcast enabled");
 		writeCommandAndRead("setup " + recorederUuid + " input " + source);
 		//#transcode{vcodec=mp4v}:std{access=file,mux=mov,dst=c:\\output.mov}
-		writeCommandAndRead("setup " + recorederUuid + " output #transcode{vcodec=mp4v,acodec=mp3}:std{access=file,mux=mov,dst=c:/Movies/" + uuid.toString() + ".mov}");
+		writeCommandAndRead("setup " + recorederUuid + " output #transcode{vcodec=mp4v,acodec=mp3,scale=" + scale +"}:std{access=file,mux=mov,dst=c:/Movies/" + uuid.toString() + ".mov}");
 		
 		writeCommandAndRead("new " + starterUuid + " schedule enabled");
 		writeCommandAndRead("setup " + starterUuid + " date " + startFormatedDate);
