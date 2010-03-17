@@ -6,8 +6,11 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,6 +35,8 @@ public class RecordMovieView extends ViewWithCalendar {
 	private JTextField yearE = new JTextField(4);
 	private JTextField hourE = new JTextField(2);
 	private JTextField minuteE = new JTextField(2);
+	
+	private JComboBox qualityList;
 
 	private MyCalendar myCalendar;
 
@@ -49,9 +54,9 @@ public class RecordMovieView extends ViewWithCalendar {
 		super(parent);
 		this.setTitle("Recording settings");
 
-		this.setPreferredSize(new Dimension(550, 150));
-		this.setMaximumSize(new Dimension(550, 150));
-		this.setMinimumSize(new Dimension(550, 150));
+		this.setPreferredSize(new Dimension(550, 170));
+		this.setMaximumSize(new Dimension(550, 170));
+		this.setMinimumSize(new Dimension(550, 170));
 
 		JPanel startP = new JPanel();
 		startP.setLayout(new FlowLayout());
@@ -76,6 +81,10 @@ public class RecordMovieView extends ViewWithCalendar {
 		startP.add(hourS);
 		startP.add(new JLabel("minute"));
 		startP.add(minuteS);
+		
+		JPanel centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel,
+				BoxLayout.Y_AXIS));
 
 		JPanel endP = new JPanel();
 		endP.setLayout(new FlowLayout());
@@ -101,6 +110,16 @@ public class RecordMovieView extends ViewWithCalendar {
 		endP.add(new JLabel("minute"));
 		endP.add(minuteE);
 
+		
+		String[] qualities = { "HIGH", "MEDIUM", "LOW" };
+		qualityList = new JComboBox(qualities);
+		
+		JPanel qualityPanel = new JPanel();
+		qualityPanel.add(qualityList);
+
+		centerPanel.add(endP);
+		centerPanel.add(qualityPanel);
+
 		JPanel buttonsP = new JPanel();
 		buttonsP.setLayout(new FlowLayout());
 		JButton ok = new JButton("OK");
@@ -113,13 +132,13 @@ public class RecordMovieView extends ViewWithCalendar {
 		buttonsP.add(cancel);
 
 		this.add(startP, BorderLayout.NORTH);
-		this.add(endP, BorderLayout.CENTER);
+		this.add(centerPanel, BorderLayout.CENTER);
 		this.add(buttonsP, BorderLayout.SOUTH);
 
 		this.pack();
 		this.setLocationRelativeTo(parent);
 		this.setVisible(true);
-		
+
 	}
 
 	@Override
@@ -166,6 +185,16 @@ public class RecordMovieView extends ViewWithCalendar {
 		}
 	}
 
+	
+	
+	public JComboBox getQualityList() {
+		return qualityList;
+	}
+
+	public void setQualityList(JComboBox qualityList) {
+		this.qualityList = qualityList;
+	}
+
 	public String getDayS() {
 		return dayS.getText();
 	}
@@ -206,5 +235,4 @@ public class RecordMovieView extends ViewWithCalendar {
 		return minuteE.getText();
 	}
 
-	
 }

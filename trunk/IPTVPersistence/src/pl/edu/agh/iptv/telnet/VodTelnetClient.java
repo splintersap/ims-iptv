@@ -24,12 +24,7 @@ public class VodTelnetClient extends AbstractTelnetWorker {
 		// C:\Users\michal\Downloads\WyznaniaGejszy.1.LekPL.avi
 		writeCommandAndRead("new " + uuid + " vod enabled");
 		writeCommandAndRead("setup " + uuid + " input " + source);
-		String scale = "1";
-		if (quality.equals(Quality.MEDIUM)) {
-			scale = "0.4";
-		} else if (quality.equals(Quality.LOW)) {
-			scale = "0.2";
-		}
+		String scale = quality.getScale();
 
 		if (!quality.equals(Quality.HIGH)) {
 			writeCommandAndRead("setup " + uuid

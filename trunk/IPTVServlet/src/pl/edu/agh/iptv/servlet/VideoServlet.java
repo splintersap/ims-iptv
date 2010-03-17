@@ -179,7 +179,7 @@ public class VideoServlet extends SipServlet {
 			throws IOException {
 		String[] informationsTab = content.split("\\|");
 
-		if (informationsTab.length != 2) {
+		if (informationsTab.length != 3) {
 			log("Wrong format of recording information ");
 			return;
 		}
@@ -188,6 +188,7 @@ public class VideoServlet extends SipServlet {
 		Date startDate = new Date(startDateLong);
 		Long endDateLong = Long.valueOf(informationsTab[1]);
 		Date endDate = new Date(endDateLong);
+		Quality quality = Quality.valueOf(informationsTab[2]);
 
 		Movie movie = helper.getMovieFromTitle(movieTitle);
 		MoviePayment moviePayment = helper.createRecordedMovie(movieTitle, sip,
@@ -195,7 +196,7 @@ public class VideoServlet extends SipServlet {
 
 		AbstractTelnetWorker telnet = new RecordingTelnetClient(movie
 				.getMoviePath(), startDate, endDate, moviePayment.getUuid(),
-				MessageCreator.getVODIpAddress(em));
+				MessageCreator.getVODIpAddress(em), quality);
 		AbstractTelnetWorker.doTelnetWork(telnet);
 
 		log("Recording movie " + movieTitle + " from: " + startDate + " to: "
